@@ -1,0 +1,1344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IBM watsonx Generative AI Engineer Associate — Full Udemy Course · C1000-185</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/theme/black.min.css" id="theme">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/highlight/monokai.min.css">
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Outfit:wght@300;400;600;700;800;900&family=Source+Serif+4:ital,wght@0,400;0,700;1,400&display=swap');
+
+  :root {
+    --r-background-color: #0a0e1a;
+    --r-main-font: 'Outfit', sans-serif;
+    --r-main-font-size: 32px;
+    --r-heading-font: 'Outfit', sans-serif;
+    --r-code-font: 'JetBrains Mono', monospace;
+    --r-heading-color: #e8eaf6;
+    --r-main-color: #c5cae9;
+    --r-link-color: #7c8aff;
+    --accent: #7c8aff;
+    --accent2: #ff6b9d;
+    --accent3: #4ecdc4;
+    --accent4: #ffd93d;
+    --surface: #141927;
+    --surface2: #1c2137;
+    --glow: rgba(124, 138, 255, 0.15);
+  }
+
+  .reveal { font-weight: 300; }
+  .reveal h1, .reveal h2, .reveal h3 {
+    font-weight: 800; text-transform: none;
+    letter-spacing: -0.02em; line-height: 1.1;
+  }
+  .reveal h1 { font-size: 2.8em; }
+  .reveal h2 { font-size: 2em; }
+  .reveal h3 { font-size: 1.4em; color: var(--accent); }
+
+  .reveal code { font-family: var(--r-code-font); font-size: 0.85em; }
+  .reveal pre {
+    width: 100%; font-size: 0.5em;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    border: 1px solid rgba(124,138,255,0.15);
+    border-radius: 12px;
+  }
+  .reveal pre code { padding: 20px 24px; line-height: 1.5; max-height: 520px; border-radius: 12px; }
+  .reveal .inline-code {
+    background: var(--surface2); padding: 2px 10px; border-radius: 6px;
+    font-family: var(--r-code-font); font-size: 0.85em; color: var(--accent3);
+  }
+
+  /* Section title slides */
+  .section-title { text-align: left; }
+  .section-title h2 { font-size: 2.6em; margin-bottom: 0.15em; }
+  .section-number {
+    font-size: 8em; font-weight: 900; opacity: 0.06;
+    position: absolute; right: -0.1em; top: -0.15em;
+    line-height: 1; color: var(--accent);
+  }
+  .section-label {
+    font-size: 0.7em; font-weight: 600; color: var(--accent);
+    text-transform: uppercase; letter-spacing: 0.15em;
+    margin-bottom: 0.5em; display: block;
+  }
+  .section-subtitle { font-size: 1em; color: #7986cb; font-weight: 300; margin-top: 0.3em; }
+
+  /* Diagram */
+  .diagram {
+    font-family: var(--r-code-font); font-size: 0.55em; line-height: 1.6;
+    text-align: left; background: var(--surface); padding: 28px 32px;
+    border-radius: 16px; border: 1px solid rgba(124,138,255,0.12);
+    box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+  }
+
+  /* Tables */
+  .reveal table {
+    margin: 0 auto; border-collapse: separate; border-spacing: 0;
+    font-size: 0.6em; border-radius: 12px; overflow: hidden;
+  }
+  .reveal table th {
+    background: var(--surface2); color: var(--accent); font-weight: 700;
+    padding: 14px 20px; border-bottom: 2px solid rgba(124,138,255,0.2); text-align: left;
+  }
+  .reveal table td { padding: 12px 20px; border-bottom: 1px solid rgba(255,255,255,0.04); text-align: left; }
+  .reveal table tr:last-child td { border-bottom: none; }
+  .reveal table tr:nth-child(even) td { background: rgba(255,255,255,0.015); }
+
+  /* Highlight colors */
+  .hl  { color: var(--accent);  font-weight: 600; }
+  .hl2 { color: var(--accent2); font-weight: 600; }
+  .hl3 { color: var(--accent3); font-weight: 600; }
+  .hl4 { color: var(--accent4); font-weight: 600; }
+
+  /* Cards */
+  .card-grid   { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; text-align: left; margin-top: 24px; }
+  .card-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; text-align: left; margin-top: 24px; }
+  .card-grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 12px; text-align: left; margin-top: 20px; }
+  .card {
+    background: var(--surface); border: 1px solid rgba(124,138,255,0.1);
+    border-radius: 14px; padding: 22px; transition: border-color 0.3s;
+  }
+  .card:hover { border-color: rgba(124,138,255,0.3); }
+  .card h4 { margin: 0 0 8px 0; font-size: 0.82em; font-weight: 700; }
+  .card p, .card ul { margin: 0; font-size: 0.62em; opacity: 0.85; line-height: 1.55; }
+  .card ul { padding-left: 1.2em; }
+
+  /* Badges */
+  .badge {
+    display: inline-block; padding: 4px 14px; border-radius: 20px;
+    font-size: 0.55em; font-weight: 600; letter-spacing: 0.05em;
+  }
+  .badge-pass { background: rgba(78,205,196,0.15); color: var(--accent3); border: 1px solid rgba(78,205,196,0.3); }
+  .badge-fail { background: rgba(255,107,157,0.15); color: var(--accent2); border: 1px solid rgba(255,107,157,0.3); }
+  .badge-info { background: rgba(124,138,255,0.15); color: var(--accent); border: 1px solid rgba(124,138,255,0.3); }
+  .badge-warn { background: rgba(255,217,61,0.15); color: var(--accent4); border: 1px solid rgba(255,217,61,0.3); }
+
+  /* Pipeline */
+  .pipeline { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 24px 0; flex-wrap: wrap; }
+  .pipeline-box {
+    background: var(--surface); border: 1px solid rgba(124,138,255,0.2);
+    padding: 14px 22px; border-radius: 10px; font-size: 0.62em;
+    font-weight: 600; text-align: center; min-width: 120px;
+  }
+  .pipeline-arrow { font-size: 1.2em; color: var(--accent); }
+
+  /* Course outline grid */
+  .outline-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 0.58em; text-align: left; margin-top: 16px; }
+  .outline-item {
+    background: var(--surface); padding: 12px 16px; border-radius: 10px;
+    border-left: 3px solid var(--accent); display: flex; align-items: center; gap: 12px;
+  }
+  .outline-item .num { font-weight: 800; color: var(--accent); font-size: 1.1em; min-width: 28px; }
+  .outline-item.active { border-left-color: var(--accent2); background: rgba(255,107,157,0.05); }
+
+  /* Exam blueprint bars */
+  .blueprint-row {
+    display: grid; grid-template-columns: 32px 1fr 220px 64px;
+    gap: 14px; align-items: center; margin: 10px 0; font-size: 0.6em;
+  }
+  .blueprint-row .num { color: var(--accent); font-weight: 800; }
+  .blueprint-row .name { font-weight: 600; }
+  .bar { height: 10px; background: var(--surface2); border-radius: 6px; overflow: hidden; }
+  .bar > span { display: block; height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent3)); }
+  .pct { text-align: right; color: var(--accent3); font-weight: 700; font-family: var(--r-code-font); }
+
+  /* Big stat */
+  .big-stat { font-size: 4em; font-weight: 900; line-height: 1; }
+  .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-top: 16px; }
+  .stat-card {
+    background: var(--surface); border-radius: 14px; padding: 18px 16px;
+    border: 1px solid rgba(124,138,255,0.12); text-align: center;
+  }
+  .stat-card .num { font-size: 2.2em; font-weight: 900; color: var(--accent); line-height: 1; }
+  .stat-card .lbl { font-size: 0.48em; color: #7986cb; text-transform: uppercase; letter-spacing: 0.08em; margin-top: 6px; }
+
+  /* Footer */
+  .slide-footer {
+    position: absolute; bottom: 16px; left: 32px;
+    font-size: 0.4em; opacity: 0.3; font-family: var(--r-code-font);
+  }
+
+  /* Glow background */
+  .glow-bg::before {
+    content: ''; position: absolute; width: 600px; height: 600px;
+    background: radial-gradient(circle, var(--glow) 0%, transparent 70%);
+    top: -200px; right: -200px; pointer-events: none;
+  }
+
+  /* Small text */
+  .small  { font-size: 0.7em; }
+  .xsmall { font-size: 0.55em; }
+  .muted  { opacity: 0.5; }
+
+  /* Exam-tip callout */
+  .exam-tip {
+    background: var(--surface); border: 2px solid var(--accent4);
+    border-radius: 14px; padding: 20px 26px; text-align: left;
+    margin-top: 18px; max-width: 940px; margin-left: auto; margin-right: auto;
+  }
+  .exam-tip h4 { color: var(--accent4); margin: 0 0 10px 0; font-size: 0.78em; }
+  .exam-tip p  { font-size: 0.58em; line-height: 1.6; opacity: 0.9; margin: 0; }
+
+  /* Quiz */
+  .quiz-label {
+    display: inline-block; background: rgba(255,107,157,0.12); color: var(--accent2);
+    padding: 4px 14px; border-radius: 20px; font-size: 0.5em; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 12px;
+  }
+  .checkpoint-label {
+    display: inline-block; background: rgba(78,205,196,0.12); color: var(--accent3);
+    padding: 4px 14px; border-radius: 20px; font-size: 0.5em; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 12px;
+  }
+  .practice-label {
+    display: inline-block; background: rgba(255,217,61,0.12); color: var(--accent4);
+    padding: 4px 14px; border-radius: 20px; font-size: 0.5em; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 12px;
+  }
+  .checkpoint-q { font-size: 0.68em; font-weight: 600; line-height: 1.4; margin-bottom: 14px; text-align: left; }
+  .checkpoint-opts { list-style: none; padding: 0; margin: 0; font-size: 0.58em; text-align: left; }
+  .checkpoint-opts li {
+    background: var(--surface); border: 1px solid rgba(124,138,255,0.12);
+    border-radius: 10px; padding: 10px 16px; margin-bottom: 8px;
+  }
+  .checkpoint-opts li.correct { border-color: var(--accent3); background: rgba(78,205,196,0.08); }
+  .checkpoint-opts li.correct::after { content: ' ✓'; color: var(--accent3); font-weight: 700; }
+
+  /* Lab box */
+  .lab-box {
+    background: var(--surface); border-left: 4px solid var(--accent3);
+    border-radius: 0 14px 14px 0; padding: 18px 24px; text-align: left;
+    margin-top: 16px; font-size: 0.6em;
+  }
+  .lab-box h4 { color: var(--accent3); margin: 0 0 6px 0; font-size: 0.95em; }
+
+  /* Assignment box */
+  .assignment-box {
+    background: var(--surface); border: 2px solid var(--accent4);
+    border-radius: 14px; padding: 18px 24px; text-align: left;
+    margin-top: 16px; font-size: 0.6em;
+  }
+  .assignment-box h4 { color: var(--accent4); margin: 0 0 8px 0; font-size: 0.95em; }
+  .assignment-box ol { padding-left: 1.4em; line-height: 1.6; }
+
+  /* Sidebar lecture list */
+  .lecture-list {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 8px 18px;
+    font-size: 0.55em; text-align: left; margin-top: 14px;
+  }
+  .lecture-list .row {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface); padding: 8px 14px; border-radius: 8px;
+    border-left: 2px solid rgba(124,138,255,0.3);
+  }
+  .lecture-list .row .n { color: var(--accent); font-weight: 800; min-width: 22px; }
+  .lecture-list .row .t { color: #7986cb; font-family: var(--r-code-font); font-size: 0.85em; opacity: 0.7; }
+
+  .reveal .progress span { background: var(--accent); }
+  .reveal .controls button { color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+<!-- ================== TITLE / WELCOME ================== -->
+<section>
+<section data-background-gradient="linear-gradient(135deg, #0a0e1a 0%, #141927 50%, #1a1040 100%)">
+  <p class="section-label" style="font-size:0.55em;">Udemy Edition · 40+ Hours · Hands-On</p>
+  <h1 style="font-size:2em;">IBM watsonx<br><span class="hl">Generative AI Engineer</span><br>Associate — Full Course</h1>
+  <p style="font-size:0.65em; color:#7986cb; margin-top:18px;">Exam <span class="hl3">C1000-185</span> · 10 Sections · 20+ Labs · 3 Mock Exams</p>
+  <p style="font-size:0.5em; margin-top:24px;">Prompting · Fine-Tuning · RAG · Deployment · Integration · Governance</p>
+  <p style="font-size:0.42em; margin-top:32px; opacity:0.45;">Instructor: Ruslan Idelfonso Magana Vsevolodovna &nbsp;|&nbsp; ruslanmv.com</p>
+</section>
+
+<section>
+  <h3>What This Udemy Edition Adds vs. YouTube</h3>
+  <div class="card-grid">
+    <div class="card"><h4 class="hl">📚 4× Depth</h4><p>~40 hours of lecture (vs. ~5 on YouTube). Every concept gets a full breakdown plus IBM-specific implementation detail.</p></div>
+    <div class="card"><h4 class="hl3">🧪 20+ Deep Labs</h4><p>Step-by-step labs in watsonx.ai Prompt Lab, Tuning Studio, and notebooks — with starter and solution files.</p></div>
+    <div class="card"><h4 class="hl4">📝 10 Assignments</h4><p>Graded mini-projects you can put on your portfolio — capstone is a deployed RAG system on watsonx.</p></div>
+    <div class="card"><h4 class="hl2">🎯 3 Mock Exams</h4><p>62-question full-length exams with explanations. Topic-specific quizzes after every section.</p></div>
+  </div>
+</section>
+
+<section>
+  <h3>Same Series · Same Instructor · Same Theme</h3>
+  <div class="card-grid">
+    <div class="card">
+      <h4 class="hl">Ruslan Idelfonso Magana Vsevolodovna</h4>
+      <p>AI engineer · IBM watsonx practitioner · founder of <em>ruslanmv.com</em>. The same tutor behind the <strong>Agentic AI</strong>, <strong>watsonx Workshop</strong>, and <strong>RAG App</strong> courses you'll see referenced here.</p>
+    </div>
+    <div class="card">
+      <h4 class="hl3">Your Learning Library</h4>
+      <ul>
+        <li>🤖 Agentic AI from Scratch</li>
+        <li>🧪 watsonx Workshop</li>
+        <li>📄 Building RAG Applications</li>
+        <li class="hl">📜 C1000-185 Cert Prep · <em>this course</em></li>
+      </ul>
+    </div>
+  </div>
+</section>
+<aside class="slide-footer">ruslanmv.com · C1000-185 · Welcome</aside>
+</section>
+
+<!-- ================== EXAM AT A GLANCE ================== -->
+<section>
+<section class="section-title" data-background-gradient="linear-gradient(160deg, #0a0e1a 0%, #0f1428 100%)">
+  <span class="section-number">00</span>
+  <span class="section-label">Pre-flight · Exam Map</span>
+  <h2>What You're Up Against</h2>
+  <p class="section-subtitle">The numbers, the blueprint, and the realistic study plan.</p>
+</section>
+
+<section>
+  <h3>The Numbers</h3>
+  <div class="stat-grid">
+    <div class="stat-card"><div class="num">62</div><div class="lbl">Questions</div></div>
+    <div class="stat-card"><div class="num">44</div><div class="lbl">Pass · 71%</div></div>
+    <div class="stat-card"><div class="num">90</div><div class="lbl">Minutes</div></div>
+    <div class="stat-card"><div class="num">$200</div><div class="lbl">Voucher</div></div>
+  </div>
+  <p class="small" style="margin-top:22px; color:#7986cb;">~87 seconds per question · Multiple-choice, single-answer · Online or Pearson Vue · Instant score · 24h retake cooldown.</p>
+</section>
+
+<section>
+  <h3>Blueprint — Where the Points Live</h3>
+  <div style="max-width:880px; margin: 12px auto;">
+    <div class="blueprint-row"><span class="num">1</span><span class="name">Analyze &amp; Design a GenAI Solution</span><span class="bar"><span style="width:15%;"></span></span><span class="pct">15%</span></div>
+    <div class="blueprint-row"><span class="num">2</span><span class="name">Prompt Engineering</span><span class="bar"><span style="width:16%;"></span></span><span class="pct">16%</span></div>
+    <div class="blueprint-row"><span class="num">3</span><span class="name">Fine-Tuning</span><span class="bar"><span style="width:31%; background:linear-gradient(90deg,var(--accent2),var(--accent4));"></span></span><span class="pct">31%</span></div>
+    <div class="blueprint-row"><span class="num">4</span><span class="name">Retrieval-Augmented Generation</span><span class="bar"><span style="width:17%;"></span></span><span class="pct">17%</span></div>
+    <div class="blueprint-row"><span class="num">5</span><span class="name">Deployment</span><span class="bar"><span style="width:13%;"></span></span><span class="pct">13%</span></div>
+    <div class="blueprint-row"><span class="num">6</span><span class="name">Integration &amp; Orchestration</span><span class="bar"><span style="width:8%;"></span></span><span class="pct">8%</span></div>
+  </div>
+  <div class="exam-tip">
+    <h4>🎯 Pacing Tip</h4>
+    <p>Allocate study hours <em>proportional</em> to weights. Fine-tuning earns the biggest ROI — Section 4 in this course is the largest, by design.</p>
+  </div>
+</section>
+
+<section>
+  <h3>Three Study Paths</h3>
+  <div class="card-grid-3">
+    <div class="card" style="border-top:3px solid var(--accent);">
+      <h4 class="hl">Beginner — 12 weeks</h4>
+      <ul>
+        <li>All sections, in order</li>
+        <li>Every lab + every assignment</li>
+        <li>2 evenings/week + 1 weekend session</li>
+      </ul>
+    </div>
+    <div class="card" style="border-top:3px solid var(--accent3);">
+      <h4 class="hl3">Intermediate — 8 weeks</h4>
+      <ul>
+        <li>Skim Sections 1–2; deep on 3–7</li>
+        <li>Labs only (skip basic prompt exercises)</li>
+        <li>All 3 mock exams</li>
+      </ul>
+    </div>
+    <div class="card" style="border-top:3px solid var(--accent4);">
+      <h4 class="hl4">Practitioner — 4 weeks</h4>
+      <ul>
+        <li>Sections 4 (fine-tuning) + 5 (RAG) deep</li>
+        <li>Skim everything else</li>
+        <li>Drill mock exams, identify gaps, patch</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h3>Course Outline — 10 Sections</h3>
+  <div class="outline-grid">
+    <div class="outline-item"><span class="num">01</span> Course Intro &amp; watsonx Setup <span class="muted xsmall">(2h)</span></div>
+    <div class="outline-item"><span class="num">02</span> GenAI Fundamentals <span class="muted xsmall">(8h)</span></div>
+    <div class="outline-item"><span class="num">03</span> Prompt Engineering Mastery <span class="muted xsmall">(12h)</span></div>
+    <div class="outline-item active"><span class="num">04</span> Fine-Tuning &amp; Customization <span class="muted xsmall">(16h ★)</span></div>
+    <div class="outline-item"><span class="num">05</span> Retrieval-Augmented Generation <span class="muted xsmall">(14h)</span></div>
+    <div class="outline-item"><span class="num">06</span> Deployment &amp; Production <span class="muted xsmall">(8h)</span></div>
+    <div class="outline-item"><span class="num">07</span> Integration &amp; Orchestration <span class="muted xsmall">(6h)</span></div>
+    <div class="outline-item"><span class="num">08</span> Governance &amp; Ethics <span class="muted xsmall">(4h)</span></div>
+    <div class="outline-item"><span class="num">09</span> Exam Prep + 3 Mock Exams <span class="muted xsmall">(8h)</span></div>
+    <div class="outline-item"><span class="num">10</span> Bonus: Multi-Modal &amp; Agents <span class="muted xsmall">(opt.)</span></div>
+  </div>
+</section>
+<aside class="slide-footer">ruslanmv.com · C1000-185 · Pre-flight</aside>
+</section>
+
+<!-- ================== SECTION 1 — INTRO & SETUP ================== -->
+<section>
+<section class="section-title" data-background-gradient="linear-gradient(160deg, #0a0e1a 0%, #101a30 100%)">
+  <span class="section-number">01</span>
+  <span class="section-label">Section 1 · Intro &amp; Setup · 2 hours</span>
+  <h2>Onboard to<br>watsonx.ai</h2>
+  <p class="section-subtitle">IBM Cloud account, project + space, first prompt, course resources.</p>
+</section>
+
+<section>
+  <h3>Section 1 — Lectures &amp; Labs</h3>
+  <div class="lecture-list">
+    <div class="row"><span class="n">1.1</span> Welcome &amp; Roadmap <span class="t">15m</span></div>
+    <div class="row"><span class="n">1.2</span> Exam Overview &amp; Path <span class="t">20m</span></div>
+    <div class="row"><span class="n">1.3</span> watsonx.ai Account Setup <span class="t">25m</span></div>
+    <div class="row"><span class="n">1.4</span> Navigation Tour <span class="t">25m</span></div>
+    <div class="row"><span class="n">1.5</span> Study Strategy &amp; Resources <span class="t">15m</span></div>
+    <div class="row"><span class="n">Lab 1.1</span> Create IBM Cloud Account <span class="t">15m</span></div>
+    <div class="row"><span class="n">Lab 1.2</span> First Prompt in Prompt Lab <span class="t">20m</span></div>
+  </div>
+</section>
+
+<section>
+  <h2>watsonx — Three Products, One Story</h2>
+  <div class="card-grid-3">
+    <div class="card" style="border-top:3px solid var(--accent);">
+      <h4 class="hl">watsonx.ai</h4>
+      <p>Build, tune, deploy foundation models. <em>Prompt Lab</em>, <em>Tuning Studio</em>, model catalog (Granite 3.x, Llama 3.3, Mistral).</p>
+    </div>
+    <div class="card" style="border-top:3px solid var(--accent3);">
+      <h4 class="hl3">watsonx.data</h4>
+      <p>Open lakehouse. Embeddings, vector indexes, training corpora, governed datasets.</p>
+    </div>
+    <div class="card" style="border-top:3px solid var(--accent4);">
+      <h4 class="hl4">watsonx.governance</h4>
+      <p>Risk &amp; lifecycle: bias, drift, model cards, factsheets, audit trails.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>Setup Path — Cloud Account to First Token</h2>
+  <div class="pipeline">
+    <div class="pipeline-box">1️⃣ IBM Cloud<br><span class="xsmall">free tier OK</span></div>
+    <span class="pipeline-arrow">→</span>
+    <div class="pipeline-box">2️⃣ Provision<br><span class="xsmall">watsonx.ai service</span></div>
+    <span class="pipeline-arrow">→</span>
+    <div class="pipeline-box">3️⃣ Create<br><span class="xsmall">a Project</span></div>
+    <span class="pipeline-arrow">→</span>
+    <div class="pipeline-box">4️⃣ Open<br><span class="xsmall">Prompt Lab</span></div>
+    <span class="pipeline-arrow">→</span>
+    <div class="pipeline-box">5️⃣ Pick<br><span class="xsmall">Granite 3.x</span></div>
+  </div>
+  <div class="lab-box">
+    <h4>🧪 Lab 1.2 — First Prompt in Prompt Lab</h4>
+    <p>Open Prompt Lab → select <span class="inline-code">ibm/granite-3-2-8b-instruct</span> → set temperature 0.2 → paste a 200-word article and the instruction <em>"Summarize in 3 bullets"</em>. Record latency + token usage. Submit your screenshot in the assignment portal.</p>
+  </div>
+</section>
+
+<section>
+  <h2>Project vs. Space — Don't Confuse Them</h2>
+  <table>
+    <thead><tr><th></th><th>Project</th><th>Deployment Space</th></tr></thead>
+    <tbody>
+      <tr><td>Purpose</td><td>Experiment, build</td><td>Promote &amp; serve</td></tr>
+      <tr><td>Assets</td><td>Notebooks, prompt sessions, datasets</td><td>Tuned models, prompt templates, AI services</td></tr>
+      <tr><td>Endpoints</td><td>—</td><td class="hl3">Online / Batch REST</td></tr>
+      <tr><td>Governance</td><td>Lineage starts</td><td>Lineage ends · monitored</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <span class="checkpoint-label">✅ Section 1 Quiz</span>
+  <p class="checkpoint-q">Where do you create the HTTPS endpoint that a production app calls?</p>
+  <ul class="checkpoint-opts">
+    <li>A. A Project</li>
+    <li class="correct">B. A Deployment Space</li>
+    <li>C. watsonx.data</li>
+    <li>D. watsonx.governance</li>
+  </ul>
+</section>
+<aside class="slide-footer">ruslanmv.com · C1000-185 · 01 / Setup</aside>
+</section>
+
+<!-- ================== SECTION 2 — GENAI FUNDAMENTALS ================== -->
+<section>
+<section class="section-title" data-background-gradient="linear-gradient(160deg, #0a0e1a 0%, #131a30 100%)">
+  <span class="section-number">02</span>
+  <span class="section-label">Section 2 · Fundamentals · 8 hours · 15% of exam</span>
+  <h2>Generative AI<br>Fundamentals</h2>
+  <p class="section-subtitle">Capabilities, transformers, foundation models, limits, watsonx platform deep-dive.</p>
+</section>
+
+<section>
+  <h2>The Five Core Capabilities</h2>
+  <div class="card-grid-3">
+    <div class="card"><h4 class="hl">📚 Summarization</h4><p>Long → short. Extractive or abstractive.</p></div>
+    <div class="card"><h4 class="hl3">🏷️ Classification</h4><p>Discrete labels: spam, sentiment, intent, topic.</p></div>
+    <div class="card"><h4 class="hl4">📝 Generation</h4><p>Open-ended text · code · translation.</p></div>
+    <div class="card"><h4 class="hl2">🔎 Extraction</h4><p>Pull entities, fields, JSON from unstructured text.</p></div>
+    <div class="card"><h4 class="hl">❓ Q&amp;A</h4><p>Closed-book (parametric) or open-book (RAG).</p></div>
+    <div class="card" style="border:1px dashed rgba(124,138,255,0.2);">
+      <h4 class="muted">Not in scope</h4>
+      <p class="muted">Real-time prices · live web · guaranteed math → needs <span class="hl">tools / RAG / agents</span>.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>GenAI Patterns to Recognize</h2>
+  <table>
+    <thead><tr><th>Pattern</th><th>Hallmark</th><th>Example</th></tr></thead>
+    <tbody>
+      <tr><td class="hl">Transformer</td><td>Self-attention + positional encoding</td><td>Granite 3.x, Llama 3.3, Mistral</td></tr>
+      <tr><td class="hl3">Mixture of Experts (MoE)</td><td>Router activates a subset per token</td><td>Mixtral, some Llama variants</td></tr>
+      <tr><td class="hl4">VAE</td><td>Encoder → latent distribution → decoder</td><td>Image diffusion priors</td></tr>
+      <tr><td class="hl2">Reasoning model</td><td>Explicit chain-of-thought trace</td><td>DeepSeek-R1, OpenAI o-series</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>Architecture Decision Tree</h2>
+  <div class="diagram">
+Business problem
+   │
+   ├── Knowledge already in the model?  ──► <span class="hl">Prompting</span>
+   │
+   ├── Facts from <em>our</em> changing documents? ──► <span class="hl3">RAG</span>
+   │
+   ├── New behaviour / style / format? ──► <span class="hl4">Fine-Tuning</span> (LoRA / PEFT / InstructLab)
+   │
+   └── Multi-step reasoning + tool use? ──► <span class="hl2">Agents</span> (LangChain / LangGraph)
+  </div>
+</section>
+
+<section>
+  <h2>Watsonx Model Catalog (2026)</h2>
+  <table>
+    <thead><tr><th>Family</th><th>Vendor</th><th>Pick when</th></tr></thead>
+    <tbody>
+      <tr><td class="hl">granite-3-2-8b-instruct · granite-3-3-8b-instruct</td><td>IBM</td><td>IBM-default · RAG · enterprise English</td></tr>
+      <tr><td class="hl">granite-code-3-8b-instruct</td><td>IBM</td><td>Code generation</td></tr>
+      <tr><td class="hl3">llama-3-3-70b-instruct</td><td>Meta</td><td>Reasoning · multilingual</td></tr>
+      <tr><td class="hl4">mistral-large</td><td>Mistral</td><td>Throughput · long context</td></tr>
+      <tr><td class="hl2">granite-guardian-3-8b</td><td>IBM</td><td>Safety filtering · jailbreak / HAP / groundedness</td></tr>
+    </tbody>
+  </table>
+  <p class="xsmall muted" style="margin-top:14px;">⚠ Deprecated identifiers — recognize but never select: <span class="inline-code">granite-13b-*</span>, <span class="inline-code">llama-2-*</span>, <span class="inline-code">flan-t5-*</span>, <span class="inline-code">mpt-*</span>.</p>
+</section>
+
+<section>
+  <h2>The Four Limits to Memorize</h2>
+  <div class="card-grid">
+    <div class="card"><h4 class="hl2">🪨 Knowledge Cutoff</h4><p>Hard temporal boundary in training data.</p></div>
+    <div class="card"><h4 class="hl2">😵 Hallucinations</h4><p>Plausible-sounding wrong answers. Mitigate: RAG, low temp, Guardian groundedness.</p></div>
+    <div class="card"><h4 class="hl2">⚖️ Bias</h4><p>Inherited from data. Test adversarially. Document in <strong>factsheets</strong>.</p></div>
+    <div class="card"><h4 class="hl2">📐 Context Limit</h4><p>Granite 3.x = 128K · Llama 3.3 = 128K · older models much smaller.</p></div>
+  </div>
+</section>
+
+<section>
+  <div class="assignment-box">
+    <h4>📝 Assignment 1 — Capability Matching</h4>
+    <ol>
+      <li>Given 12 business problems, classify each into Prompting / RAG / Fine-Tuning / Agent.</li>
+      <li>For 3 of them, justify in 50 words referencing the decision tree.</li>
+      <li>Submit as a single <span class="inline-code">.md</span> file to the course portal.</li>
+    </ol>
+  </div>
+</section>
+
+<section>
+  <span class="checkpoint-label">✅ Section 2 Quiz</span>
+  <p class="checkpoint-q">A pharma team needs to answer regulatory questions from a 4,000-page <em>internal</em> SOP corpus that updates monthly. Best architecture?</p>
+  <ul class="checkpoint-opts">
+    <li>A. Fine-tune Granite monthly on the SOPs</li>
+    <li class="correct">B. RAG with embeddings over SOP chunks + retrieval-grounded generation</li>
+    <li>C. Single zero-shot prompt with the full corpus in context</li>
+    <li>D. Pre-train a custom 7B model from scratch</li>
+  </ul>
+</section>
+<aside class="slide-footer">ruslanmv.com · C1000-185 · 02 / Fundamentals</aside>
+</section>
+
+<!-- ================== SECTION 3 — PROMPT ENGINEERING ================== -->
+<section>
+<section class="section-title" data-background-gradient="linear-gradient(160deg, #0a0e1a 0%, #1a1730 100%)">
+  <span class="section-number">03</span>
+  <span class="section-label">Section 3 · Prompting · 12 hours · 16% of exam</span>
+  <h2>Prompt<br>Engineering Mastery</h2>
+  <p class="section-subtitle">Zero/few-shot · CoT · CRISPE/APE/CARE · parameter tuning · jailbreaks · Prompt Lab.</p>
+</section>
+
+<section>
+  <h2>Anatomy of a Production Prompt</h2>
+  <pre><code class="language-text" data-trim>
+&lt;|system|&gt;
+You are a senior customer-support agent at ACME Bank.
+Answer ONLY from the policy excerpts in &lt;context&gt;.
+If the answer is not in context, reply: "I don't know — please contact a human agent."
+Tone: formal, concise. Output JSON: { "answer": str, "policy_id": str | null }.
+&lt;|context|&gt;
+{retrieved_chunks}
+&lt;|user|&gt;
+{question}
+&lt;|assistant|&gt;
+  </code></pre>
+  <p class="xsmall muted">Five pieces: <span class="hl">role</span>, <span class="hl3">grounding rule</span>, <span class="hl4">output format</span>, <span class="hl2">context</span>, user question.</p>
+</section>
+
+<section>
+  <h2>Zero · Few · Chain-of-Thought</h2>
+  <div class="card-grid-3">
+    <div class="card" style="border-top:3px solid var(--accent);"><h4 class="hl">Zero-Shot</h4><p>No examples. Cheap, fast, great for simple, well-known tasks.</p></div>
+    <div class="card" style="border-top:3px solid var(--accent3);"><h4 class="hl3">Few-Shot</h4><p>2–5 examples. Anchors format and tone. Watch context cost.</p></div>
+    <div class="card" style="border-top:3px solid var(--accent4);"><h4 class="hl4">Chain-of-Thought</h4><p>"Reason step-by-step." Unlocks logic/math.</p></div>
+  </div>
+</section>
+
+<section>
+  <h2>Parameter Cheat Sheet</h2>
+  <table>
+    <thead><tr><th>Param</th><th>Effect</th><th>Low</th><th>High</th><th>Default</th></tr></thead>
+    <tbody>
+      <tr><td class="hl">Temperature</td><td>Randomness</td><td>Deterministic</td><td>Creative</td><td>0.7</td></tr>
+      <tr><td class="hl">Top-p</td><td>Nucleus prob mass</td><td>Narrow</td><td>Wide</td><td>0.9</td></tr>
+      <tr><td class="hl">Top-k</td><td>Top-k tokens</td><td>Focused</td><td>Diverse</td><td>50</td></tr>
+      <tr><td class="hl">Max new tokens</td><td>Output cap</td><td>Short</td><td>Long</td><td>200</td></tr>
+      <tr><td class="hl">Repetition penalty</td><td>Anti-loop</td><td>Allow</td><td>Force variety</td><td>1.0–1.2</td></tr>
+      <tr><td class="hl">Decoding</td><td>greedy · sampling</td><td>—</td><td>—</td><td>greedy for factual</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>Prompt Templates in <span class="hl3">watsonx.ai</span></h2>
+  <pre><code class="language-python" data-trim>
+from ibm_watsonx_ai.foundation_models.prompts import PromptTemplateManager, PromptTemplate
+
+ptm = PromptTemplateManager(credentials=creds, project_id=PROJECT_ID)
+
+template = PromptTemplate(
+    name="ticket-classifier-v1",
+    description="Categorize support ticket into BILLING|TECH|OTHER",
+    input_variables=["ticket_text"],
+    input_text="Categorize the ticket below.\n\nTicket: {ticket_text}\nCategory:",
+    examples=[
+        ["My charge is wrong", "BILLING"],
+        ["The app crashes", "TECH"],
+    ],
+    model_id="ibm/granite-3-2-8b-instruct",
+    model_params={"decoding_method": "greedy", "max_new_tokens": 8})
+
+stored = ptm.store_prompt(template)        # versioned in project
+print("Asset ID:", stored.prompt_id)
+  </code></pre>
+</section>
+
+<section>
+  <h2>Prompt Security — Top 5 Risks</h2>
+  <div class="card-grid">
+    <div class="card"><h4 class="hl2">💉 Prompt Injection</h4><p>"Ignore previous instructions and…" Defend with input filtering + privileged system prompt.</p></div>
+    <div class="card"><h4 class="hl2">🔓 Jailbreaks</h4><p>Role-play to bypass. Use Granite Guardian.</p></div>
+    <div class="card"><h4 class="hl2">🪪 PII Leakage</h4><p>Mask emails/SSNs/phones <em>before</em> the call.</p></div>
+    <div class="card"><h4 class="hl2">📤 Data Exfiltration</h4><p>RAG retrieves chunks the user shouldn't see → ACL the index.</p></div>
+    <div class="card"><h4 class="hl2">🧬 Hallucinated APIs</h4><p>Agents invent function calls. Validate schema before execution.</p></div>
+    <div class="card"><h4 class="hl2">⚖️ Bias amplification</h4><p>Test demographic parity; document residuals.</p></div>
+  </div>
+</section>
+
+<section>
+  <div class="lab-box">
+    <h4>🧪 Lab 3.3 — Parameter Tuning Experiments</h4>
+    <p>In Prompt Lab, take a fixed summarization prompt. Sweep <span class="inline-code">temperature ∈ {0.0, 0.4, 0.8, 1.2}</span>. For each, generate 3 outputs. Score with the rubric (faithfulness, fluency, conciseness 1–5). Plot the mean score. Submit the plot + 100-word reflection.</p>
+  </div>
+</section>
+
+<section>
+  <span class="checkpoint-label">✅ Section 3 Quiz</span>
+  <p class="checkpoint-q">Your sentiment classifier outputs free-form text and the parser fails 8% of the time. <em>Single</em> change with the biggest payoff?</p>
+  <ul class="checkpoint-opts">
+    <li>A. Switch to a 70B model</li>
+    <li>B. Raise temperature to 1.0</li>
+    <li class="correct">C. Add a few-shot block with exact JSON outputs and set decoding to greedy</li>
+    <li>D. Increase max_new_tokens to 500</li>
+  </ul>
+</section>
+<aside class="slide-footer">ruslanmv.com · C1000-185 · 03 / Prompt Engineering</aside>
+</section>
+
+<!-- ================== SECTION 4 — FINE TUNING (BIGGEST) ================== -->
+<section>
+<section class="section-title" data-background-gradient="linear-gradient(160deg, #0a0e1a 0%, #1f1430 100%)">
+  <span class="section-number">04</span>
+  <span class="section-label">Section 4 · Fine-Tuning · 16 hours · 31% of exam ★</span>
+  <h2>Fine-Tuning &amp;<br>Customization</h2>
+  <p class="section-subtitle">Where the exam lives. PEFT, LoRA, QLoRA, prompt tuning, InstructLab, Tuning Studio, dataset craft, evaluation.</p>
+</section>
+
+<section>
+  <h2>Hard Prompt vs <span class="hl">Soft Prompt</span></h2>
+  <div class="card-grid">
+    <div class="card"><h4 class="hl">Hard Prompt (text)</h4><p>Discrete tokens you write. Easy to read, easy to edit. Limited expressivity.</p></div>
+    <div class="card"><h4 class="hl3">Soft Prompt (vectors)</h4><p>A learned sequence of <em>continuous embeddings</em> prepended to input. Not human-readable. More expressive per token.</p></div>
+  </div>
+  <p class="xsmall muted" style="margin-top:14px;"><strong>Prompt tuning</strong> learns soft prompts only. <span class="hl">Granite Tuning Studio</span> default. Smaller artifact than LoRA.</p>
+</section>
+
+<section>
+  <h2>Three Tuning Strategies — Trade-offs</h2>
+  <table>
+    <thead><tr><th>Strategy</th><th>What Updates</th><th>Cost</th><th>Quality</th><th>Artifact</th></tr></thead>
+    <tbody>
+      <tr><td class="hl">Full Fine-Tune</td><td>All weights</td><td>$$$$</td><td>Best</td><td>Full model (GBs)</td></tr>
+      <tr><td class="hl3">LoRA / PEFT</td><td>Adapter A·B (rank r)</td><td>$$</td><td>~95% of full</td><td>Adapter (MBs)</td></tr>
+      <tr><td class="hl4">Prompt Tuning</td><td>Soft prompt vectors</td><td>$</td><td>Task-specific</td><td>Vector (KBs)</td></tr>
+      <tr><td class="hl2">QLoRA</td><td>LoRA on 4-bit base</td><td>$</td><td>~LoRA</td><td>4-bit + adapter</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>LoRA — The Math, Simplified</h2>
+  <div class="diagram">
+Original :  y = W x
+
+LoRA     :  y = W x  +  <span class="hl3">B (A x)</span>
+                       └─ trainable
+                       └─ rank r  (r ≪ d)
+
+Init     :  A ~ Gaussian,  B = 0   (so initial output unchanged)
+Scaling  :  effective ΔW = α/r · B·A
+
+Hyper    :  r ∈ {4, 8, 16, 32}    α ∈ {8, 16, 32}
+Target   :  q_proj, v_proj   (attention)  often enough
+  </div>
+</section>
+
+<section>
+  <h2>Quantization Ladder</h2>
+  <div class="pipeline">
+    <div class="pipeline-box">FP32<br><span class="xsmall">baseline</span></div>
+    <span class="pipeline-arrow">→</span>
+    <div class="pipeline-box">FP16/BF16<br><span class="xsmall">2×</span></div>
+    <span class="pipeline-arrow">→</span>
+    <div class="pipeline-box">INT8<br><span class="xsmall">4× · GPTQ</span></div>
+    <span class="pipeline-arrow">→</span>
+    <div class="pipeline-box">INT4<br><span class="xsmall">8× · QLoRA</span></div>
+  </div>
+  <div class="card-grid">
+    <div class="card"><h4 class="hl">PTQ — Post-Training Q</h4><p>Quantize after training. Fast, simple, mild quality loss.</p></div>
+    <div class="card"><h4 class="hl3">QAT — Quantization-Aware</h4><p>Train with simulated quantization. Better quality at INT4.</p></div>
+    <div class="card"><h4 class="hl4">GPTQ / AWQ</h4><p>Weight-only INT4 with calibration. Common open-source pipelines.</p></div>
+    <div class="card"><h4 class="hl2">NF4 (QLoRA)</h4><p>4-bit "normal float" encoding used by QLoRA.</p></div>
+  </div>
+</section>
+
+<section>
+  <h2>IBM <span class="hl4">InstructLab</span> — Detail</h2>
+  <div class="card-grid">
+    <div class="card"><h4 class="hl">🌳 Taxonomy Tree</h4><p>YAML hierarchy with <em>knowledge</em> and <em>skills</em> branches. Leaves contain seed Q&amp;A.</p></div>
+    <div class="card"><h4 class="hl3">🧬 SDG (Synthetic Data Gen)</h4><p>"Teacher" model generates thousands of synthetic examples from each seed leaf.</p></div>
+    <div class="card"><h4 class="hl4">🏗️ Multi-Phase Training</h4><p>Phase 1: knowledge. Phase 2: skills. Then alignment (DPO-style).</p></div>
+    <div class="card"><h4 class="hl2">🤝 LAB Method</h4><p>Large-scale Alignment for chatBots (Sudalairaj et al. 2024).</p></div>
+  </div>
+</section>
+
+<section>
+  <h2>Synthetic Data UI — Two Modes</h2>
+  <div class="card-grid">
+    <div class="card"><h4 class="hl">Leverage existing data</h4><p>Upload a CSV; the generator learns the joint distribution and emits new rows.</p></div>
+    <div class="card"><h4 class="hl3">Create from schema</h4><p>Define columns, types, ranges; generate rows from scratch.</p></div>
+  </div>
+  <p class="xsmall muted" style="margin-top:14px;">Two distribution-fit tests: <strong>Kolmogorov–Smirnov</strong> (overall CDF) · <strong>Anderson–Darling</strong> (weights tails heavier).</p>
+</section>
+
+<section>
+  <h2>Differential Privacy Settings</h2>
+  <div class="card-grid-3">
+    <div class="card"><h4 class="hl">Privacy budget (ε)</h4><p>Total privacy loss. Smaller = stronger privacy, more noise.</p></div>
+    <div class="card"><h4 class="hl3">Leakage probability (δ)</h4><p>Probability the guarantee fails. Typically ≪ 1/N.</p></div>
+    <div class="card"><h4 class="hl4">Random seed</h4><p>Reproducibility for audit and testing.</p></div>
+  </div>
+</section>
+
+<section>
+  <h2>Dataset Format — JSONL</h2>
+  <pre><code class="language-json" data-trim>
+{"input": "Translate to French: 'Hello'", "output": "Bonjour"}
+{"input": "Translate to French: 'Goodbye'", "output": "Au revoir"}
+{"messages": [
+   {"role": "system", "content": "You are a translator."},
+   {"role": "user",   "content": "Hello"},
+   {"role": "assistant", "content": "Bonjour"}
+]}
+  </code></pre>
+</section>
+
+<section>
+  <div class="lab-box">
+    <h4>🧪 Lab 4.2 — LoRA Fine-Tune in Tuning Studio</h4>
+    <p>Use <span class="inline-code">labs/lab-04/dataset.jsonl</span> (3,000 legal-clause classification examples). Launch a LoRA job on <span class="inline-code">ibm/granite-3-2-8b-instruct</span> with <span class="inline-code">r=8, α=16, lr=2e-4, epochs=3</span>. Evaluate F1 against the test split. Compare to the few-shot baseline.</p>
+  </div>
+</section>
+
+<section>
+  <div class="assignment-box">
+    <h4>📝 Assignment 5 — Domain-Specific Fine-Tune</h4>
+    <ol>
+      <li>Pick a domain (legal, medical, retail). Collect or synthesize 500+ examples.</li>
+      <li>Run prompt tuning vs LoRA on the same data. Report metrics.</li>
+      <li>Argue in 200 words which approach you'd ship and why.</li>
+      <li>Include the deployed prompt template ID from your watsonx space.</li>
+    </ol>
+  </div>
+</section>
+
+<section>
+  <span class="checkpoint-label">✅ Section 4 Quiz</span>
+  <p class="checkpoint-q">A team has 8,000 customer-support transcripts labeled with intent. Budget is tight. Goal: high-accuracy intent classifier on Granite 3.x.</p>
+  <ul class="checkpoint-opts">
+    <li>A. Full fine-tune at FP32 for 50 epochs</li>
+    <li>B. Zero-shot prompting only</li>
+    <li class="correct">C. LoRA with r=8, α=16, 3 epochs at lr=2e-4, evaluate on held-out 20%</li>
+    <li>D. Pre-train a new 13B model from scratch on the transcripts</li>
+  </ul>
+</section>
+<aside class="slide-footer">ruslanmv.com · C1000-185 · 04 / Fine-Tuning</aside>
+</section>
+
+<!-- ================== SECTION 5 — RAG ================== -->
+<section>
+<section class="section-title" data-background-gradient="linear-gradient(160deg, #0a0e1a 0%, #14202a 100%)">
+  <span class="section-number">05</span>
+  <span class="section-label">Section 5 · RAG · 14 hours · 17% of exam</span>
+  <h2>Retrieval-Augmented<br>Generation</h2>
+  <p class="section-subtitle">Embeddings · vector DBs · chunking · LangChain · production patterns.</p>
+</section>
+
+<section>
+  <h2>The RAG Pipeline</h2>
+  <div class="pipeline">
+    <div class="pipeline-box">📄 Source</div>
+    <span class="pipeline-arrow">→</span>
+    <div class="pipeline-box">✂️ Chunk</div>
+    <span class="pipeline-arrow">→</span>
+    <div class="pipeline-box">🧬 Embed</div>
+    <span class="pipeline-arrow">→</span>
+    <div class="pipeline-box">🗃️ Index</div>
+    <span class="pipeline-arrow">→</span>
+    <div class="pipeline-box">🔎 Retrieve</div>
+    <span class="pipeline-arrow">→</span>
+    <div class="pipeline-box">↕️ Re-rank</div>
+    <span class="pipeline-arrow">→</span>
+    <div class="pipeline-box">🧠 Generate</div>
+  </div>
+</section>
+
+<section>
+  <h2>Embedding Models on watsonx (2026)</h2>
+  <table>
+    <thead><tr><th>Model</th><th>Dims</th><th>Lang</th><th>Use</th></tr></thead>
+    <tbody>
+      <tr><td class="hl">ibm/slate-30m-english-rtrvr-v2</td><td>384</td><td>EN</td><td>Default · cheap · fast</td></tr>
+      <tr><td class="hl">ibm/slate-125m-english-rtrvr-v2</td><td>768</td><td>EN</td><td>Higher recall · enterprise</td></tr>
+      <tr><td class="hl3">ibm/granite-embedding-278m-multilingual</td><td>768</td><td>100+</td><td>Cross-lingual retrieval</td></tr>
+      <tr><td class="hl4">intfloat/multilingual-e5-large</td><td>1024</td><td>100+</td><td>Third-party multilingual</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>Retrievers — What the Exam Names</h2>
+  <table>
+    <thead><tr><th>Retriever</th><th>Use When</th></tr></thead>
+    <tbody>
+      <tr><td class="hl">FAISS / Chroma (embedded)</td><td>Dev, single-node, &lt; 1M chunks</td></tr>
+      <tr><td>Vector store (static index)</td><td>Read-mostly, low-update</td></tr>
+      <tr><td class="hl3">Watson Discovery (legacy)</td><td>Established IBM document-understanding deployments</td></tr>
+      <tr><td class="hl4">GitHub Code Retrieval API</td><td>Source-code Q&amp;A</td></tr>
+      <tr><td class="hl2">watsonx Discovery (current)</td><td>IBM-native, hybrid BM25 + dense, governed</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>End-to-End RAG with LangChain</h2>
+  <pre><code class="language-python" data-trim>
+from langchain_ibm import WatsonxLLM, WatsonxEmbeddings
+from langchain_community.vectorstores import FAISS
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_community.document_loaders import PyPDFLoader
+from langchain.chains import RetrievalQA
+
+docs = []
+for p in glob.glob("./policies/*.pdf"):
+    docs.extend(PyPDFLoader(p).load())
+
+chunks = RecursiveCharacterTextSplitter(chunk_size=512, chunk_overlap=64).split_documents(docs)
+
+emb = WatsonxEmbeddings(model_id="ibm/slate-125m-english-rtrvr-v2", ...)
+store = FAISS.from_documents(chunks, emb)
+
+llm = WatsonxLLM(model_id="ibm/granite-3-2-8b-instruct", ...)
+qa  = RetrievalQA.from_chain_type(
+    llm=llm,
+    retriever=store.as_retriever(search_type="mmr", search_kwargs={"k": 4, "fetch_k": 20}),
+    return_source_documents=True)
+
+print(qa({"query": "What's the refund policy for enterprise contracts?"}))
+  </code></pre>
+</section>
+
+<section>
+  <h2>Quality Levers — Ordered by ROI</h2>
+  <div class="card-grid">
+    <div class="card"><h4 class="hl">1️⃣ Chunking</h4><p>Better boundaries → better retrieval.</p></div>
+    <div class="card"><h4 class="hl3">2️⃣ Hybrid Search</h4><p>BM25 + vector.</p></div>
+    <div class="card"><h4 class="hl4">3️⃣ Re-ranking</h4><p>Cross-encoder → +10–20% accuracy.</p></div>
+    <div class="card"><h4 class="hl2">4️⃣ Query Rewriting</h4><p>LLM expands the user query.</p></div>
+    <div class="card"><h4 class="hl">5️⃣ Better Embedder</h4><p>slate-125 over slate-30.</p></div>
+    <div class="card"><h4 class="hl3">6️⃣ Bigger Generator</h4><p>Last resort.</p></div>
+  </div>
+</section>
+
+<section>
+  <h2>Agentic RAG &amp; AutoRAG</h2>
+  <div class="card-grid">
+    <div class="card"><h4 class="hl">🤖 Agentic RAG</h4><p>The agent decides <em>when</em> and <em>how</em> to retrieve — rewrite queries, call multiple retrievers, verify groundedness.</p></div>
+    <div class="card"><h4 class="hl3">⚙️ AutoRAG</h4><p>Automated hyperparameter search over chunk size, embedder, k, re-ranker. Optimizes for a chosen evaluation metric.</p></div>
+  </div>
+</section>
+
+<section>
+  <div class="lab-box">
+    <h4>🧪 Lab 5.5 — LangChain RAG Implementation</h4>
+    <p>Build a RAG QA system over the IBM Cloud documentation (provided as 80 PDFs). Compare chunk sizes 256/512/1024 and embedders slate-30 vs slate-125 via 50 ground-truth Q&amp;As. Report Recall@4 and Faithfulness.</p>
+  </div>
+</section>
+
+<section>
+  <span class="checkpoint-label">✅ Section 5 Quiz</span>
+  <p class="checkpoint-q">Production RAG bot returns correct chunks but the LLM invents details not in them. <em>Most</em> impactful fix?</p>
+  <ul class="checkpoint-opts">
+    <li>A. Increase retrieved k from 4 to 20</li>
+    <li>B. Switch to a 70B generator</li>
+    <li class="correct">C. Tighten the prompt with a strict grounding rule + lower temperature + show citations</li>
+    <li>D. Re-embed with a smaller model</li>
+  </ul>
+</section>
+<aside class="slide-footer">ruslanmv.com · C1000-185 · 05 / RAG</aside>
+</section>
+
+<!-- ================== SECTION 6 — DEPLOYMENT ================== -->
+<section>
+<section class="section-title" data-background-gradient="linear-gradient(160deg, #0a0e1a 0%, #14241f 100%)">
+  <span class="section-number">06</span>
+  <span class="section-label">Section 6 · Deployment · 8 hours · 13% of exam</span>
+  <h2>Deployment &amp;<br>Production</h2>
+  <p class="section-subtitle">Spaces · versioning · A/B · monitoring · cost · security.</p>
+</section>
+
+<section>
+  <h2>Promotion Flow</h2>
+  <div class="pipeline">
+    <div class="pipeline-box">Project<br><span class="xsmall">build</span></div>
+    <span class="pipeline-arrow">→</span>
+    <div class="pipeline-box">Space: Dev</div>
+    <span class="pipeline-arrow">→</span>
+    <div class="pipeline-box">Space: Staging</div>
+    <span class="pipeline-arrow">→</span>
+    <div class="pipeline-box">Space: Prod</div>
+    <span class="pipeline-arrow">→</span>
+    <div class="pipeline-box">REST<br><span class="xsmall">/ml/v1/deployments</span></div>
+  </div>
+  <p class="xsmall muted" style="margin-top:18px;">Deployable: <span class="hl">prompt templates</span> · <span class="hl3">tuned models</span> · <span class="hl4">AI services</span> (Python functions) · <span class="hl2">batch jobs</span>.</p>
+</section>
+
+<section>
+  <h2>AI Governance Requirements</h2>
+  <div class="card-grid-3">
+    <div class="card"><h4 class="hl">📈 Model performance</h4><p>Baseline metrics on held-out eval (accuracy, F1, ROUGE).</p></div>
+    <div class="card"><h4 class="hl3">🔬 Evaluate inferences</h4><p>Live evaluators: drift, fairness, quality, LLM-as-judge.</p></div>
+    <div class="card"><h4 class="hl4">🧾 Explain outcomes</h4><p>Factsheet: which template, model version, retrieved chunks, params, response.</p></div>
+  </div>
+</section>
+
+<section>
+  <h2>API Pattern (2026 SDK)</h2>
+  <pre><code class="language-python" data-trim>
+from ibm_watsonx_ai import APIClient, Credentials
+from ibm_watsonx_ai.foundation_models import ModelInference
+
+creds = Credentials(url="https://us-south.ml.cloud.ibm.com",
+                    api_key=os.environ["WATSONX_APIKEY"])
+client = APIClient(creds, project_id=PROJECT_ID)
+
+model = ModelInference(
+    model_id="ibm/granite-3-2-8b-instruct",
+    api_client=client,
+    params={"decoding_method": "greedy",
+            "max_new_tokens": 200,
+            "temperature": 0.2,
+            "stop_sequences": ["###"]})
+
+# Synchronous
+print(model.generate_text("Summarize:\n" + article))
+
+# Streaming
+for chunk in model.generate_text_stream("Tell me a story"):
+    print(chunk, end="", flush=True)
+  </code></pre>
+</section>
+
+<section>
+  <h2>Observability — Four Pillars</h2>
+  <div class="card-grid-4">
+    <div class="card"><h4 class="hl">⏱️ Latency</h4><p>p50 / p95 / p99</p></div>
+    <div class="card"><h4 class="hl3">💰 Cost</h4><p>tokens × rate</p></div>
+    <div class="card"><h4 class="hl4">📉 Drift</h4><p>input + output distribution</p></div>
+    <div class="card"><h4 class="hl2">⚖️ Quality</h4><p>human · LLM-as-judge</p></div>
+  </div>
+  <p class="xsmall muted" style="margin-top:18px;">All four pipe into <span class="hl">watsonx.governance</span> evaluations.</p>
+</section>
+
+<section>
+  <h2>Model Gateway · SaaS vs Software</h2>
+  <div class="card-grid">
+    <div class="card"><h4 class="hl">🛣️ Model Gateway</h4><p>One URL fronts many backing models; centralized A/B, rate limit, auth, audit.</p></div>
+    <div class="card"><h4 class="hl3">☁️ SaaS</h4><p>IBM-hosted on IBM Cloud. Fastest to start.</p></div>
+    <div class="card"><h4 class="hl4">🏢 Software (Cloud Pak for Data)</h4><p>Run watsonx.ai in your own env / air-gapped / sovereign.</p></div>
+    <div class="card"><h4 class="hl2">🔁 Corpus refresh</h4><p>watsonx <strong>AI Pipelines</strong> schedules re-ingest + re-embed.</p></div>
+  </div>
+</section>
+
+<section>
+  <span class="checkpoint-label">✅ Section 6 Quiz</span>
+  <p class="checkpoint-q">After deploying v2, the p95 latency spikes 4×. Cheapest rollback?</p>
+  <ul class="checkpoint-opts">
+    <li>A. Re-tune the model</li>
+    <li>B. Restart the project</li>
+    <li class="correct">C. Redeploy the previous version (still in space) to the same endpoint</li>
+    <li>D. Open a support ticket</li>
+  </ul>
+</section>
+<aside class="slide-footer">ruslanmv.com · C1000-185 · 06 / Deployment</aside>
+</section>
+
+<!-- ================== SECTION 7 — INTEGRATION ================== -->
+<section>
+<section class="section-title" data-background-gradient="linear-gradient(160deg, #0a0e1a 0%, #1e201c 100%)">
+  <span class="section-number">07</span>
+  <span class="section-label">Section 7 · Integration · 6 hours · 8% of exam</span>
+  <h2>Integration &amp;<br>Orchestration</h2>
+  <p class="section-subtitle">SDKs · REST · LangChain agents · multi-model · MCP · event-driven.</p>
+</section>
+
+<section>
+  <h2>Orchestration Patterns</h2>
+  <div class="card-grid-3">
+    <div class="card"><h4 class="hl">Chain</h4><p>Linear A → B → C.</p></div>
+    <div class="card"><h4 class="hl3">Router</h4><p>Classifier picks one of N specialists.</p></div>
+    <div class="card"><h4 class="hl4">Agent</h4><p>LLM dynamically picks tools.</p></div>
+    <div class="card"><h4 class="hl2">Map-Reduce</h4><p>Per-document then combine.</p></div>
+    <div class="card"><h4 class="hl">Refine</h4><p>Draft → critique → revise.</p></div>
+    <div class="card"><h4 class="hl3">Event-Driven</h4><p>Queue → consumer fires LLM jobs.</p></div>
+  </div>
+</section>
+
+<section>
+  <h2>Tool-Calling Agent on watsonx</h2>
+  <pre><code class="language-python" data-trim>
+from langchain_ibm import ChatWatsonx
+from langchain.agents import create_tool_calling_agent, AgentExecutor
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.tools import tool
+
+@tool
+def lookup_account(account_id: str) -> dict:
+    "Return account name, tier, status from the internal CRM."
+    ...
+
+llm = ChatWatsonx(model_id="ibm/granite-3-2-8b-instruct", ...)
+tools = [lookup_account, search_kb, send_email]
+
+prompt = ChatPromptTemplate.from_messages([
+    ("system", "You are a senior support agent. Use the tools. Escalate if unsure."),
+    ("human",  "{input}"),
+    ("placeholder", "{agent_scratchpad}"),
+])
+
+agent    = create_tool_calling_agent(llm, tools, prompt)
+executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
+executor.invoke({"input": "Account 882 reports an outage; draft a reply."})
+  </code></pre>
+</section>
+
+<section>
+  <h2>Model Context Protocol (MCP)</h2>
+  <div class="card-grid">
+    <div class="card"><h4 class="hl">📡 Open standard</h4><p>Vendor-neutral protocol for exposing tools + resources to LLM apps.</p></div>
+    <div class="card"><h4 class="hl3">🔌 Plug-and-play</h4><p>One MCP server can serve LangChain, LangGraph, IDEs, agents.</p></div>
+    <div class="card"><h4 class="hl4">🧠 Agent-friendly</h4><p>Works with native tool-calling on Granite 3.x / Llama 3.3 / Mistral.</p></div>
+    <div class="card"><h4 class="hl2">🏢 IBM direction</h4><p>The recommended way to plug enterprise systems into watsonx agents.</p></div>
+  </div>
+</section>
+
+<section>
+  <div class="lab-box">
+    <h4>🧪 Lab 7.2 — Build a LangChain Agent</h4>
+    <p>Wrap two watsonx endpoints (Granite + tuned-classifier) as LangChain tools. Have a router agent decide which to call. Test on 30 mixed inputs and report success rate.</p>
+  </div>
+</section>
+
+<section>
+  <span class="checkpoint-label">✅ Section 7 Quiz</span>
+  <p class="checkpoint-q">A workflow needs entity-extraction, then routing to one of three specialist models, then post-processing. Best pattern?</p>
+  <ul class="checkpoint-opts">
+    <li>A. Single mega-prompt</li>
+    <li>B. Fine-tune one giant model</li>
+    <li class="correct">C. LangChain router chain calling watsonx endpoints</li>
+    <li>D. Call the same model three times in sequence</li>
+  </ul>
+</section>
+<aside class="slide-footer">ruslanmv.com · C1000-185 · 07 / Integration</aside>
+</section>
+
+<!-- ================== SECTION 8 — GOVERNANCE ================== -->
+<section>
+<section class="section-title" data-background-gradient="linear-gradient(160deg, #0a0e1a 0%, #2a1c1a 100%)">
+  <span class="section-number">08</span>
+  <span class="section-label">Section 8 · Governance · 4 hours</span>
+  <h2>Governance,<br>Ethics &amp; Safety</h2>
+  <p class="section-subtitle">Frameworks · bias · model cards · compliance · Granite Guardian.</p>
+</section>
+
+<section>
+  <h2>watsonx.governance — Three Pillars</h2>
+  <div class="card-grid-3">
+    <div class="card"><h4 class="hl">Lifecycle</h4><p>Versions, approvals, retirements, end-to-end lineage.</p></div>
+    <div class="card"><h4 class="hl3">Risk &amp; Compliance</h4><p>NIST AI RMF, EU AI Act, ISO 42001. Audit-ready evidence.</p></div>
+    <div class="card"><h4 class="hl4">Monitoring</h4><p>Quality, drift, bias, fairness — continuous evaluations.</p></div>
+  </div>
+</section>
+
+<section>
+  <h2>Granite Guardian Categories</h2>
+  <div class="card-grid">
+    <div class="card"><h4 class="hl2">🔓 Jailbreak</h4><p>Detect attempts to bypass system rules.</p></div>
+    <div class="card"><h4 class="hl2">💢 HAP</h4><p>Hate, abuse, profanity.</p></div>
+    <div class="card"><h4 class="hl2">🪪 PII</h4><p>Direct identifiers in input or output.</p></div>
+    <div class="card"><h4 class="hl2">⚖️ Social bias</h4><p>Stereotypes, demographic skew.</p></div>
+    <div class="card"><h4 class="hl2">🧨 Violence / unethical</h4><p>Harmful content categories.</p></div>
+    <div class="card"><h4 class="hl2">📚 Groundedness (RAG)</h4><p>Is the answer actually supported by the retrieved context?</p></div>
+  </div>
+  <p class="xsmall muted" style="margin-top:14px;">Variants: <span class="inline-code">ibm/granite-guardian-3-8b</span> (bigger, more accurate) · <span class="inline-code">ibm/granite-guardian-3-2-5b</span> (smaller, faster).</p>
+</section>
+
+<section>
+  <h2>Regulatory Snapshot</h2>
+  <table>
+    <thead><tr><th>Framework</th><th>Scope</th><th>Key Concept</th></tr></thead>
+    <tbody>
+      <tr><td>EU AI Act</td><td>EU customers</td><td>Risk-tier classification, transparency</td></tr>
+      <tr><td>NIST AI RMF</td><td>US federal posture</td><td>Govern · Map · Measure · Manage</td></tr>
+      <tr><td>ISO 42001</td><td>AI management system</td><td>Standardized controls</td></tr>
+      <tr><td>GDPR / CCPA</td><td>Privacy</td><td>Right to explanation, data minimization</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <span class="checkpoint-label">✅ Section 8 Quiz</span>
+  <p class="checkpoint-q">Auditor asks for evidence that a deployed model was evaluated for bias before launch. What do you produce?</p>
+  <ul class="checkpoint-opts">
+    <li>A. A notebook output</li>
+    <li>B. A README in the repo</li>
+    <li class="correct">C. The watsonx.governance factsheet with evaluation results attached to the model version</li>
+    <li>D. A screenshot of Prompt Lab</li>
+  </ul>
+</section>
+<aside class="slide-footer">ruslanmv.com · C1000-185 · 08 / Governance</aside>
+</section>
+
+<!-- ================== SECTION 9 — EXAM PREP ================== -->
+<section>
+<section class="section-title" data-background-gradient="linear-gradient(160deg, #0a0e1a 0%, #251a14 100%)">
+  <span class="section-number">09</span>
+  <span class="section-label">Section 9 · Exam Prep · 8 hours</span>
+  <h2>Pass on the<br>First Try</h2>
+  <p class="section-subtitle">Strategy · question patterns · three full mock exams · exam-day checklist.</p>
+</section>
+
+<section>
+  <h2>The 90-Minute Plan</h2>
+  <table>
+    <thead><tr><th>Phase</th><th>Time</th><th>Rule</th></tr></thead>
+    <tbody>
+      <tr><td>Pass 1 — easy wins</td><td>~45 min</td><td>If &lt; 60s answer → commit. Else flag &amp; skip.</td></tr>
+      <tr><td>Pass 2 — flagged hard</td><td>~30 min</td><td>Eliminate 2 obvious wrongs; reason between last two.</td></tr>
+      <tr><td>Pass 3 — review</td><td>~15 min</td><td>Re-read flagged. Don't change unless certain.</td></tr>
+    </tbody>
+  </table>
+  <p class="xsmall muted" style="margin-top:14px;">No penalty for guessing — <strong>never leave blank</strong>.</p>
+</section>
+
+<section>
+  <h2>Top 12 Memorize-These Facts</h2>
+  <div class="outline-grid" style="font-size:0.52em;">
+    <div class="outline-item"><span class="num">01</span> 62 Qs · 44 pass · 90 min</div>
+    <div class="outline-item"><span class="num">02</span> Fine-tuning = 31% (largest)</div>
+    <div class="outline-item"><span class="num">03</span> LoRA = freeze base + train A·B</div>
+    <div class="outline-item"><span class="num">04</span> QLoRA = 4-bit base + LoRA</div>
+    <div class="outline-item"><span class="num">05</span> InstructLab = taxonomy + SDG (LAB)</div>
+    <div class="outline-item"><span class="num">06</span> RAG &gt; fine-tune for changing facts</div>
+    <div class="outline-item"><span class="num">07</span> Granite is the IBM-default model</div>
+    <div class="outline-item"><span class="num">08</span> Lower temp = deterministic</div>
+    <div class="outline-item"><span class="num">09</span> Spaces = promote · Projects = build</div>
+    <div class="outline-item"><span class="num">10</span> Governance owns bias/drift/factsheets</div>
+    <div class="outline-item"><span class="num">11</span> Slate v2 is IBM's English embedder</div>
+    <div class="outline-item"><span class="num">12</span> Granite Guardian filters HAP/PII/jailbreaks</div>
+  </div>
+</section>
+
+<section>
+  <span class="practice-label">📝 Mock Exam 1 · Sample</span>
+  <p class="checkpoint-q">Q1. A retail bank wants a bot answering questions on <em>updated-weekly</em> mortgage products with full audit trails per response. Pick the architecture.</p>
+  <ul class="checkpoint-opts">
+    <li>A. Fine-tune Granite weekly on product PDFs</li>
+    <li class="correct">B. RAG on watsonx.ai over the product corpus, logs piped to watsonx.governance</li>
+    <li>C. Single static prompt with the product list pasted in</li>
+    <li>D. Fine-tune + RAG + Agent — full stack</li>
+  </ul>
+  <p class="xsmall muted">Decision tree: facts change → RAG. Audit → governance. Don't over-engineer.</p>
+</section>
+
+<section>
+  <span class="practice-label">📝 Mock Exam 1 · Sample</span>
+  <p class="checkpoint-q">Q2. You have 1,200 high-quality labeled examples of a custom JSON schema your model must output. Goal: maximize accuracy with minimum cost.</p>
+  <ul class="checkpoint-opts">
+    <li>A. Zero-shot prompting with the schema description</li>
+    <li class="correct">B. LoRA fine-tune on the 1,200 examples · evaluate on a held-out 20%</li>
+    <li>C. Full fine-tune at FP32</li>
+    <li>D. RAG over the 1,200 examples</li>
+  </ul>
+</section>
+
+<section>
+  <span class="practice-label">📝 Mock Exam 1 · Sample</span>
+  <p class="checkpoint-q">Q3. Hallucinations spike when the user asks long, complex questions. Quickest mitigation?</p>
+  <ul class="checkpoint-opts">
+    <li>A. Increase temperature</li>
+    <li class="correct">B. Add chain-of-thought, lower temperature, and ground with RAG citations</li>
+    <li>C. Reduce max_new_tokens</li>
+    <li>D. Switch decoding to beam search</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Three Full Mock Exams</h2>
+  <div class="card-grid-3">
+    <div class="card" style="border-top:3px solid var(--accent);"><h4 class="hl">Mock 1 — Foundation</h4><p>62 questions, balanced across sections. Target: &gt; 60% to keep going.</p></div>
+    <div class="card" style="border-top:3px solid var(--accent3);"><h4 class="hl3">Mock 2 — Scenario-Heavy</h4><p>62 questions weighted toward fine-tuning + RAG scenarios. Target: &gt; 70%.</p></div>
+    <div class="card" style="border-top:3px solid var(--accent4);"><h4 class="hl4">Mock 3 — Exam Sim</h4><p>62 questions, timed, no breaks. Target: &gt; 75% — book the exam.</p></div>
+  </div>
+</section>
+
+<section>
+  <h2>Exam-Day Checklist</h2>
+  <div class="card-grid">
+    <div class="card"><h4 class="hl3">🛌 Night Before</h4><p>Skim the 12 facts. Sleep > cramming.</p></div>
+    <div class="card"><h4 class="hl">🪪 30 Min Before</h4><p>Photo ID. Clear desk. Test webcam/mic for online proctor.</p></div>
+    <div class="card"><h4 class="hl4">⏱️ During</h4><p>Watch the clock at 30/60/75 min. Flag &amp; move.</p></div>
+    <div class="card"><h4 class="hl2">📨 After</h4><p>Instant score. Pass → badge in 24h. Fail → 24h cooldown.</p></div>
+  </div>
+</section>
+<aside class="slide-footer">ruslanmv.com · C1000-185 · 09 / Exam Prep</aside>
+</section>
+
+<!-- ================== SECTION 10 — BONUS ================== -->
+<section>
+<section class="section-title" data-background-gradient="linear-gradient(160deg, #0a0e1a 0%, #14132a 100%)">
+  <span class="section-number">10</span>
+  <span class="section-label">Section 10 · Bonus · optional</span>
+  <h2>Beyond the<br>Exam</h2>
+  <p class="section-subtitle">Multi-modal, advanced agents, custom tools, performance, what's next.</p>
+</section>
+
+<section>
+  <h2>Where to Go Next</h2>
+  <div class="card-grid">
+    <div class="card"><h4 class="hl">🤖 Agentic AI from Scratch</h4><p>Build LangChain, LangGraph, CrewAI agents end-to-end. Same instructor. <span class="inline-code">github.com/ruslanmv/agentic-ai-tutorial</span></p></div>
+    <div class="card"><h4 class="hl3">🧪 watsonx Workshop</h4><p>End-to-end RAG application + accelerator code. <span class="inline-code">github.com/ruslanmv/watsonx-workshop</span></p></div>
+    <div class="card"><h4 class="hl4">🎓 Next Cert</h4><p>IBM watsonx AI Engineer (Professional) — coming next in the series.</p></div>
+    <div class="card"><h4 class="hl2">💼 Real Projects</h4><p>Pick a domain · deploy a tuned + RAG app · publish a write-up.</p></div>
+  </div>
+</section>
+<aside class="slide-footer">ruslanmv.com · C1000-185 · 10 / Bonus</aside>
+</section>
+
+<!-- ================== WRAP UP ================== -->
+<section>
+<section class="section-title" data-background-gradient="linear-gradient(135deg, #0a0e1a 0%, #141927 50%, #1a1040 100%)">
+  <span class="section-number">★</span>
+  <span class="section-label">Course Wrap-Up</span>
+  <h2>Congratulations.<br>Now go sit it.</h2>
+</section>
+
+<section>
+  <h2>The Course in One Paragraph</h2>
+  <blockquote style="border-left:4px solid var(--accent); padding:24px 32px; background:var(--surface); border-radius:0 14px 14px 0; font-size:0.6em; line-height:1.75; text-align:left;">
+    The <strong>watsonx GenAI Engineer</strong> exam tests whether you can pick the right tool for a business need on the watsonx platform:
+    <span class="hl">prompts</span> when the model already knows it,
+    <span class="hl3">RAG</span> when the facts live in your documents,
+    <span class="hl4">fine-tuning</span> — especially PEFT, LoRA, QLoRA, and InstructLab — when you need new behaviour, and
+    <span class="hl2">deployment spaces plus governance</span> when you ship to production.
+    Fine-tuning is 31% of the test, so it's 31% of this course. Trust the decision tree, watch the clock, pick <span class="hl">Granite</span> by default, and answer <em>every</em> question.
+  </blockquote>
+</section>
+
+<section data-background-gradient="linear-gradient(135deg, #0a0e1a 0%, #141927 50%, #1a1040 100%)">
+  <h2>Thank You!</h2>
+  <br>
+  <p style="font-size:0.65em;">🌐 <a href="https://ruslanmv.com" style="color:var(--accent3);">ruslanmv.com</a></p>
+  <p style="font-size:0.65em;">📦 <a href="https://github.com/ruslanmv/IBM-Watsonx-Generative-AI-Engineer-Certification" style="color:var(--accent);">github.com/ruslanmv/IBM-Watsonx-Generative-AI-Engineer-Certification</a></p>
+  <p style="font-size:0.65em;">📚 Companion: <span class="inline-code">github.com/ruslanmv/agentic-ai-tutorial</span></p>
+  <br>
+  <p style="font-size:0.5em; opacity:0.5;">If this course helped you pass — ⭐ the repo, leave a review on Udemy, and tell a colleague.</p>
+  <p style="font-size:0.42em; opacity:0.35; margin-top:36px;">Instructor: Ruslan Idelfonso Magana Vsevolodovna &nbsp;·&nbsp; ruslanmv.com &nbsp;·&nbsp; 2026</p>
+</section>
+</section>
+
+</div><!-- /slides -->
+</div><!-- /reveal -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/highlight/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/notes/notes.min.js"></script>
+<script>
+Reveal.initialize({
+  hash: true,
+  slideNumber: 'c/t',
+  showSlideNumber: 'all',
+  transition: 'slide',
+  transitionSpeed: 'default',
+  backgroundTransition: 'fade',
+  width: 1280,
+  height: 720,
+  margin: 0.08,
+  center: true,
+  plugins: [ RevealHighlight, RevealNotes ],
+  keyboard: {
+    66: () => document.querySelector('.reveal').classList.toggle('blackout'),
+  },
+});
+
+Reveal.on('slidechanged', event => {
+  const section = event.currentSlide.closest('section[class*="section-title"]');
+  if (section) {
+    const label = section.querySelector('.section-label');
+    const title = section.querySelector('h2');
+    if (label && title) {
+      console.log(`📍 ${label.textContent} — ${title.textContent.replace(/\n/g, ' ')}`);
+    }
+  }
+});
+</script>
+</body>
+</html>

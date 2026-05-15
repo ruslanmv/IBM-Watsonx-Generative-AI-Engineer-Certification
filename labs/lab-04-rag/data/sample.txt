@@ -1,0 +1,15 @@
+IBM watsonx Discovery is the managed hybrid retrieval service in the
+watsonx family. Under the hood it runs BM25 keyword search and dense-vector
+search over the same Elasticsearch index, then optionally re-ranks the
+top results with a cross-encoder model. It integrates with watsonx.governance
+for end-to-end lineage and drift monitoring.
+
+Granite Guardian is the IBM family of small classifier models that detect
+unsafe content in both user input and model output. Categories include
+harm, social bias, profanity, sexual content, unethical behaviour, violence,
+jailbreaks, and (for RAG) groundedness — i.e. is the answer supported by the
+retrieved context?
+
+For on-prem and air-gapped deployments, watsonx.ai is also available as part
+of IBM Cloud Pak for Data (the Software offering), which can run in your own
+VPC or data centre with the same APIs as the SaaS edition.

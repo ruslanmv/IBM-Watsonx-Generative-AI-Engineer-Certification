@@ -1,44 +1,354 @@
-\chapter{Deployment Strategies and Asset Management}
+\chapter{Deployment}
 \label{ch:deployment}
 
-This chapter covers \textbf{Section 5: Deployment (13\%)} of the C1000-185 exam.
+This chapter covers \textbf{Section 5: Deployment (13\% of the exam)}. You will learn how to take a prompt template, a tuned model, or a custom AI service from a project to a production REST endpoint, and how to govern it from there.
 
-\section{Deployment Planning}
+\section{Plan a Deployment Based on Client Needs (Objective 5.1)}
 
-% Pre-deployment checklist
-% Infrastructure requirements
-% Scalability considerations
-% Cost optimization
+\subsection{Prompt Template Lifecycle}
 
-\section{Deploying AI Assets in watsonx.ai}
+\begin{keybox}
+\textbf{The lifecycle:} build in a \emph{project} $\to$ evaluate $\to$ promote to a \emph{deployment space} (Dev) $\to$ promote to Staging $\to$ promote to Prod $\to$ monitor and re-evaluate $\to$ retire.
+\end{keybox}
 
-% Deployment spaces
-% Deploying prompts
-% Deploying fine-tuned models
-% API endpoint creation
+Every promote step creates a new immutable version of the asset. Applications call the deployed endpoint by ID, not by reference to the project artefact.
 
-\section{Versioning and Lifecycle Management}
+\subsection{Managing Changes to Prompt Templates}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Branch-like discipline} --- never edit a Prod prompt in place. Copy, change, promote a new version, A/B test, then swap.
+    \item \textbf{Pin the model} --- the deployed prompt template references a specific model ID. Changing the model in a Prod environment is a new version.
+    \item \textbf{Smoke tests} --- run a small ``golden set'' against the candidate version before flipping traffic.
+    \item \textbf{Roll back} --- the previous immutable version is one API call away.
+\end{itemize}
 
-% Model versioning strategies
-% Prompt versioning
-% A/B testing deployments
-% Rollback strategies
+\subsection{Roles Involved with Deploying AI Assets}
+The exam expects you to recognise the personas:
 
-\section{Cloud Deployment Architecture}
+\begin{table}[h]
+\centering
+\begin{tabularx}{\textwidth}{l X}
+\toprule
+\textbf{Role} & \textbf{Responsibility} \\
+\midrule
+GenAI Engineer  & Builds, tunes, promotes assets \\
+Data Engineer   & Curates and refreshes the corpus / training data \\
+MLOps / DevOps  & Owns spaces, CI/CD, infra, observability \\
+AI Governance Lead & Approves promotions, owns model cards, risk reviews \\
+Security        & IAM, network policy, secret management \\
+Product Owner   & Acceptance criteria, KPI sign-off \\
+\bottomrule
+\end{tabularx}
+\caption{Deployment role map.}
+\end{table}
 
-% Deployment on IBM Cloud
-% High availability patterns
-% Load balancing
-% Security considerations
+\subsection{AI Governance Requirements}
+Before a watsonx deployment is considered production-ready, governance needs three things:
 
-\section{Monitoring and Optimization}
+\begin{enumerate}[leftmargin=*]
+    \item \textbf{Model performance} --- baseline metrics on a held-out evaluation set (accuracy, F1, ROUGE, custom rubric).
+    \item \textbf{Evaluate inferences} --- live evaluators (LLM-as-judge, drift, fairness) attached to the deployment.
+    \item \textbf{Explain outcomes from prompts} --- the system can produce an audit-grade explanation: which prompt template, which model version, which retrieved chunks, which parameters, which response.
+\end{enumerate}
 
-% Performance metrics
-% Cost monitoring
-% Model drift detection
-% Continuous improvement
+\examtip{If the exam mentions \emph{``explain outcomes''}, \emph{``audit-grade trail''}, or \emph{``factsheet''}, that is \textbf{watsonx.governance} on top of a deployment space.}
+
+\section{Deploy AI Assets (Objective 5.2)}
+
+\subsection{Benefits of Deployment Spaces}
+
+\begin{keybox}
+A \textbf{Deployment Space} is the production sibling of a project. It is a permission-scoped, audited container for promoted assets and their REST endpoints.
+\end{keybox}
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Govern the lifecycle} --- separate Dev / Eval / Prod spaces. Promotion is the audit trail.
+    \item \textbf{Separate endpoints for applications} --- each space exposes its own URLs; apps point at the right environment.
+    \item \textbf{Independent access control} --- ML engineers in Dev, ops in Prod, no over-permissioning.
+    \item \textbf{Reproducibility} --- assets in a space are immutable versions, not editable artefacts.
+    \item \textbf{Observability} --- per-deployment metrics, logs, and governance hooks.
+\end{itemize}
+
+\subsection{Benefits When Deploying a Prompt Template}
+\begin{itemize}[leftmargin=*]
+    \item One REST endpoint, same shape across all environments --- the app code does not change between Dev and Prod.
+    \item The model, parameters, and few-shot examples are all baked into the asset --- impossible to skew via stray app-side config.
+    \item Updates require an explicit promote, so security and governance get to inspect every change.
+\end{itemize}
+
+\subsection{Application Changes when Adopting a Deployment Space}
+Once you move from ad-hoc \texttt{generate\_text} calls to a deployed prompt template, your app changes from:
+
+\begin{lstlisting}[style=pythonstyle]
+# Before
+model = ModelInference(model_id="ibm/granite-3-2-8b-instruct", ...)
+out   = model.generate_text(big_prompt_string)
+\end{lstlisting}
+
+\noindent to:
+
+\begin{lstlisting}[style=pythonstyle]
+# After
+deployments = client.deployments
+out = deployments.generate_text(
+    deployment_id = TICKET_CLASSIFIER_PROD_ID,
+    params={"prompt_variables": {"ticket_text": user_input}})
+\end{lstlisting}
+
+The endpoint hides the model ID, parameters, few-shot block, and stop sequences. The app passes only \emph{variables}. Cleaner, safer, governed.
+
+\section{Deploy a Custom Model (Objective 5.3)}
+
+A \textbf{custom model} is a tuned (LoRA / prompt-tuned / InstructLab) or imported foundation model that is not in the watsonx catalogue.
+
+\subsection{Requirements of watsonx and the Foundation Model}
+\begin{itemize}[leftmargin=*]
+    \item Compatible architecture (Granite, Llama, Mistral families today).
+    \item Approved licence (open weights, indemnified, or your own).
+    \item Model files in a supported format (HuggingFace, GGUF, or watsonx tuning artefacts).
+    \item Sufficient watsonx.ai plan tier (custom-model serving is a higher tier).
+    \item GPU profile selected to match the model size (e.g.\ a single A100 for 13B; multi-GPU for 70B).
+\end{itemize}
+
+\subsection{Application Access to a Custom Model}
+\begin{itemize}[leftmargin=*]
+    \item The custom model becomes an \emph{asset} in your project / space, with its own ID.
+    \item Wrap it in a Prompt Template or AI Service if you want the same governance posture as a foundation model.
+    \item Apps call it through the same \texttt{/ml/v1/deployments/\{id\}/text/generation} (or \texttt{/text/chat}) endpoint.
+\end{itemize}
+
+\section{High-Level Architecture for Deployment Options (Objective 5.4)}
+
+\subsection{Versioning via Deployment Spaces}
+Every promote into a space creates a new asset version. The deployment can point to a specific version, and you can re-point it with a single API call. Rollback is just ``re-deploy version N--1''.
+
+\subsection{Changes to Applications on a Prompt Version Change}
+If the prompt template signature (input variables, output schema) does not change, applications do \emph{not} change. Behind the same deployment ID, the template behaves differently --- that is the whole point.
+
+If the schema changes, you should create a new deployment (e.g.\ \texttt{v2}) instead of mutating the old one. Apps migrate at their own pace.
+
+\subsection{Testing a New Prompt Template Version}
+\begin{enumerate}[leftmargin=*]
+    \item Promote into Staging.
+    \item Run the golden-set evaluator (same evaluators that gate production).
+    \item Compare against the current Prod version on the same set.
+    \item Shadow-traffic or canary in Prod: 1\% $\to$ 10\% $\to$ 50\% $\to$ 100\%.
+    \item Watch drift and fairness evaluators in watsonx.governance.
+    \item If a regression is detected, the rollback button is the previous version.
+\end{enumerate}
+
+\subsection{Model Gateway}
+
+\begin{keybox}
+The \textbf{Model Gateway} is a fronting service that lets multiple models, deployments, and providers sit behind a single API surface. Applications call the gateway; the gateway routes to the right backing model based on rules, headers, A/B configuration, or feature flags.
+\end{keybox}
+
+\textbf{Why use it:}
+\begin{itemize}[leftmargin=*]
+    \item Multi-model routing (small cheap model for easy queries, large model for hard ones).
+    \item Provider abstraction (IBM Granite + open-source + a third-party model behind one URL).
+    \item Centralised auth, rate-limit, quota, and audit logging.
+    \item A/B and canary at the gateway layer, not in every client.
+\end{itemize}
+
+\section{Plan the Deployment of Prompts for Versioning (Objective 5.5)}
+
+\subsection{SaaS vs Software}
+watsonx.ai is offered in two consumption models:
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{SaaS (managed)} --- IBM-hosted on IBM Cloud. You bring data and prompts, IBM operates the infrastructure. Fastest to start; standard certifications (SOC2, ISO27001).
+    \item \textbf{Software (Cloud Pak for Data)} --- watsonx.ai deployed in your own environment (on-prem, AWS/Azure/GCP, air-gapped). You own ops; useful for data-sovereignty / strict regulation.
+\end{itemize}
+
+\examtip{If a scenario stresses \emph{data residency, air-gap, or sovereign cloud}, prefer the \textbf{Software / Cloud Pak} answer. If it stresses \emph{time-to-value, no infra team}, prefer \textbf{SaaS}.}
+
+\subsection{Deployment Choices by Architectural Pattern}
+
+\begin{table}[h]
+\centering
+\begin{tabularx}{\textwidth}{l X}
+\toprule
+\textbf{Pattern} & \textbf{What is in the Deployment Space} \\
+\midrule
+\textbf{RAG}           & Prompt template + retriever configuration + Granite generator. Corpus index lives in watsonx Discovery / watsonx.data / Elasticsearch / Milvus. \\
+\textbf{Summarization} & Prompt template + parameters tuned for length and faithfulness. Possibly a tuned summariser model. \\
+\textbf{Q\&A}          & Prompt template wired to either parametric Q\&A (closed-book) or a RAG retriever (open-book). \\
+\bottomrule
+\end{tabularx}
+\caption{Pattern-specific deployment.}
+\end{table}
+
+\subsection{Corpus of Data Repository}
+For RAG and Q\&A, the \emph{corpus} is part of the deployment story --- if the corpus is stale, the answer is stale.
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{AI Pipelines} --- the watsonx scheduler that runs ingest / chunk / embed / index jobs on a cadence (hourly, daily) or on event (object-storage upload).
+    \item \textbf{Manage data in corpus} --- add new sources, remove decommissioned ones, re-embed when the embedder version changes.
+    \item \textbf{Adjusting text chunk size} --- you may need to re-index entire corpora when you change chunk strategy; budget for it.
+\end{itemize}
+
+\subsection{Endpoint Security and Stability}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{IAM} --- a per-app service ID with a scoped API key. Rotate.
+    \item \textbf{Private network endpoints} --- prefer private over public; deny internet egress where possible.
+    \item \textbf{Rate limits and quotas} --- protect against bursts and runaway loops.
+    \item \textbf{Input + output guards} --- Granite Guardian for PII, HAP, jailbreaks, groundedness.
+    \item \textbf{Stability} --- multi-zone deployments, health checks, autoscaling, graceful degradation (fail to a smaller backup model).
+\end{itemize}
+
+\subsection{Code Generation Within Prompt Lab}
+Prompt Lab can emit ready-to-use client code (Python, curl, JS) for the current prompt + parameters. You paste this directly into your microservice. As the prompt evolves you simply regenerate the snippet --- but in production the better path is to call the deployed prompt template via the SDK and let the variable interface remain stable.
+
+\section{Worked Example --- Promote and Deploy a Tuned Model}
+
+\begin{examplebox}[title=\textbf{Promote a LoRA-tuned model and create an online deployment}]
+\begin{lstlisting}[style=pythonstyle]
+# 1) Promote the model asset from the project to a space
+promoted = client.repository.promote_asset(
+    asset_id        = TUNED_MODEL_ASSET_ID,    # from Tuning Studio
+    target_space_id = SPACE_ID_PROD)
+
+# 2) Create a new deployment
+meta = {
+    client.deployments.ConfigurationMetaNames.NAME: "ticket-classifier-prod",
+    client.deployments.ConfigurationMetaNames.DESCRIPTION:
+        "LoRA-tuned Granite 3.2 8B, classifier for support tickets.",
+    client.deployments.ConfigurationMetaNames.ONLINE: {},
+    client.deployments.ConfigurationMetaNames.HARDWARE_SPEC: {
+        "name": "L4-1"     # one L4 GPU; pick a profile matching your model size
+    },
+}
+deployment = client.deployments.create(
+    artifact_uid = promoted["metadata"]["asset_id"],
+    meta_props   = meta)
+
+print("Online URL:", client.deployments.get_href(deployment))
+\end{lstlisting}
+\end{examplebox}
+
+\begin{examplebox}[title=\textbf{Batch deployment for back-office scoring}]
+\begin{lstlisting}[style=pythonstyle]
+batch_meta = {
+    client.deployments.ConfigurationMetaNames.NAME: "ticket-classifier-batch",
+    client.deployments.ConfigurationMetaNames.BATCH: {},
+    client.deployments.ConfigurationMetaNames.HARDWARE_SPEC: {"name": "L4-1"},
+}
+batch_dep = client.deployments.create(
+    artifact_uid = promoted["metadata"]["asset_id"],
+    meta_props   = batch_meta)
+
+job = client.deployments.create_job(
+    deployment_id = client.deployments.get_id(batch_dep),
+    meta_props={
+        client.deployments.ScoringMetaNames.INPUT_DATA_REFERENCES: [{
+            "type": "data_asset",
+            "location": {"href": INCOMING_CSV_HREF}
+        }],
+        client.deployments.ScoringMetaNames.OUTPUT_DATA_REFERENCE: {
+            "type": "data_asset",
+            "location": {"href": OUTPUT_CSV_HREF}
+        },
+    })
+\end{lstlisting}
+\end{examplebox}
+
+\section{Monitoring --- The Four Pillars}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Latency} --- p50 / p95 / p99 per endpoint.
+    \item \textbf{Cost} --- tokens $\times$ rate per tenant.
+    \item \textbf{Drift} --- input + output distribution vs the baseline captured at deploy.
+    \item \textbf{Quality} --- human or LLM-as-judge sampling, plus the live evaluators.
+\end{itemize}
+
+All four flow into watsonx.governance dashboards. Configure alerts on drift score above threshold and on quality regression $>$2\%.
 
 \section{Key Takeaways}
+
+\begin{itemize}[leftmargin=*]
+    \item Projects \emph{build}; Deployment Spaces \emph{serve}. Promote, never edit-in-place.
+    \item Three governance pre-reqs: \textbf{model performance}, \textbf{evaluate inferences}, \textbf{explain outcomes}.
+    \item Deploy prompt templates and tuned/custom models the same way --- as space assets behind a stable endpoint.
+    \item Apps call the deployment by ID and pass \emph{variables}, not raw prompts.
+    \item The \textbf{Model Gateway} fronts multiple backing models and providers behind one URL.
+    \item SaaS vs Software (Cloud Pak) --- pick by data-residency and ops appetite.
+    \item Corpus refresh is a deployment concern --- own it with \textbf{AI Pipelines}.
+    \item Security: scoped service IDs, private endpoints, rate limits, Guardian wrap.
+\end{itemize}
+
 \section{Practice Questions}
+
+\begin{practicebox}[title=\textbf{Q5.1 --- Lifecycle}]
+A team wants to ship a new version of a prompt template with full audit trail and one-click rollback. What primitive?
+
+\textbf{A.} Edit the project copy in place\\
+\textbf{B.} Promote a new version into the Deployment Space\\
+\textbf{C.} Email the JSON to ops\\
+\textbf{D.} Train a new model from scratch
+
+\vspace{0.2cm}\textit{Answer: B.}
+\end{practicebox}
+
+\begin{practicebox}[title=\textbf{Q5.2 --- App impact}]
+A new prompt template version has the same input variables and output schema. What changes in the calling application?
+
+\textbf{A.} Nothing --- the deployment ID is the same\\
+\textbf{B.} Re-write the entire client\\
+\textbf{C.} Move to a new SDK\\
+\textbf{D.} Add new IAM keys
+
+\vspace{0.2cm}\textit{Answer: A.}
+\end{practicebox}
+
+\begin{practicebox}[title=\textbf{Q5.3 --- Custom model}]
+You tuned a Granite model with LoRA in Tuning Studio. How do production apps reach it?
+
+\textbf{A.} Download the weights and self-host on a VM\\
+\textbf{B.} Promote to a space, create an online deployment, call via \texttt{/ml/v1/deployments/\{id\}/text/generation}\\
+\textbf{C.} Paste it into Prompt Lab forever\\
+\textbf{D.} Use Watson Discovery
+
+\vspace{0.2cm}\textit{Answer: B.}
+\end{practicebox}
+
+\begin{practicebox}[title=\textbf{Q5.4 --- Model Gateway}]
+Your platform wants a single URL fronting Granite, Llama-3.3-70B, and an internal tuned model, with central rate-limits and A/B. What is this?
+
+\textbf{A.} Watson Discovery\hspace{1em}\textbf{B.} Model Gateway\hspace{1em}\textbf{C.} Data Refinery\hspace{1em}\textbf{D.} watsonx.data
+
+\vspace{0.2cm}\textit{Answer: B.}
+\end{practicebox}
+
+\begin{practicebox}[title=\textbf{Q5.5 --- SaaS vs Software}]
+A regulated bank needs the platform in its own VPC with no internet egress. Which option?
+
+\textbf{A.} watsonx.ai SaaS\\
+\textbf{B.} watsonx.ai Software (Cloud Pak for Data)\\
+\textbf{C.} Prompt Lab as a notebook\\
+\textbf{D.} GitHub Code Retrieval API
+
+\vspace{0.2cm}\textit{Answer: B.}
+\end{practicebox}
+
+\begin{practicebox}[title=\textbf{Q5.6 --- Corpus refresh}]
+Where do you schedule the recurring re-ingest / re-embed / re-index job for a RAG corpus?
+
+\textbf{A.} watsonx.governance\\
+\textbf{B.} watsonx \textbf{AI Pipelines}\\
+\textbf{C.} Tuning Studio\\
+\textbf{D.} Prompt Lab
+
+\vspace{0.2cm}\textit{Answer: B.}
+\end{practicebox}
+
+\begin{practicebox}[title=\textbf{Q5.7 --- Endpoint security}]
+Which combination best protects a public-facing watsonx endpoint?
+
+\textbf{A.} Hardcoded API key in JS\\
+\textbf{B.} No auth, IP allowlist only\\
+\textbf{C.} Per-app service ID, scoped API key, rate limit, Granite Guardian on input + output\\
+\textbf{D.} Shared admin key with no quota
+
+\vspace{0.2cm}\textit{Answer: C.}
+\end{practicebox}
 
 \cleardoublepage

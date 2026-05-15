@@ -1,0 +1,77 @@
+name: Build LaTeX book PDF
+
+on:
+  push:
+    branches: [master, main]
+    paths:
+      - 'book/**'
+      - '.github/workflows/build-book.yml'
+  pull_request:
+    paths:
+      - 'book/**'
+  release:
+    types: [created]
+  workflow_dispatch:
+
+permissions:
+  contents: write   # so the release job can attach the PDF
+
+jobs:
+  build:
+    name: Compile main.pdf (KDP letter + 6x9 print)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build KDP letter PDF
+        uses: xu-cheng/latex-action@v3
+        with:
+          root_file: main.tex
+          working_directory: book
+          latexmk_use_xelatex: false
+          latexmk_shell_escape: false
+          extra_system_packages: "py3-pygments"
+          pre_compile: |
+            ls -la
+          args: "-interaction=nonstopmode -halt-on-error -file-line-error -pdf -bibtex"
+
+      - name: Rename letter PDF
+        run: |
+          cp book/main.pdf book/c1000-185-study-guide-letter.pdf
+          ls -la book/*.pdf
+
+      - name: Build 6x9 paperback PDF
+        uses: xu-cheng/latex-action@v3
+        with:
+          root_file: main.tex
+          working_directory: book
+          latexmk_use_xelatex: false
+          latexmk_shell_escape: false
+          args: |
+            -interaction=nonstopmode -halt-on-error -file-line-error -pdf -bibtex
+            -pretex="\def\BookSize{print}"
+            -usepretex
+
+      - name: Rename paperback PDF
+        run: |
+          cp book/main.pdf book/c1000-185-study-guide-paperback-6x9.pdf
+          ls -la book/*.pdf
+
+      - name: Upload PDFs as workflow artefacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: c1000-185-study-guide-pdfs
+          path: |
+            book/c1000-185-study-guide-letter.pdf
+            book/c1000-185-study-guide-paperback-6x9.pdf
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Attach PDFs to release (only when a release is created)
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            book/c1000-185-study-guide-letter.pdf
+            book/c1000-185-study-guide-paperback-6x9.pdf

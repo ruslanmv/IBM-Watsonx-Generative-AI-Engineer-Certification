@@ -1,62 +1,73 @@
-\chapter{One-Page Quick Reference Guide}
+\chapter{One-Page Exam Cheat Sheet}
 \label{app:cheatsheet}
 
-\small
+\textbf{Print this page. Read it the morning of the exam.}
 
-\section*{LLM Capabilities}
-\begin{tabular}{ll}
-\toprule
-\textbf{Capability} & \textbf{Use Cases} \\
-\midrule
-Text Generation & Content creation, code generation \\
-Question Answering & Customer support, documentation \\
-Summarization & Document processing, reporting \\
-Translation & Language/format conversion \\
-Classification & Content moderation, intent detection \\
-\bottomrule
-\end{tabular}
+\section*{The numbers}
+62 questions $\cdot$ 44 to pass (71\%) $\cdot$ 90 minutes $\cdot$ $\sim$87 s per question.
 
-\section*{Key Limitations}
-• Knowledge cutoff • Hallucinations • Context window • No common sense • Bias
+\section*{Blueprint --- spend study time here}
+1. Analyse \& Design 15\% $\;$ 2. Prompt Engineering 16\% $\;$ \textbf{3. Fine-Tuning 31\%} $\;$ 4. RAG 17\% $\;$ 5. Deployment 13\% $\;$ 6. Integration 8\%.
 
-\section*{Architecture Patterns}
-\textbf{Prompting}: Quick tasks, no specialized knowledge needed\\
-\textbf{RAG}: Current/proprietary data, reduce hallucinations\\
-\textbf{Fine-tuning}: Domain language, consistent formatting\\
-\textbf{Agents}: Multi-step tasks, tool use, decision-making
+\section*{Five capabilities}
+Summarization $\cdot$ Classification $\cdot$ Generation (Code, Translation) $\cdot$ Extraction $\cdot$ Q\&A.
 
-\section*{Prompt Engineering}
-\textbf{Zero-shot}: No examples\\
-\textbf{Few-shot}: 3-5 examples\\
-\textbf{Chain-of-thought}: Step-by-step reasoning
+\section*{Patterns}
+Transformer $\cdot$ MoE $\cdot$ VAE $\cdot$ Reasoning model.
 
-\textbf{Temperature}: 0.1-0.3 (factual), 0.7-1.0 (creative)\\
-\textbf{Top-p}: 0.9-0.95 (typical), lower for more focused\\
-\textbf{Max tokens}: Set based on expected response length
+\section*{Architecture decision tree}
+Facts in model? $\to$ \textbf{Prompting}. Facts in our docs? $\to$ \textbf{RAG}. New behaviour/style? $\to$ \textbf{Fine-tune (PEFT/LoRA/InstructLab)}. Multi-step + tools? $\to$ \textbf{Agent}.
 
-\section*{Fine-Tuning}
-\textbf{LoRA}: Parameter-efficient fine-tuning\\
-\textbf{QLoRA}: LoRA + quantization\\
-\textbf{InstructLab}: Synthetic data, knowledge injection
+\section*{Current model IDs (2026)}
+\begin{itemize}[leftmargin=*]
+    \item Default Granite chat/instruct: \texttt{ibm/granite-3-2-8b-instruct}, \texttt{ibm/granite-3-3-8b-instruct}.
+    \item Code: \texttt{ibm/granite-code-3-8b-instruct}. Vision: \texttt{ibm/granite-vision-3-2-2b}.
+    \item Llama: \texttt{meta-llama/llama-3-3-70b-instruct}. Mistral: \texttt{mistralai/mistral-large}.
+    \item Embedders: \texttt{ibm/slate-125m-english-rtrvr-v2}, \texttt{ibm/granite-embedding-278m-multilingual}.
+    \item Safety: \texttt{ibm/granite-guardian-3-8b}, \texttt{ibm/granite-guardian-3-2-5b}.
+    \item \emph{Deprecated --- recognise but don't pick:} \texttt{granite-13b-*}, \texttt{llama-2-*}, \texttt{flan-*}, \texttt{mpt-*}.
+\end{itemize}
 
-\section*{RAG Components}
-1. Document chunking\\
-2. Embedding generation\\
-3. Vector storage (FAISS, Chroma)\\
-4. Retrieval (similarity search)\\
-5. Prompt augmentation\\
-6. Response generation
+\section*{Billing classes (relative)}
+Class 1 = embedders, small Granite $\cdot$ Class 2 = Granite 8B instruct $\cdot$ Class 3 = small third-party $\cdot$ Class 12 = Llama-3.3-70B, Mistral-Large $\cdot$ Class 13 = flagship/vision.
 
-\section*{watsonx.ai Studios}
-\textbf{Prompt Lab}: Experimentation, testing\\
-\textbf{Tuning Studio}: Fine-tuning models\\
-\textbf{Deployment Space}: Production deployment
+\section*{Parameter map (cause $\to$ knob)}
+Too random $\to$ lower \texttt{temperature}, \texttt{top\_p}, switch to greedy. Output too short $\to$ \texttt{min\_new\_tokens}. Repetition loop $\to$ \texttt{repetition\_penalty} 1.1--1.2. Output runs forever $\to$ \texttt{max\_new\_tokens} + \texttt{stop\_sequences}. Reproducibility $\to$ \texttt{sample} + \texttt{random\_seed}.
 
-\section*{Exam Strategy}
-• Read carefully (BEST, MOST, LEAST)\\
-• 90 seconds per question\\
-• Eliminate wrong answers first\\
-• Flag and return to uncertain questions\\
-• Passing: 44/62 (71\%)
+\section*{Decoding}
+\texttt{greedy} (deterministic, factual) $\cdot$ \texttt{sample} (creative, with temperature, top-k, top-p, random\_seed).
+
+\section*{Fine-tuning ladder}
+Few-shot $<$ Prompt tuning (soft prompt) $<$ LoRA $<$ QLoRA $<$ Full fine-tune $\;$ ; InstructLab adds taxonomy + SDG (LAB) + knowledge-then-skills phases.
+
+\section*{Quantisation ladder}
+FP32 $\to$ FP16/BF16 $\to$ INT8 (GPTQ, AWQ) $\to$ INT4 (NF4 / QLoRA).
+
+\section*{LoRA core knobs}
+$r \in \{4,8,16,32\}$, $\alpha = 2r$, target \texttt{q\_proj} + \texttt{v\_proj}, dropout 0.05.
+
+\section*{Synthetic Data Generator}
+Two modes: existing data $\cdot$ custom schema. Validate with \textbf{Kolmogorov--Smirnov} (overall) and \textbf{Anderson--Darling} (tails). DP: privacy budget $\varepsilon$ $\cdot$ leakage probability $\delta$ $\cdot$ random seed.
+
+\section*{RAG checklist}
+Chunk size 256--1024 with 10--20\% overlap $\cdot$ embed (Slate v2 / Granite Embedding) $\cdot$ index (HNSW) $\cdot$ retrieve $k$=3--5 $\cdot$ re-rank top-20 $\cdot$ ground prompt (``answer ONLY from context'') $\cdot$ Granite Guardian groundedness check.
+
+\section*{Retrievers on the exam}
+FAISS / Chroma (embedded) $\cdot$ Watson Discovery (legacy) $\cdot$ GitHub Code Retrieval API $\cdot$ \textbf{watsonx Discovery} (current IBM default) $\cdot$ pgvector / Elasticsearch / SingleStore (DB extensions).
+
+\section*{Deployment}
+Project (build) $\to$ Space (Dev) $\to$ Space (Staging) $\to$ Space (Prod) $\to$ REST. Use a \textbf{Model Gateway} to front multiple models. SaaS vs Software (Cloud Pak) by data residency. Refresh corpora with \textbf{watsonx AI Pipelines}.
+
+\section*{Security filters}
+\textbf{PII filter} $\cdot$ \textbf{HAP filter} $\cdot$ \textbf{Bias evaluator} $\cdot$ \textbf{Groundedness check}. All available via \textbf{Granite Guardian} and \textbf{watsonx.governance}.
+
+\section*{LangChain primitives}
+LLM / ChatWatsonx $\cdot$ Prompt Template $\cdot$ Chain $\cdot$ Tool $\cdot$ Agent $\cdot$ Memory $\cdot$ Retriever $\cdot$ Output Parser. For agents: \texttt{create\_tool\_calling\_agent} + \texttt{AgentExecutor}.
+
+\section*{Open standard}
+\textbf{MCP --- Model Context Protocol}: vendor-neutral way to expose tools and data to LLM agents.
+
+\section*{Test-taking discipline}
+3 passes: easy wins (45 min) $\to$ flagged hard (30 min) $\to$ review (15 min). Never leave blank. When in doubt, pick the \emph{Granite + RAG + governance} answer.
 
 \cleardoublepage

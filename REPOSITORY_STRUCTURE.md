@@ -4,7 +4,7 @@
 ibm-c1000-185-certification/
 │
 ├── README.md                          # Main project documentation
-├── LICENSE                            # MIT License
+├── LICENSE                            # Apache License 2.0
 ├── CONTRIBUTING.md                    # Contribution guidelines
 ├── .gitignore                         # Git ignore rules
 ├── REPOSITORY_STRUCTURE.md            # This file
@@ -211,7 +211,7 @@ ibm-c1000-185-certification/
 
 ## License
 
-This project is licensed under the MIT License - see [LICENSE](LICENSE) file.
+This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for the full terms.
 
 ## Contributing
 
@@ -219,6 +219,6 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ---
 
-**Last Updated:** 2024  
+**Last Updated:** 2026  
 **Repository Version:** 1.0  
 **Status:** Production Ready ✅

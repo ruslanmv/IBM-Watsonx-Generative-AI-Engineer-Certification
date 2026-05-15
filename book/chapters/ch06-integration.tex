@@ -1,37 +1,381 @@
-\chapter{Integration and Workflow Orchestration}
+\chapter{watsonx -- Integration and Model Orchestration}
 \label{ch:integration}
 
-This chapter covers \textbf{Section 6: Integration with Model Orchestration (8\%)} of the C1000-185 exam.
+This chapter covers \textbf{Section 6: watsonx -- Integration and Model Orchestration (8\% of the exam)}. It is the smallest section by weight but the topics show up across the rest of the exam (especially in scenario questions).
 
-\section{watsonx.ai API and SDK Integration}
+\section{Integrate watsonx.ai with Other Services (Objective 6.1)}
 
-% Python SDK
-% REST API usage
-% Authentication and credentials
-% Error handling and retries
+\subsection{IBM Cloud Services That Pair with watsonx.ai}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Watson Assistant} --- conversational front-end (web / phone / Teams / WhatsApp). Plug watsonx.ai behind it for generative replies, hand off to live agents on escalation.
+    \item \textbf{Watson Discovery} (legacy) and \textbf{watsonx Discovery} (current) --- document understanding and hybrid retrieval; primary RAG retrievers.
+    \item \textbf{watsonx.data} --- governed lakehouse, source of structured data for prompts and tuning.
+    \item \textbf{watsonx.governance} --- factsheets, drift, fairness, model risk management.
+    \item \textbf{IBM Cloud Functions / Code Engine} --- serverless wrappers around the API.
+    \item \textbf{Event Streams (Kafka)} --- asynchronous workflows.
+\end{itemize}
 
-\section{Orchestrating Gen AI Workflows}
+\subsection{Integration Points}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{REST APIs} --- everything in watsonx is reachable via HTTPS endpoints under \texttt{\{region\}.ml.cloud.ibm.com}.
+    \item \textbf{SDKs} --- official \texttt{ibm-watsonx-ai} (Python) and \texttt{@ibm-cloud/watsonx-ai} (JS/TS). LangChain bindings via \texttt{langchain-ibm}.
+    \item \textbf{Webhooks} --- Watson Assistant can call watsonx via webhook for dynamic responses.
+    \item \textbf{Connectors} --- watsonx.data and Cloud Pak for Data ship pre-built connectors for most enterprise data sources.
+\end{itemize}
 
-% Workflow patterns
-% Multi-model orchestration
-% Sequential vs parallel execution
-% Error handling and fallbacks
+\subsection{Configure the Integration --- UI or API}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{UI path}: in the watsonx project, add the integration partner (e.g.\ Watson Assistant) via the ``Integrations'' tab; sign in; map credentials.
+    \item \textbf{API path}: store the partner's API key in a secret manager (IBM Cloud Secrets Manager / HashiCorp Vault), inject at runtime, configure the partner's webhook to call the watsonx deployment URL.
+\end{itemize}
 
-\section{LangChain Framework Integration}
+\subsection{Integrate with watsonx.governance}
+Every deployment automatically registers with the governance catalogue; you then attach \emph{evaluators} (drift, fairness, quality) and produce a \textbf{factsheet} per model version. This is the audit deliverable.
 
-% LangChain with watsonx.ai
-% Chains and agents
-% Custom tools and callbacks
-% Production patterns
+\subsection{Calling watsonx from an External Application}
 
-\section{Real-World Integration Scenarios}
+\begin{examplebox}[title=\textbf{Authenticated REST call from any language (curl)}]
+\begin{lstlisting}
+# Get an IAM token
+TOKEN=$(curl -s -X POST https://iam.cloud.ibm.com/identity/token \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "grant_type=urn:ibm:params:oauth:grant-type:apikey&apikey=$WATSONX_APIKEY" \
+  | jq -r .access_token)
 
-% Enterprise chatbots
-% Document processing pipelines
-% Multi-agent systems
-% Event-driven architectures
+# Call a chat deployment
+curl -X POST "https://us-south.ml.cloud.ibm.com/ml/v1/deployments/$DEPLOYMENT_ID/text/chat?version=2024-08-01" \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+        "messages": [
+          {"role":"system","content":"You are a helpful assistant."},
+          {"role":"user","content":"Hello!"}
+        ]
+      }'
+\end{lstlisting}
+\end{examplebox}
+
+\subsection{Obtain and Manage API Keys}
+\begin{itemize}[leftmargin=*]
+    \item Create a \textbf{service ID} per application (not per developer).
+    \item Generate an API key scoped to that service ID with the minimum role (usually \emph{Reader} on the watsonx service, \emph{Writer} only if the app trains or deploys).
+    \item Store in IBM Cloud Secrets Manager; never commit to git.
+    \item Rotate on a schedule and on personnel changes.
+\end{itemize}
+
+\subsection{Error Handling}
+The SDK raises \texttt{WMLClientError} (or HTTP 4xx/5xx via REST). Recognise these on the exam:
+
+\begin{itemize}[leftmargin=*]
+    \item \texttt{400} bad request --- malformed JSON, invalid \texttt{model\_id}.
+    \item \texttt{401} unauthorised --- token expired or wrong API key.
+    \item \texttt{403} forbidden --- insufficient role.
+    \item \texttt{404} not found --- wrong project / space / deployment ID.
+    \item \texttt{429} rate-limited --- back off with exponential jitter and retry.
+    \item \texttt{500/502/503} server / gateway --- transient; retry $\leq 3$ times.
+    \item \texttt{504} timeout --- response exceeded the time budget; trim the prompt or raise \texttt{time\_limit}.
+\end{itemize}
+
+\begin{examplebox}[title=\textbf{Retry-with-backoff helper}]
+\begin{lstlisting}[style=pythonstyle]
+import time, random
+from ibm_watsonx_ai.wml_client_error import WMLClientError
+
+def call_with_retry(fn, *args, max_attempts=4, **kw):
+    for attempt in range(1, max_attempts + 1):
+        try:
+            return fn(*args, **kw)
+        except WMLClientError as e:
+            transient = any(s in str(e) for s in ("429", "500", "502", "503"))
+            if not transient or attempt == max_attempts:
+                raise
+            sleep_s = 2 ** attempt + random.random()
+            time.sleep(sleep_s)
+\end{lstlisting}
+\end{examplebox}
+
+\section{Orchestrate AI Workflows (Objective 6.2)}
+
+\subsection{Why Workflows}
+Most real GenAI use cases are not single calls. Example: ingest customer ticket $\to$ extract entities $\to$ classify intent $\to$ retrieve relevant policy $\to$ draft reply $\to$ check with Guardian $\to$ either send or escalate to a human.
+
+\subsection{Designing the Workflow}
+\begin{enumerate}[leftmargin=*]
+    \item Break the task into atomic steps. Each step takes a dictionary in, returns a dictionary out.
+    \item Identify which steps are LLM calls, which are tool calls (DB query, API), which are deterministic Python.
+    \item Decide which steps can run in parallel and which need ordering.
+    \item Define the failure / fallback behaviour for each step.
+\end{enumerate}
+
+\subsection{Workflow Tools}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{LangChain Chains} --- linear or DAG-style flows; smallest learning curve.
+    \item \textbf{LangGraph} --- explicit state machines with conditional edges; great for production reproducibility.
+    \item \textbf{watsonx AI Pipelines} --- managed scheduler for data + AI jobs (Spark, notebooks, deployments).
+    \item \textbf{IBM Cloud Code Engine / Functions} --- serverless wrappers for event-driven steps.
+\end{itemize}
+
+\subsection{Automation Capabilities}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Scheduling} --- AI Pipelines cron triggers, Watson Assistant message triggers, Event Streams.
+    \item \textbf{Dependency management} --- DAG with explicit parents.
+    \item \textbf{Error handling} --- per-step on-failure policy: retry, branch, alert, dead-letter queue.
+    \item \textbf{Conditional logic} --- branch on classifier output, retrieved score, Guardian verdict.
+\end{itemize}
+
+\subsection{Monitoring and Troubleshooting}
+\begin{itemize}[leftmargin=*]
+    \item Each step logs to a unified store (CloudWatch / IBM Cloud Logs / Splunk).
+    \item Capture cost (tokens), latency, and quality (LLM-judge or human sample) per step.
+    \item Identify bottlenecks --- usually re-ranking or the largest model in the chain.
+    \item Optimise: parallelise independent calls, cache deterministic steps, downsize models where quality permits.
+\end{itemize}
+
+\subsection{Agentic RAG (cross-reference)}
+Section~4 covered the pattern; in the workflow context, Agentic RAG is one node in a larger flow --- the agent itself decides whether/when to retrieve.
+
+\section{Real-World Integration Scenarios (Objective 6.3)}
+
+\subsection{Given a Business Case, Design the Solution}
+\begin{enumerate}[leftmargin=*]
+    \item Identify input channels (web chat, mobile app, email, internal app).
+    \item Identify data sources (CRM, policy repo, billing DB, ticketing system).
+    \item Identify trust boundary --- where does data leave your network?
+    \item Identify watsonx components to bring in: \texttt{watsonx.ai} (generation), \texttt{watsonx Discovery} (retrieval), \texttt{watsonx.data} (corpus), \texttt{watsonx.governance} (audit).
+    \item Identify external services: Watson Assistant (front-end), IAM, secrets, monitoring, queues.
+\end{enumerate}
+
+\subsection{High-Level Architecture Diagram}
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[node distance=1.4cm, auto]
+\tikzstyle{b} = [rectangle, draw, fill=ibmlightblue!30,
+                  text width=8em, text centered, rounded corners,
+                  minimum height=2.4em]
+\tikzstyle{d} = [cylinder, draw, fill=ibmsuccess!25,
+                  shape border rotate=90, aspect=0.25,
+                  text width=6em, text centered]
+\tikzstyle{a} = [->, thick, >=stealth]
+
+\node [b]                       (ui)    {Web / Mobile UI};
+\node [b, right=of ui]          (wa)    {Watson Assistant};
+\node [b, right=of wa]          (gw)    {Model Gateway};
+\node [b, right=of gw]          (wai)   {watsonx.ai};
+\node [b, below=of gw]          (rag)   {watsonx Discovery};
+\node [d, below=of wai]         (data)  {watsonx.data};
+\node [b, below=of wa]          (gov)   {watsonx.governance};
+
+\draw [a] (ui) -- (wa);
+\draw [a] (wa) -- (gw);
+\draw [a] (gw) -- (wai);
+\draw [a] (wai) -- (rag);
+\draw [a] (rag) -- (data);
+\draw [a] (wai.south) -- (gov.east);
+\end{tikzpicture}
+\caption{Reference architecture: chat front-end + retrieval + generation + governance.}
+\end{figure}
+
+\subsection{Implement, Test, and Validate}
+\begin{itemize}[leftmargin=*]
+    \item Local first --- run each component independently with mocked data.
+    \item Dev space --- end-to-end with a small subset.
+    \item Staging --- shadow traffic mirrored from production, no user impact.
+    \item Production --- canary, then ramp; watch the four monitoring pillars (Section 5).
+\end{itemize}
+
+\subsection{Model Context Protocol (MCP)}
+
+\begin{keybox}
+\textbf{Model Context Protocol (MCP)} is an open protocol for connecting LLM applications to external tools and data sources in a standard way. An \emph{MCP server} exposes resources (data) and tools (functions); an \emph{MCP client} (the LLM app, agent, or IDE) discovers and uses them through a common JSON-RPC interface.
+\end{keybox}
+
+Why the exam cares: MCP is the IBM-preferred direction for plugging external systems (databases, code repos, ticketing, custom internal APIs) into agentic watsonx workflows --- instead of bespoke LangChain tools per integration, you point your agent at the MCP server and it can call any of its exposed tools.
+
+\textbf{Properties to remember:}
+\begin{itemize}[leftmargin=*]
+    \item Standardised tool discovery and invocation (vendor-neutral).
+    \item Separates the LLM app from each integration's specifics.
+    \item Plays well with \texttt{tool\_calling} chat models (Granite 3.x, Llama-3.3, Mistral all support).
+\end{itemize}
+
+\section{Develop LLM Applications with LangChain (Objective 6.4)}
+
+\subsection{Core Concepts}
+
+\begin{table}[h]
+\centering
+\begin{tabularx}{\textwidth}{l X}
+\toprule
+\textbf{Concept} & \textbf{What it is} \\
+\midrule
+\textbf{LLM}            & A wrapper around a foundation model (\texttt{WatsonxLLM}) \\
+\textbf{Prompt Template}& A reusable prompt with input variables \\
+\textbf{Chain}          & Sequence of steps (Prompt $\to$ LLM $\to$ parser, etc.) \\
+\textbf{Tool}           & A Python function the agent can call (search, calc, DB) \\
+\textbf{Agent}          & LLM controller that picks the next tool based on the goal \\
+\textbf{Memory}         & Short-term (scratchpad) or long-term (vector store) state \\
+\textbf{Retriever}      & Wraps a vector store / search index for RAG \\
+\textbf{Output Parser}  & Coerces LLM text into structured Python / JSON \\
+\bottomrule
+\end{tabularx}
+\caption{LangChain core building blocks.}
+\end{table}
+
+\subsection{Benefits of LangChain}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Modularity} --- swap LLM, retriever, or memory without rewriting the pipeline.
+    \item \textbf{Reusability} --- chain and tool libraries shared across teams.
+    \item \textbf{Extensibility} --- custom tools, custom retrievers, custom output parsers.
+\end{itemize}
+
+\subsection{Create a Simple Chain}
+
+\begin{examplebox}[title=\textbf{LLMChain --- Prompt + watsonx LLM + parser}]
+\begin{lstlisting}[style=pythonstyle]
+from langchain_ibm import WatsonxLLM
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.output_parsers import JsonOutputParser
+
+llm = WatsonxLLM(model_id="ibm/granite-3-2-8b-instruct",
+                 url=URL, apikey=API_KEY, project_id=PROJECT_ID,
+                 params={"decoding_method": "greedy",
+                         "max_new_tokens": 250, "temperature": 0.2})
+
+prompt = ChatPromptTemplate.from_messages([
+    ("system", "Return strict JSON: {\"intent\": ..., \"priority\": ...}"),
+    ("user",   "Ticket: {ticket_text}")
+])
+
+chain = prompt | llm | JsonOutputParser()
+print(chain.invoke({"ticket_text": "My internet is down"}))
+\end{lstlisting}
+\end{examplebox}
+
+\subsection{Customise a Chain with an External API Tool}
+
+\begin{examplebox}[title=\textbf{Custom tool --- query an internal CRM}]
+\begin{lstlisting}[style=pythonstyle]
+from langchain_core.tools import tool
+import requests
+
+@tool
+def lookup_account(account_id: str) -> dict:
+    """Return account name, tier, status from the internal CRM."""
+    r = requests.get(f"https://crm.acme.com/api/accounts/{account_id}",
+                     headers={"Authorization": f"Bearer {CRM_TOKEN}"})
+    r.raise_for_status()
+    return r.json()
+\end{lstlisting}
+\end{examplebox}
+
+\subsection{Design and Implement an Agent}
+
+\begin{examplebox}[title=\textbf{Tool-calling agent on watsonx (Granite 3.x supports tool calls natively)}]
+\begin{lstlisting}[style=pythonstyle]
+from langchain.agents import create_tool_calling_agent, AgentExecutor
+from langchain_ibm import ChatWatsonx
+from langchain_core.prompts import ChatPromptTemplate
+
+llm = ChatWatsonx(model_id="ibm/granite-3-2-8b-instruct", ...)
+
+tools = [lookup_account, search_kb, send_email]   # custom tools
+
+prompt = ChatPromptTemplate.from_messages([
+    ("system", "You are a senior support agent. Use the tools provided. "
+               "If unsure, escalate."),
+    ("human",  "{input}"),
+    ("placeholder", "{agent_scratchpad}"),
+])
+
+agent     = create_tool_calling_agent(llm, tools, prompt)
+executor  = AgentExecutor(agent=agent, tools=tools, verbose=True)
+
+executor.invoke({"input":
+    "Account 882 reports an outage --- summarise their status and draft a reply."})
+\end{lstlisting}
+\end{examplebox}
+
+\subsection{Memory}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{ConversationBufferMemory} --- exact transcript (cheap but token-heavy).
+    \item \textbf{ConversationSummaryMemory} --- a running summary maintained by an LLM (cheaper at long horizons).
+    \item \textbf{VectorStoreRetrieverMemory} --- semantic recall from past turns.
+    \item \textbf{LangGraph checkpoints} --- persistent agent state across sessions.
+\end{itemize}
+
+\subsection{Putting It Together}
+Most production builds look like this:
+\begin{enumerate}[leftmargin=*]
+    \item Watson Assistant catches the user's intent and channel.
+    \item For generative replies it calls a watsonx Deployment via webhook.
+    \item Behind the deployment, a LangChain (or LangGraph) workflow does RAG over watsonx Discovery, possibly calls an MCP-exposed internal API, drafts the answer with Granite, and runs Granite Guardian over input + output.
+    \item Lineage and metrics land in watsonx.governance for audit.
+\end{enumerate}
 
 \section{Key Takeaways}
+
+\begin{itemize}[leftmargin=*]
+    \item Integrations live on the REST API; auth via IAM service IDs and API keys.
+    \item Always wrap external calls with retries, backoff, and category-specific error handling.
+    \item Orchestrate complex flows with LangChain Chains, LangGraph state machines, or watsonx AI Pipelines.
+    \item \textbf{Model Context Protocol (MCP)} is the open standard for plugging external tools and data into LLM apps and agents.
+    \item LangChain core blocks: \textbf{Chains}, \textbf{Agents}, \textbf{Tools}, \textbf{Memory} --- plus prompts, retrievers, output parsers.
+    \item Granite 3.x, Llama-3.3, and Mistral all support native \textbf{tool calling}, which is the modern way to build agents.
+\end{itemize}
+
 \section{Practice Questions}
+
+\begin{practicebox}[title=\textbf{Q6.1 --- Auth}]
+What is the safest way to call a watsonx deployment from a microservice?
+
+\textbf{A.} Hard-code an admin API key in the source\\
+\textbf{B.} Per-service service ID + scoped API key in a secrets manager + IAM \emph{Reader} role\\
+\textbf{C.} Username and password\\
+\textbf{D.} Share one developer key across all services
+
+\vspace{0.2cm}\textit{Answer: B.}
+\end{practicebox}
+
+\begin{practicebox}[title=\textbf{Q6.2 --- Error}]
+The deployment returns HTTP 429 under traffic spikes. Correct client behaviour?
+
+\textbf{A.} Crash and alert\\
+\textbf{B.} Switch to a different model\\
+\textbf{C.} Retry with exponential backoff and jitter, $\leq$3 attempts\\
+\textbf{D.} Ignore the error
+
+\vspace{0.2cm}\textit{Answer: C.}
+\end{practicebox}
+
+\begin{practicebox}[title=\textbf{Q6.3 --- Orchestration}]
+A workflow needs scheduled execution, dependency management, and recovery from failed steps. Best IBM-native primitive?
+
+\textbf{A.} A Jupyter notebook on a cron\\
+\textbf{B.} \textbf{watsonx AI Pipelines}\\
+\textbf{C.} A Bash script in cron\\
+\textbf{D.} The Prompt Lab
+
+\vspace{0.2cm}\textit{Answer: B.}
+\end{practicebox}
+
+\begin{practicebox}[title=\textbf{Q6.4 --- MCP}]
+An open protocol for exposing tools and data sources to LLM agents in a vendor-neutral way. What is it?
+
+\textbf{A.} REST/OpenAPI\hspace{1em}\textbf{B.} \textbf{Model Context Protocol (MCP)}\hspace{1em}\textbf{C.} gRPC\hspace{1em}\textbf{D.} GraphQL
+
+\vspace{0.2cm}\textit{Answer: B.}
+\end{practicebox}
+
+\begin{practicebox}[title=\textbf{Q6.5 --- LangChain}]
+You need a multi-turn assistant that calls an internal CRM, an inventory API, and an email API, while remembering recent turns. Which LangChain components?
+
+\textbf{A.} Only a single PromptTemplate\\
+\textbf{B.} ChatWatsonx + Tools (3 custom) + create\_tool\_calling\_agent + AgentExecutor + Memory\\
+\textbf{C.} Just a vector store\\
+\textbf{D.} Watson Discovery alone
+
+\vspace{0.2cm}\textit{Answer: B.}
+\end{practicebox}
 
 \cleardoublepage

@@ -1,90 +1,244 @@
-\chapter{Full Mock Examination}
-\label{app:mock-exam}
+\chapter{Mock Exam --- 40 Questions}
+\label{app:mock}
 
-\section*{Instructions}
+This mock exam is calibrated to the C1000-185 blueprint, with question count roughly proportional to each section's weight. Allow yourself 60 minutes (the real exam is 62 questions in 90 minutes). Track flagged questions, then check Appendix~\ref{app:answers} for the answer key and explanations.
 
-This mock examination contains 62 questions designed to simulate the actual IBM C1000-185 certification exam.
+\begin{enumerate}[leftmargin=*]
 
-\textbf{Time Limit}: 90 minutes\\
-\textbf{Passing Score}: 44/62 (71\%)\\
-\textbf{Format}: Multiple choice, scenario-based questions
+% ---------- Section 1 (15%) -----------
+\item A team needs to tag every incoming support email with one of \texttt{BILLING}, \texttt{TECH}, \texttt{OTHER}. Which capability?
+\begin{enumerate}[label=\Alph*.]
+  \item Generation \item Summarization \item Classification \item Translation
+\end{enumerate}
 
-\textbf{Exam Tips}:
-\begin{itemize}[leftmargin=*]
-    \item Read each question carefully before selecting an answer
-    \item Note keywords like "BEST", "MOST", "PRIMARY", "LEAST"
-    \item Manage your time: aim for 90 seconds per question
-    \item Mark difficult questions and return to them
-    \item Don't change answers unless you're certain - first instinct is often correct
-\end{itemize}
+\item A 47B-parameter model routes each token to only $\sim$13B of its weights. Which pattern?
+\begin{enumerate}[label=\Alph*.]
+  \item Reasoning model \item Mixture of Experts \item VAE \item Encoder--decoder
+\end{enumerate}
 
-\textbf{Scoring}:
-\begin{itemize}[leftmargin=*]
-    \item 56-62 correct (90-100\%): Excellent - You're very well prepared
-    \item 50-55 correct (80-89\%): Good - Review weak areas before exam
-    \item 44-49 correct (71-79\%): Passing - More study recommended
-    \item Below 44 (Below 71\%): More preparation needed - review thoroughly
-\end{itemize}
+\item Internal handbook updated weekly. Best mitigation for outdated answers?
+\begin{enumerate}[label=\Alph*.]
+  \item Raise temperature \item Switch to 70B \item Add RAG over the handbook \item Reduce max\_new\_tokens
+\end{enumerate}
 
-\vspace{1cm}
+\item Cost-conscious enterprise English FAQ bot, IBM-native preference. Best model?
+\begin{enumerate}[label=\Alph*.]
+  \item \texttt{meta-llama/llama-3-3-70b-instruct}
+  \item \texttt{ibm/granite-3-2-8b-instruct} + RAG with \texttt{ibm/slate-125m-english-rtrvr-v2}
+  \item Custom 13B from scratch \item \texttt{flan-t5-xxl} fine-tuned weekly
+\end{enumerate}
 
-\section{Section 1: Analyze and Design (Questions 1-10)}
+\item A workflow needs to look up a contract, check inventory, decide on a refund, send email. Which architecture?
+\begin{enumerate}[label=\Alph*.]
+  \item Single prompt to a 70B model \item Plain RAG
+  \item Agentic architecture with tools \item Fine-tuned classifier
+\end{enumerate}
 
-\subsection*{Question 1}
+\item Which IBM-side family detects jailbreaks, HAP, and ungrounded RAG answers?
+\begin{enumerate}[label=\Alph*.]
+  \item watsonx.data \item Granite Guardian \item Tuning Studio \item Watson Assistant
+\end{enumerate}
 
-A financial services company wants to build a chatbot that answers customer questions about investment products. The answers must be grounded in the company's regulatory-approved documentation. Which architecture pattern is MOST appropriate?
+% ---------- Section 2 (16%) -----------
+\item You need consistent, factual, reproducible output for an extraction task. Best decoding method?
+\begin{enumerate}[label=\Alph*.]
+  \item \texttt{sample}, temperature=1.0 \item \texttt{greedy}
+  \item \texttt{sample}, top\_p=0.99 \item Beam search
+\end{enumerate}
 
-\textbf{A.} Simple prompt-based inference with a general foundation model\\
-\textbf{B.} Fine-tuning a model on customer FAQs\\
-\textbf{C.} Retrieval-Augmented Generation (RAG) with regulatory documents\\
-\textbf{D.} Agent-based system with web search capabilities
+\item Model keeps repeating the same phrase. \emph{Single} parameter change with biggest payoff?
+\begin{enumerate}[label=\Alph*.]
+  \item Lower temperature to 0 \item Increase max\_new\_tokens
+  \item Raise repetition\_penalty to $\sim$1.15 \item Switch to a smaller model
+\end{enumerate}
 
-\vspace{0.5cm}
+\item Cap each call at 20s and 300 tokens. Which params?
+\begin{enumerate}[label=\Alph*.]
+  \item \texttt{stop\_sequences=["20s"]}
+  \item \texttt{max\_new\_tokens=300, time\_limit=20000}
+  \item \texttt{min\_new\_tokens=300, temperature=20}
+  \item \texttt{repetition\_penalty=20}
+\end{enumerate}
 
-\subsection*{Question 2}
+\item Versioning, governance, model-swap without app changes. Ship what?
+\begin{enumerate}[label=\Alph*.]
+  \item f-string in microservice \item \texttt{PromptTemplate} in a Deployment Space
+  \item YAML file in repo \item Jinja on web server
+\end{enumerate}
 
-Which of the following is a PRIMARY limitation of Large Language Models that would make them unsuitable for real-time stock trading recommendations?
+\item A power user wants to hand-craft a prompt with custom delimiters in watsonx Prompt Lab. Which mode?
+\begin{enumerate}[label=\Alph*.]
+  \item Chat \item Structured \item Freeform \item JSON-only
+\end{enumerate}
 
-\textbf{A.} Context window size\\
-\textbf{B.} Knowledge cutoff date\\
-\textbf{C.} Hallucination potential\\
-\textbf{D.} Bias in training data
+\item The classifier output uses inconsistent label vocabulary across calls. Cheapest fix?
+\begin{enumerate}[label=\Alph*.]
+  \item Add few-shot examples and \texttt{stop\_sequences}
+  \item Switch decoding to sample at temperature 1.5
+  \item Use a different IBM region \item Train a new model from scratch
+\end{enumerate}
 
-% Questions continue through Q62...
+\item Confident, fabricated case-law citation in output. Risk category?
+\begin{enumerate}[label=\Alph*.]
+  \item Prompt injection \item Hallucination \item PII leak \item Bias
+\end{enumerate}
 
-\section{Section 2: Prompt Engineering (Questions 11-20)}
+% ---------- Section 3 (31%) -----------
+\item Hard prompts are preferred over soft prompts when the auditor needs to:
+\begin{enumerate}[label=\Alph*.]
+  \item Save GPU \item Read and approve the instructions
+  \item Use a smaller artefact \item Achieve absolute best accuracy
+\end{enumerate}
 
-\subsection*{Question 11}
+\item Run a 13B model on a single 24~GB GPU, still fine-tuning it. Best choice?
+\begin{enumerate}[label=\Alph*.]
+  \item Full FP32 fine-tune \item INT8 PTQ only
+  \item QLoRA (4-bit base + LoRA adapters) \item BF16 inference, no tuning
+\end{enumerate}
 
-When using few-shot prompting, what is the RECOMMENDED number of examples to include for optimal results?
+\item Which two parameters constitute the core LoRA configuration?
+\begin{enumerate}[label=\Alph*.]
+  \item temperature, top\_p \item rank ($r$), alpha
+  \item batch\_size, epochs \item privacy budget, $\delta$
+\end{enumerate}
 
-\textbf{A.} 1-2 examples\\
-\textbf{B.} 3-5 examples\\
-\textbf{C.} 10-15 examples\\
-\textbf{D.} 20+ examples
+\item Which watsonx tool profiles a dataset and saves a repeatable cleaning flow?
+\begin{enumerate}[label=\Alph*.]
+  \item Prompt Lab \item Tuning Studio \item Data Refinery \item Watson Assistant
+\end{enumerate}
 
-% More questions...
+\item Teach Granite a brand-new domain (new facts + new house style) at scale. Best method?
+\begin{enumerate}[label=\Alph*.]
+  \item Few-shot prompting \item Static prompt template
+  \item InstructLab (taxonomy + SDG + multi-phase tuning) \item Pre-train from scratch
+\end{enumerate}
 
-\section{Section 3: Fine-Tuning (Questions 21-40)}
+\item Which test best validates that the \emph{tail} of a synthetic distribution matches the real one?
+\begin{enumerate}[label=\Alph*.]
+  \item Kolmogorov--Smirnov \item Anderson--Darling
+  \item chi-square \item t-test
+\end{enumerate}
 
-% Questions on LoRA, InstructLab, dataset preparation, etc.
+\item Which DP parameter controls the \emph{probability} that the privacy guarantee fails?
+\begin{enumerate}[label=\Alph*.]
+  \item privacy budget ($\varepsilon$) \item leakage probability ($\delta$)
+  \item random seed \item learning rate
+\end{enumerate}
 
-\section{Section 4: RAG (Questions 41-51)}
+\item LoRA run with $r=8$, $\alpha=16$ overfits after epoch 2. Best first action?
+\begin{enumerate}[label=\Alph*.]
+  \item Increase $r$ to 64 \item Add LoRA dropout, reduce epochs
+  \item Switch to full fine-tune \item Increase learning rate
+\end{enumerate}
 
-% Questions on embeddings, vector databases, LangChain
+\item Lowest-cost legitimate fine-tuning option on watsonx for a small ($\sim$300 example) dataset?
+\begin{enumerate}[label=\Alph*.]
+  \item Full fine-tune \item Prompt tuning (soft prompt)
+  \item LoRA $r$=128 \item Pre-training
+\end{enumerate}
 
-\section{Section 5: Deployment (Questions 52-59)}
+\item A teacher LLM generates thousands of training examples from a handful of human seeds, gated by a critic. What is this called in IBM's stack?
+\begin{enumerate}[label=\Alph*.]
+  \item AutoRAG \item LAB / InstructLab synthetic data generation
+  \item Watson Discovery \item Watson Assistant
+\end{enumerate}
 
-% Questions on deployment strategies, versioning, monitoring
+% ---------- Section 4 (17%) -----------
+\item IBM-native multilingual embedder for an EN/ES/FR enterprise RAG bot?
+\begin{enumerate}[label=\Alph*.]
+  \item slate-30m-english-rtrvr-v2 \item granite-embedding-278m-multilingual
+  \item all-MiniLM-L6-v2 \item flan-t5-xxl
+\end{enumerate}
 
-\section{Section 6: Integration (Questions 60-62)}
+\item Which three pieces are required to call the watsonx embeddings API?
+\begin{enumerate}[label=\Alph*.]
+  \item API key only \item Credentials, project (or space) ID, optionally a deployment ID
+  \item Username + password + IP allowlist \item GitHub OAuth token
+\end{enumerate}
 
-% Questions on API integration, orchestration
+\item IBM-native, hybrid BM25 + dense, governed search. Choose:
+\begin{enumerate}[label=\Alph*.]
+  \item FAISS \item Chroma \item watsonx Discovery \item GitHub Code Retrieval API
+\end{enumerate}
 
-\vspace{2cm}
+\item RAG bot retrieves correct chunks but misses answers near chunk boundaries. Cheapest fix?
+\begin{enumerate}[label=\Alph*.]
+  \item Larger generator \item Increase chunk overlap to $\sim$15--20\%
+  \item Lower $k$ from 4 to 1 \item Disable re-ranking
+\end{enumerate}
 
-\textbf{END OF EXAMINATION}
+\item Compared to plain RAG, agentic RAG adds:
+\begin{enumerate}[label=\Alph*.]
+  \item Bigger embeddings \item Adaptive retrieval (query rewrite, multiple calls)
+  \item Quantisation \item Differential privacy
+\end{enumerate}
 
-\textit{Answers and detailed explanations are provided in Appendix C.}
+\item Automatic search over chunk size, embedder, $k$, re-ranker. What is this?
+\begin{enumerate}[label=\Alph*.]
+  \item Agentic RAG \item AutoRAG \item Watson Discovery \item InstructLab
+\end{enumerate}
+
+\item In LangChain + watsonx, the right packages are:
+\begin{enumerate}[label=\Alph*.]
+  \item \texttt{ibm-watson-machine-learning} only \item \texttt{langchain-ibm} + \texttt{ibm-watsonx-ai}
+  \item \texttt{openai} \item \texttt{anthropic}
+\end{enumerate}
+
+% ---------- Section 5 (13%) -----------
+\item One-click rollback of a prompt template. Which primitive?
+\begin{enumerate}[label=\Alph*.]
+  \item Edit in-place in the project \item Promote a new version into the Deployment Space
+  \item Email the JSON to ops \item Train a new model
+\end{enumerate}
+
+\item Prompt template v2 keeps the same variables and output schema. What changes in the app?
+\begin{enumerate}[label=\Alph*.]
+  \item Nothing \item Rewrite client \item New SDK \item New IAM keys
+\end{enumerate}
+
+\item Single URL fronting multiple backing models with central rate limit and A/B. What is it?
+\begin{enumerate}[label=\Alph*.]
+  \item Watson Discovery \item Model Gateway \item Data Refinery \item watsonx.data
+\end{enumerate}
+
+\item Regulated bank, air-gapped VPC, no public internet. Which option?
+\begin{enumerate}[label=\Alph*.]
+  \item watsonx.ai SaaS \item watsonx.ai Software (Cloud Pak for Data)
+  \item Prompt Lab on a laptop \item Public REST API
+\end{enumerate}
+
+\item Where do you schedule periodic re-ingest / re-embed for a RAG corpus?
+\begin{enumerate}[label=\Alph*.]
+  \item watsonx.governance \item watsonx AI Pipelines
+  \item Tuning Studio \item Prompt Lab
+\end{enumerate}
+
+% ---------- Section 6 (8%) -----------
+\item Safest way for a microservice to call a watsonx deployment?
+\begin{enumerate}[label=\Alph*.]
+  \item Hard-coded admin API key in source
+  \item Per-service service ID + scoped API key in a secrets manager + minimum IAM role
+  \item Username + password \item Shared developer key
+\end{enumerate}
+
+\item HTTP 429 from watsonx under spikes. Client behaviour?
+\begin{enumerate}[label=\Alph*.]
+  \item Crash + alert \item Switch model
+  \item Retry with exponential backoff + jitter, $\leq$3 attempts \item Ignore
+\end{enumerate}
+
+\item Open standard for exposing tools/data to LLM agents, vendor-neutral?
+\begin{enumerate}[label=\Alph*.]
+  \item REST/OpenAPI \item Model Context Protocol (MCP)
+  \item gRPC \item GraphQL
+\end{enumerate}
+
+\item Multi-turn assistant calling CRM, inventory, and email APIs, remembering recent turns. Best LangChain composition?
+\begin{enumerate}[label=\Alph*.]
+  \item Only a PromptTemplate \item ChatWatsonx + 3 custom Tools + tool-calling agent + Memory
+  \item Only a vector store \item Watson Discovery alone
+\end{enumerate}
+
+\end{enumerate}
 
 \cleardoublepage
