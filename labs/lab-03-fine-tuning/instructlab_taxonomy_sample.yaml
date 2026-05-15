@@ -1,0 +1,32 @@
+# InstructLab taxonomy leaf - sample
+#
+# Place under: knowledge/finance/refund_policy/qna.yaml in an `ilab` workspace.
+# Then run:
+#   ilab data generate
+#   ilab model train
+#   ilab model evaluate
+#
+# The 'document' section pins the source of truth so the synthetic-data
+# generator can ground new questions in real text (the LAB methodology).
+
+version: 3
+domain: finance
+created_by: ruslanmv
+seed_examples:
+  - context: |
+      ACME enterprise customers may request a pro-rated refund within 30 days
+      of an invoice date, provided the affected service tier had measured
+      downtime greater than the SLA threshold.
+    questions_and_answers:
+      - question: How long do enterprise customers have to request a refund?
+        answer: 30 days from the invoice date.
+      - question: What is the refund formula?
+        answer: A pro-rated refund tied to measured downtime versus the SLA threshold.
+      - question: Are consumer accounts eligible for the enterprise refund policy?
+        answer: No — this policy applies only to enterprise customers.
+document_outline: ACME enterprise refund policy (effective 2026-01-01)
+document:
+  repo: https://github.com/example/acme-policies
+  commit: HEAD
+  patterns:
+    - finance/refunds/*.md

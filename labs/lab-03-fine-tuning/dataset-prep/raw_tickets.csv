@@ -1,0 +1,16 @@
+text,label
+my charge is wrong,BILLING
+refund my last invoice please,BILLING
+the statement is missing line items,BILLING
+I was double-billed last month,BILLING
+please cancel the auto-renewal,BILLING
+the app keeps crashing,TECH
+setup wizard freezes,TECH
+I cannot reset my password,TECH
+the export button does nothing,TECH
+2FA codes never arrive,TECH
+can I cancel my account?,OTHER
+do you have a French version?,OTHER
+is there an enterprise tier?,OTHER
+how do I export my data?,OTHER
+is training included in my plan?,OTHER

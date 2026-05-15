@@ -1,0 +1,77 @@
+name: Deploy slide decks to GitHub Pages
+
+on:
+  push:
+    branches: [master, main]
+    paths:
+      - 'docs/**'
+      - 'udemy/**'
+      - 'index.html'
+      - '.github/workflows/deploy-pages.yml'
+  workflow_dispatch:
+
+# Required by the modern actions/deploy-pages flow
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Only one Pages deployment at a time; let in-flight runs finish first
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Assemble static site
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Assemble _site/ from docs/ + udemy/ + landing
+        run: |
+          set -euo pipefail
+          mkdir -p _site/docs _site/udemy
+          # YouTube edition
+          cp -r docs/. _site/docs/
+          # Udemy edition
+          cp -r udemy/. _site/udemy/
+          # Root landing page if it exists in the repo
+          if [ -f index.html ]; then
+            cp index.html _site/index.html
+          fi
+          # Surface the official exam guide as a downloadable asset
+          if [ -f docs/official/guide.pdf ]; then
+            mkdir -p _site/guide
+            cp docs/official/guide.pdf _site/guide/guide.pdf
+          fi
+          # Don't deploy LaTeX sources; only deploy if a built PDF exists
+          if [ -f book/main.pdf ]; then
+            mkdir -p _site/book
+            cp book/main.pdf _site/book/main.pdf
+          fi
+          # Add a no-jekyll marker so files starting with _ are served
+          touch _site/.nojekyll
+          echo "Build tree:"
+          ls -R _site | head -60
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    name: Publish to GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4

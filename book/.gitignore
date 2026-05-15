@@ -1,0 +1,24 @@
+# LaTeX build artefacts
+main.pdf
+main.aux
+main.log
+main.toc
+main.lof
+main.lot
+main.out
+main.bbl
+main.blg
+main.bcf
+main.run.xml
+main.synctex.gz
+main.fls
+main.fdb_latexmk
+
+# Editor / OS noise
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Local exports
+/exports/

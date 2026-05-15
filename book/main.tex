@@ -1,4 +1,4 @@
-\documentclass[12pt,letterpaper,twoside,openright]{book}
+\documentclass[11pt,letterpaper,twoside,openright]{book}
 
 % ============================================================================
 % PACKAGE IMPORTS
@@ -9,15 +9,22 @@
 \usepackage[T1]{fontenc}
 \usepackage[english]{babel}
 \usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{textcomp}
 
-% Page layout and geometry
-\usepackage[
-    top=1in,
-    bottom=1in,
-    inner=1.25in,
-    outer=1in,
-    headheight=15pt
-]{geometry}
+% Page layout and geometry --- defaults to KDP-friendly trade paperback (6" x 9")
+% Override with: pdflatex "\def\BookSize{print}\input{main}" for 6x9 print run
+%               pdflatex "\def\BookSize{kdp}\input{main}"   for 8.5x11 letter
+\providecommand{\BookSize}{kdp}
+\usepackage{ifthen}
+\ifthenelse{\equal{\BookSize}{print}}{%
+    \usepackage[paperwidth=6in,paperheight=9in,%
+        inner=0.875in,outer=0.625in,top=0.75in,bottom=0.75in,%
+        headheight=15pt,headsep=12pt,footskip=20pt]{geometry}%
+}{%
+    \usepackage[letterpaper,top=1in,bottom=1in,inner=1.25in,outer=1in,%
+        headheight=15pt]{geometry}%
+}
 
 % Graphics and colors
 \usepackage{graphicx}
@@ -32,9 +39,10 @@
 \usepackage{enumitem}
 \usepackage{multicol}
 
-% Code listings
+% Code listings  (minted intentionally NOT loaded -- needs -shell-escape +
+% pygments; we use `listings` everywhere instead so the book builds cleanly
+% in any TeX Live container, including the KDP CI workflow.)
 \usepackage{listings}
-\usepackage{minted}
 
 % Mathematics
 \usepackage{amsmath}
@@ -53,13 +61,13 @@
     urlcolor=ibmblue,
     citecolor=ibmblue,
     pdftitle={IBM Watsonx Generative AI Engineer Associate (C1000-185) Study Guide},
-    pdfauthor={Your Name},
+    pdfauthor={Ruslan Idelfonso Magana Vsevolodovna},
     pdfsubject={IBM Certification Study Guide},
-    pdfkeywords={IBM, watsonx, AI, certification, C1000-185, generative AI}
+    pdfkeywords={IBM, watsonx, AI, certification, C1000-185, generative AI, Granite, LoRA, RAG, InstructLab}
 }
 
 % Bibliography
-\usepackage[backend=bibtex,style=alphabetic]{biblatex}
+\usepackage[backend=bibtex,style=alphabetic,sorting=nty]{biblatex}
 \addbibresource{bibliography/references.bib}
 
 % Additional useful packages
@@ -69,6 +77,9 @@
 \usepackage{mdframed}
 \usepackage{tcolorbox}
 \tcbuselibrary{breakable,skins}
+
+% Better URL line-breaking in body text
+\Urlmuskip=0mu plus 1mu\relax
 
 % ============================================================================
 % COLOR DEFINITIONS (IBM Brand Colors)
@@ -89,52 +100,32 @@
 
 % Example box
 \newtcolorbox{examplebox}[1][]{
-    colback=ibmlightblue!10,
-    colframe=ibmblue,
-    fonttitle=\bfseries,
-    title=Example,
-    breakable,
-    #1
+    colback=ibmlightblue!10, colframe=ibmblue,
+    fonttitle=\bfseries, title=Example, breakable, #1
 }
 
 % Important note box
 \newtcolorbox{notebox}[1][]{
-    colback=ibmwarning!10,
-    colframe=ibmwarning,
-    fonttitle=\bfseries,
-    title=Important,
-    breakable,
-    #1
+    colback=ibmwarning!10, colframe=ibmwarning,
+    fonttitle=\bfseries, title=Important, breakable, #1
 }
 
 % Key concept box
 \newtcolorbox{keybox}[1][]{
-    colback=ibmsuccess!10,
-    colframe=ibmsuccess,
-    fonttitle=\bfseries,
-    title=Key Concept,
-    breakable,
-    #1
+    colback=ibmsuccess!10, colframe=ibmsuccess,
+    fonttitle=\bfseries, title=Key Concept, breakable, #1
 }
 
 % Warning box
 \newtcolorbox{warningbox}[1][]{
-    colback=ibmerror!10,
-    colframe=ibmerror,
-    fonttitle=\bfseries,
-    title=Warning,
-    breakable,
-    #1
+    colback=ibmerror!10, colframe=ibmerror,
+    fonttitle=\bfseries, title=Warning, breakable, #1
 }
 
 % Exercise/Practice box
 \newtcolorbox{practicebox}[1][]{
-    colback=ibmlightgray,
-    colframe=ibmgray,
-    fonttitle=\bfseries,
-    title=Practice Question,
-    breakable,
-    #1
+    colback=ibmlightgray, colframe=ibmgray,
+    fonttitle=\bfseries, title=Practice Question, breakable, #1
 }
 
 % ============================================================================
@@ -148,17 +139,13 @@
     commentstyle=\color{ibmgray}\itshape,
     stringstyle=\color{ibmsuccess},
     numberstyle=\tiny\color{ibmgray},
-    numbers=left,
-    stepnumber=1,
-    numbersep=8pt,
-    frame=leftline,
-    framerule=2pt,
+    numbers=left, stepnumber=1, numbersep=8pt,
+    frame=leftline, framerule=2pt,
     rulecolor=\color{ibmblue},
     backgroundcolor=\color{ibmlightgray},
-    showstringspaces=false,
-    breaklines=true,
-    breakatwhitespace=true,
-    tabsize=4
+    showstringspaces=false, breaklines=true, breakatwhitespace=true,
+    tabsize=4, columns=fullflexible,
+    upquote=true, literate={`}{{\textasciigrave}}1
 }
 
 \lstdefinestyle{jsonsstyle}{
@@ -166,15 +153,11 @@
     commentstyle=\color{ibmgray}\itshape,
     stringstyle=\color{ibmsuccess},
     numberstyle=\tiny\color{ibmgray},
-    numbers=left,
-    stepnumber=1,
-    numbersep=8pt,
-    frame=leftline,
-    framerule=2pt,
+    numbers=left, stepnumber=1, numbersep=8pt,
+    frame=leftline, framerule=2pt,
     rulecolor=\color{ibmblue},
     backgroundcolor=\color{ibmlightgray},
-    showstringspaces=false,
-    breaklines=true
+    showstringspaces=false, breaklines=true
 }
 
 % ============================================================================
@@ -183,10 +166,10 @@
 
 \pagestyle{fancy}
 \fancyhf{}
-\fancyhead[LE]{\leftmark}
-\fancyhead[RO]{\rightmark}
+\fancyhead[LE]{\nouppercase{\leftmark}}
+\fancyhead[RO]{\nouppercase{\rightmark}}
 \fancyfoot[LE,RO]{\thepage}
-\fancyfoot[CE,CO]{IBM C1000-185 Study Guide}
+\fancyfoot[CE,CO]{\small IBM C1000-185 Study Guide \textbullet\ ruslanmv.com}
 \renewcommand{\headrulewidth}{0.4pt}
 \renewcommand{\footrulewidth}{0.4pt}
 
@@ -195,34 +178,23 @@
 % ============================================================================
 
 \newcommand{\examtip}[1]{%
-    \begin{notebox}[title=\textbf{Exam Tip}]
-        #1
-    \end{notebox}
-}
-
+    \begin{notebox}[title=\textbf{Exam Tip}]#1\end{notebox}}
 \newcommand{\realworld}[1]{%
-    \begin{examplebox}[title=\textbf{Real-World Scenario}]
-        #1
-    \end{examplebox}
-}
-
+    \begin{examplebox}[title=\textbf{Real-World Scenario}]#1\end{examplebox}}
 \newcommand{\watsonxfeature}[1]{%
-    \begin{keybox}[title=\textbf{watsonx.ai Feature}]
-        #1
-    \end{keybox}
-}
+    \begin{keybox}[title=\textbf{watsonx.ai Feature}]#1\end{keybox}}
 
 % ============================================================================
 % DOCUMENT METADATA
 % ============================================================================
 
-\title{
+\title{%
     \Huge\textbf{IBM Watsonx Generative AI Engineer Associate}\\
     \LARGE\textbf{(C1000-185)}\\[1cm]
     \Large Complete Study Guide \& Exam Workbook
 }
-\author{Your Name}
-\date{\today}
+\author{Ruslan Idelfonso Magana Vsevolodovna}
+\date{First Edition \textbullet\ \the\year{}}
 
 % ============================================================================
 % BEGIN DOCUMENT
@@ -230,11 +202,11 @@
 
 \begin{document}
 
-% Front matter
+% Front matter (Roman page numbers)
 \frontmatter
 \input{chapters/00-frontmatter}
 
-% Main content
+% Main content (Arabic page numbers)
 \mainmatter
 \input{chapters/ch01-foundations}
 \input{chapters/ch02-prompt-engineering}

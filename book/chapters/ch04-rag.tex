@@ -1,54 +1,424 @@
-\chapter{Retrieval-Augmented Generation (RAG) Implementation}
+\chapter{Retrieval-Augmented Generation (RAG)}
 \label{ch:rag}
 
-This chapter covers \textbf{Section 4: Retrieval-Augmented Generation (17\%)} of the C1000-185 exam.
+This chapter covers \textbf{Section 4: Retrieval-Augmented Generation (17\% of the exam)}. RAG is the bread-and-butter pattern for enterprise GenAI: grounded answers from your own documents, no retraining, full citations.
 
-\section{Introduction to RAG}
+\section{What Are Embeddings? (Objective 4.1)}
 
-% Why RAG is needed
-% RAG vs fine-tuning
-% RAG architecture overview
+\subsection{Concept}
 
-\section{Embeddings and Vector Representations}
+\begin{keybox}
+An \textbf{embedding} is a vector of floats (typically 384--1024 dimensions) that represents the \emph{meaning} of a piece of text. Texts with similar meaning have nearby vectors under cosine similarity or dot product.
+\end{keybox}
 
-% What are embeddings
-% How embeddings capture semantic meaning
-% Embedding models (sentence transformers, etc.)
+A retrieval system computes embeddings for every chunk of your corpus, stores them, and at query time computes the embedding of the user's question and returns the nearest chunks. The generator (LLM) then answers using those chunks as context.
 
-\section{Vector Databases}
+\subsection{IBM Embedding Models}
 
-% Purpose of vector databases
-% FAISS (Facebook AI Similarity Search)
-% Chroma DB
-% Milvus, Pinecone, Weaviate
-% Choosing the right vector DB
+The IBM-native embedding families on watsonx.ai (2026):
 
-\section{Building a RAG Pipeline}
+\begin{table}[h]
+\centering
+\begin{tabularx}{\textwidth}{l c X}
+\toprule
+\textbf{Model ID} & \textbf{Dim} & \textbf{Use} \\
+\midrule
+\texttt{ibm/slate-30m-english-rtrvr-v2}        & 384 & Cheap English retrieval, fast \\
+\texttt{ibm/slate-125m-english-rtrvr-v2}       & 768 & Better recall on tricky English \\
+\texttt{ibm/granite-embedding-107m-multilingual} & 384 & Multilingual, lightweight \\
+\texttt{ibm/granite-embedding-278m-multilingual} & 768 & Multilingual, higher quality \\
+\bottomrule
+\end{tabularx}
+\caption{Current IBM embedding models. The \texttt{-rtrvr} suffix indicates a model fine-tuned specifically for retrieval (asymmetric query/passage encoding).}
+\end{table}
 
-% Document ingestion and chunking
-% Embedding generation
-% Vector storage and indexing
-% Retrieval strategies
-% Re-ranking retrieved documents
-% Prompt augmentation
-% Response generation
+\subsection{Third-Party Embedding Models}
+\begin{itemize}[leftmargin=*]
+    \item \texttt{intfloat/multilingual-e5-large} --- 1024 dim, very strong cross-lingual retrieval.
+    \item \texttt{sentence-transformers/all-MiniLM-L6-v2} --- 384 dim, open-source, lab/POC default.
+    \item BGE family (BAAI/bge-large-en-v1.5, bge-m3) --- competitive open alternatives.
+\end{itemize}
 
-\section{LangChain for RAG}
+\subsection{Key Properties}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Dimensionality} --- higher dim usually higher recall, more storage. 384 / 768 / 1024 are common.
+    \item \textbf{Normalisation} --- many models output unit-length vectors so cosine similarity collapses to dot product (cheap).
+    \item \textbf{Asymmetric vs symmetric} --- retrieval models often use different encoders for the query vs the passage. The \texttt{-rtrvr} models do this.
+    \item \textbf{Sequence limit} --- each model has a max input length; longer chunks must be split.
+\end{itemize}
 
-% LangChain framework overview
-% Document loaders
-% Text splitters
-% Vector stores
-% Retrievers
-% Chains and agents
+\examtip{If the exam emphasises \emph{IBM-native, governed, English enterprise RAG}, pick \textbf{slate-125m-english-rtrvr-v2}. For \emph{multilingual} corpora, pick \textbf{granite-embedding-278m-multilingual} or \textbf{multilingual-e5-large}.}
 
-\section{RAG in watsonx.ai}
+\section{Generating Vector Embeddings (Objective 4.2)}
 
-% Implementing RAG with watsonx.ai
-% Integration with vector databases
-% Enterprise RAG patterns
+\subsection{Prerequisites}
+To call the embeddings API you need:
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Credentials} --- an IBM Cloud API key with at least \emph{Reader} role on the watsonx.ai service.
+    \item \textbf{Project ID} \emph{or} \textbf{Space ID} --- to scope the call and bill it correctly.
+    \item \textbf{Deployment ID} --- only if you are calling a deployed (custom or pre-deployed) embedding asset rather than the foundation-model catalogue.
+\end{itemize}
+
+\subsection{Calling the Embeddings API}
+
+\begin{examplebox}[title=\textbf{Get embeddings via the watsonx Python SDK}]
+\begin{lstlisting}[style=pythonstyle]
+from ibm_watsonx_ai import APIClient, Credentials
+from ibm_watsonx_ai.foundation_models import Embeddings
+
+creds  = Credentials(url="https://us-south.ml.cloud.ibm.com",
+                     api_key=os.environ["WATSONX_APIKEY"])
+client = APIClient(creds, project_id=PROJECT_ID)
+
+emb = Embeddings(model_id="ibm/slate-125m-english-rtrvr-v2",
+                 api_client=client)
+
+vectors = emb.embed_documents(texts=[
+    "Customer cancelled the contract because of latency.",
+    "Refund issued on 2026-03-14 for SKU A-882.",
+])
+print(len(vectors), len(vectors[0]))   # 2 vectors, 768 dims each
+\end{lstlisting}
+\end{examplebox}
+
+\subsection{Vector Database Choices and Capabilities}
+
+\begin{keybox}
+A \textbf{vector store} indexes embeddings so nearest-neighbour search runs in $O(\log N)$ instead of $O(N)$.
+\end{keybox}
+
+\subsubsection*{Purpose-built vector databases}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{FAISS} --- in-memory library; great for dev or single-node corpora.
+    \item \textbf{Chroma} --- embedded, persistent; popular for local apps and notebooks.
+    \item \textbf{Milvus / Zilliz} --- distributed, production-grade, supports HNSW + IVF.
+    \item \textbf{Weaviate}, \textbf{Pinecone}, \textbf{Qdrant} --- managed cloud vector DBs.
+\end{itemize}
+
+\subsubsection*{Vector extensions to popular databases}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{PostgreSQL + pgvector} --- adds a \texttt{vector} type and HNSW indexes.
+    \item \textbf{Elasticsearch} --- \texttt{dense\_vector} field with HNSW; also supports BM25 in the same index (hybrid search).
+    \item \textbf{OpenSearch} --- k-NN plugin, similar to Elasticsearch.
+    \item \textbf{Cassandra / SingleStore / Redis} --- all have first-class vector indexing now.
+\end{itemize}
+
+\subsubsection*{IBM-native choices}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{watsonx.data} (managed Milvus collections) --- IBM-native, governed, scales horizontally.
+    \item \textbf{IBM Cloud Databases for Elasticsearch} --- hybrid (BM25 + vector) for enterprise search.
+\end{itemize}
+
+\section{When to Use a Vector Database (Objective 4.3)}
+
+\subsection{The Concept of a Retriever}
+
+\begin{keybox}
+A \textbf{retriever} takes a query and returns the most relevant chunks. Vector retrievers are one kind; keyword retrievers (BM25), graph retrievers, and API-backed retrievers also exist.
+\end{keybox}
+
+\subsection{Types of Retrievers}
+
+\subsubsection*{Vector Databases}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Embedded} --- the vector store lives in-process (FAISS, Chroma). Cheapest, easiest. Best for $<$1M chunks on one node.
+    \item \textbf{Static} --- pre-computed index served from disk (sometimes called a ``frozen'' index). Cheap reads, no live updates.
+\end{itemize}
+
+\subsubsection*{IBM Watson Discovery}
+A mature managed search service. Supports natural-language queries, document understanding (tables, lists), enrichments (NLU annotators), and pre-built retrievers. Often appears on the exam as the legacy, fully-managed alternative to a self-built RAG pipeline.
+
+\subsubsection*{GitHub Code Retrieval API}
+A retrieval-as-a-service endpoint optimised for source code: it understands repo structure, file boundaries, language syntax, and returns code spans that match a natural-language query. Use it for code-assistance use cases instead of generic text retrieval.
+
+\subsubsection*{watsonx Discovery}
+The newer, watsonx-aligned discovery service: managed Elasticsearch under the hood, native hybrid search (BM25 + vector), tight integration with watsonx.ai prompt templates and \texttt{ibm-watsonx-ai} SDK, plus governance hooks. This is the IBM-recommended retriever for new builds.
+
+\subsection{Use-Case-Driven Selection}
+
+\begin{table}[h]
+\centering
+\begin{tabularx}{\textwidth}{X X}
+\toprule
+\textbf{Scenario} & \textbf{Recommended Retriever} \\
+\midrule
+Prototype on a laptop, $<$100k chunks & FAISS or Chroma (embedded) \\
+Production, single team, $<$10M chunks & Milvus (managed) or watsonx Discovery \\
+Production, multi-tenant, governed & \textbf{watsonx Discovery} (Elasticsearch + governance) \\
+Source-code Q\&A across repos & GitHub Code Retrieval API + LLM \\
+Enterprise search over PDFs, mature programme & Watson Discovery (legacy answer) \\
+Hybrid BM25 + dense vectors & Elasticsearch / OpenSearch / watsonx Discovery \\
+Read-mostly, low-update, low-cost & Static (frozen) index in object storage \\
+\bottomrule
+\end{tabularx}
+\caption{Picking a retriever.}
+\end{table}
+
+\examtip{When the question says \emph{``IBM-native, scalable, governed, hybrid search''}, the right answer is \textbf{watsonx Discovery}. When it says \emph{``code search across repos''}, it is the \textbf{GitHub Code Retrieval API}. When it says \emph{``classic IBM document-understanding product''}, it is \textbf{Watson Discovery} (older).}
+
+\section{RAG Implementation: Libraries and Tools (Objective 4.4)}
+
+\subsection{The Canonical RAG Pipeline}
+
+\[
+\boxed{\text{Load}} \to \boxed{\text{Chunk}} \to \boxed{\text{Embed}} \to \boxed{\text{Index}} \to \boxed{\text{Retrieve}} \to \boxed{\text{(Re-rank)}} \to \boxed{\text{Augment prompt}} \to \boxed{\text{Generate}}
+\]
+
+\subsection{Chunking / Text Splitting}
+
+\begin{table}[h]
+\centering
+\begin{tabularx}{\textwidth}{l X X}
+\toprule
+\textbf{Strategy} & \textbf{How} & \textbf{Pros / Cons} \\
+\midrule
+Fixed-size & N characters or tokens with $K$ overlap & Simple; breaks meaning at boundaries \\
+Recursive character & Split on $\backslash$n$\backslash$n, then $\backslash$n, then ``. '' & LangChain default; good general balance \\
+Semantic & Embed sentences, cluster by similarity & Best quality; most compute \\
+Document-aware & Use markdown headings / HTML tags / code blocks & Best for structured corpora \\
+Sliding window & Overlap by 10--20\% of chunk size & Reduces boundary loss \\
+\bottomrule
+\end{tabularx}
+\caption{Chunking strategies.}
+\end{table}
+
+\textbf{Rules of thumb:} 256--1024 tokens per chunk, 10--20\% overlap. Smaller chunks $\Rightarrow$ more precise retrieval but lose context; larger chunks $\Rightarrow$ more context but noisier retrieval.
+
+\subsection{Pattern A --- LangChain + Watsonx LLM}
+
+\begin{examplebox}[title=\textbf{End-to-end RAG with LangChain and watsonx}]
+\begin{lstlisting}[style=pythonstyle]
+from langchain_ibm import WatsonxLLM, WatsonxEmbeddings
+from langchain_community.vectorstores import FAISS
+from langchain_community.document_loaders import PyPDFLoader
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.chains import RetrievalQA
+import glob
+
+# 1) Load
+docs = []
+for p in glob.glob("./policies/*.pdf"):
+    docs.extend(PyPDFLoader(p).load())
+
+# 2) Chunk
+splitter = RecursiveCharacterTextSplitter(chunk_size=512, chunk_overlap=64)
+chunks   = splitter.split_documents(docs)
+
+# 3) Embed + index
+emb = WatsonxEmbeddings(model_id="ibm/slate-125m-english-rtrvr-v2",
+                        url=URL, apikey=API_KEY, project_id=PROJECT_ID)
+store = FAISS.from_documents(chunks, emb)
+
+# 4) Generator + retrieval QA chain
+llm = WatsonxLLM(model_id="ibm/granite-3-2-8b-instruct",
+                 url=URL, apikey=API_KEY, project_id=PROJECT_ID,
+                 params={"decoding_method": "greedy",
+                         "max_new_tokens": 300, "temperature": 0.2})
+
+qa = RetrievalQA.from_chain_type(
+        llm=llm,
+        retriever=store.as_retriever(search_type="mmr",
+                                     search_kwargs={"k": 4, "fetch_k": 20}),
+        return_source_documents=True)
+
+print(qa({"query": "What is the enterprise refund policy?"}))
+\end{lstlisting}
+\end{examplebox}
+
+\subsection{Pattern B --- LangChain + Watson ML + Elasticsearch}
+For governed enterprise deployments, replace FAISS with Elasticsearch's \texttt{dense\_vector} index (or watsonx Discovery, which fronts Elasticsearch).
+
+\begin{examplebox}[title=\textbf{Elasticsearch-backed retriever}]
+\begin{lstlisting}[style=pythonstyle]
+from langchain_elasticsearch import ElasticsearchStore
+
+store = ElasticsearchStore.from_documents(
+    chunks,
+    embedding=emb,
+    es_url=os.environ["ES_URL"],
+    es_user="elastic",
+    es_password=os.environ["ES_PASS"],
+    index_name="policy_rag")
+
+# Hybrid search (BM25 + dense vector + RRF fusion)
+retriever = store.as_retriever(
+    search_type="similarity",
+    search_kwargs={"k": 4, "strategy": "hybrid"})
+\end{lstlisting}
+\end{examplebox}
+
+\subsection{Pattern C --- LangChain + SingleStore}
+SingleStore offers vector indexes inside a transactional/analytical database, which can simplify the architecture (one store for vectors + structured data).
+
+\begin{examplebox}[title=\textbf{SingleStore-backed retriever}]
+\begin{lstlisting}[style=pythonstyle]
+from langchain_community.vectorstores import SingleStoreDB
+
+store = SingleStoreDB.from_documents(chunks, embedding=emb,
+                                     host=DB_URL, database="rag",
+                                     table_name="policy_chunks")
+retriever = store.as_retriever(search_kwargs={"k": 4})
+\end{lstlisting}
+\end{examplebox}
+
+\subsection{Pattern D --- LlamaIndex}
+\textbf{LlamaIndex} is an alternative to LangChain, more opinionated about RAG (it ships first-class concepts of \emph{Index}, \emph{Node}, \emph{Retriever}, \emph{Response Synthesiser}).
+
+\begin{examplebox}[title=\textbf{LlamaIndex + watsonx}]
+\begin{lstlisting}[style=pythonstyle]
+from llama_index.core import VectorStoreIndex, SimpleDirectoryReader, Settings
+from llama_index.llms.ibm import WatsonxLLM as WatsonxLLM_LI
+from llama_index.embeddings.ibm import WatsonxEmbeddings as WatsonxEmb_LI
+
+Settings.llm        = WatsonxLLM_LI(model_id="ibm/granite-3-2-8b-instruct", ...)
+Settings.embed_model = WatsonxEmb_LI(model_id="ibm/slate-125m-english-rtrvr-v2", ...)
+
+docs  = SimpleDirectoryReader("./policies").load_data()
+index = VectorStoreIndex.from_documents(docs)
+print(index.as_query_engine().query("What is the enterprise refund policy?"))
+\end{lstlisting}
+\end{examplebox}
+
+\subsection{Re-Ranking}
+
+\begin{keybox}
+A \textbf{cross-encoder re-ranker} takes the top-N candidates from the retriever and re-scores each one with the actual query. More accurate than the embedding similarity alone --- typically +10--20\% recall@k.
+\end{keybox}
+
+watsonx.ai exposes a re-rank endpoint: \texttt{POST /ml/v1/text/rerank}. The default model in 2026 is \texttt{cross-encoder/ms-marco-minilm-l-12-v2} or an IBM-equivalent.
+
+\subsection{Agentic RAG}
+
+\begin{keybox}
+\textbf{Agentic RAG} treats retrieval as a \emph{tool} an agent may decide to use --- maybe more than once, with different queries, until the agent has enough evidence.
+\end{keybox}
+
+Compared to plain RAG, agentic RAG can:
+\begin{itemize}[leftmargin=*]
+    \item Rewrite the user query into one or several refined searches.
+    \item Call multiple retrievers (policy DB, code repo, FAQ index).
+    \item Decide \emph{not} to retrieve when the answer is obvious.
+    \item Verify with a second retrieval pass if the first answer looks weak (groundedness check).
+\end{itemize}
+
+Trade-off: better accuracy on complex queries, higher latency and token cost.
+
+\subsection{AutoRAG}
+
+\begin{keybox}
+\textbf{AutoRAG} is a pattern (and a small set of open-source tools) for \emph{automatically tuning} the RAG pipeline --- choosing the chunk size, embedder, retriever \texttt{k}, re-ranker, and generator parameters to maximise a target metric on an evaluation set.
+\end{keybox}
+
+The exam expects you to recognise the concept: it is just hyperparameter optimisation, applied to the RAG pipeline.
+
+\section{Quality Levers (Highest ROI First)}
+
+\begin{enumerate}[leftmargin=*]
+    \item \textbf{Better chunking} --- document-aware splits beat fixed size on structured corpora.
+    \item \textbf{Hybrid search} --- BM25 + dense vectors (watsonx Discovery, Elasticsearch).
+    \item \textbf{Cross-encoder re-ranking} --- biggest single quality jump.
+    \item \textbf{Query rewriting} --- an LLM expands ambiguous queries before retrieval.
+    \item \textbf{Better embedder} --- e.g.\ slate-125 over slate-30.
+    \item \textbf{Larger / smarter generator} --- last resort; expensive.
+\end{enumerate}
+
+\section{Production Checklist}
+\begin{itemize}[leftmargin=*]
+    \item Index includes metadata (source, page, last\_updated, ACL).
+    \item Retriever returns citations; the prompt instructs the model to use them.
+    \item System prompt: \emph{``Answer only from the context. If absent, say so.''}
+    \item Granite Guardian groundedness check on the output.
+    \item Re-embedding job runs on document update (watsonx Pipelines or scheduled job).
+    \item Evaluation harness: 50--100 ground-truth Q\&A pairs, Recall@k and answer faithfulness scored each release.
+    \item Lineage and metrics piped into watsonx.governance.
+\end{itemize}
 
 \section{Key Takeaways}
+
+\begin{itemize}[leftmargin=*]
+    \item Embeddings are vectors of meaning; similar texts $\Rightarrow$ nearby vectors.
+    \item IBM defaults: \textbf{slate-125m-english-rtrvr-v2} (English), \textbf{granite-embedding-278m-multilingual} (multilingual).
+    \item Vector stores come in two flavours: purpose-built (FAISS, Chroma, Milvus, Weaviate, Pinecone) or DB extensions (pgvector, Elasticsearch \texttt{dense\_vector}).
+    \item Retriever types on the exam: embedded / static vector store, \textbf{Watson Discovery} (legacy), \textbf{GitHub Code Retrieval API}, \textbf{watsonx Discovery} (current IBM default).
+    \item Implementation toolkits: \textbf{LangChain + WatsonxLLM}, \textbf{LangChain + WML + Elasticsearch}, \textbf{LangChain + SingleStore}, \textbf{LlamaIndex}.
+    \item Chunking dominates quality. Re-ranking is the second-biggest lever.
+    \item \textbf{Agentic RAG} treats retrieval as a tool the agent invokes adaptively. \textbf{AutoRAG} auto-tunes the pipeline.
+\end{itemize}
+
 \section{Practice Questions}
+
+\begin{practicebox}[title=\textbf{Q4.1 --- Embedder pick}]
+You need an IBM-native multilingual retriever for an enterprise RAG bot covering EN/ES/FR/DE.
+
+\textbf{A.} \texttt{slate-30m-english-rtrvr-v2}\\
+\textbf{B.} \texttt{ibm/granite-embedding-278m-multilingual}\\
+\textbf{C.} \texttt{all-MiniLM-L6-v2}\\
+\textbf{D.} \texttt{flan-t5-xxl}
+
+\vspace{0.2cm}\textit{Answer: B.}
+\end{practicebox}
+
+\begin{practicebox}[title=\textbf{Q4.2 --- Prereqs}]
+Which three pieces do you need to call the embeddings API on watsonx?
+
+\textbf{A.} API key only\\
+\textbf{B.} Credentials, project (or space) ID, and optionally a deployment ID\\
+\textbf{C.} Username + password + IP allowlist\\
+\textbf{D.} GitHub OAuth token
+
+\vspace{0.2cm}\textit{Answer: B.}
+\end{practicebox}
+
+\begin{practicebox}[title=\textbf{Q4.3 --- Retriever pick}]
+The team wants IBM-native, hybrid BM25 + dense search, with governance integration. What do you choose?
+
+\textbf{A.} FAISS\\
+\textbf{B.} Chroma\\
+\textbf{C.} \textbf{watsonx Discovery}\\
+\textbf{D.} GitHub Code Retrieval API
+
+\vspace{0.2cm}\textit{Answer: C.}
+\end{practicebox}
+
+\begin{practicebox}[title=\textbf{Q4.4 --- Implementation pattern}]
+A LangChain pipeline uses \texttt{WatsonxEmbeddings} for indexing and \texttt{WatsonxLLM} for generation. Which pattern is this?
+
+\textbf{A.} Pure LlamaIndex\\
+\textbf{B.} LangChain + WatsonX LLM\\
+\textbf{C.} LangChain + SingleStore\\
+\textbf{D.} Watson Discovery only
+
+\vspace{0.2cm}\textit{Answer: B.}
+\end{practicebox}
+
+\begin{practicebox}[title=\textbf{Q4.5 --- Chunking}]
+The RAG bot retrieves correct chunks but misses answers near chunk boundaries. Cheapest fix?
+
+\textbf{A.} Switch to a 70B model\\
+\textbf{B.} Increase chunk overlap to $\sim$15--20\%\\
+\textbf{C.} Lower top-k from 4 to 1\\
+\textbf{D.} Disable re-ranking
+
+\vspace{0.2cm}\textit{Answer: B.}
+\end{practicebox}
+
+\begin{practicebox}[title=\textbf{Q4.6 --- Agentic RAG}]
+Compared to plain RAG, what does Agentic RAG add?
+
+\textbf{A.} Larger embeddings\\
+\textbf{B.} Adaptive retrieval --- the agent can rewrite the query and call retrievers multiple times\\
+\textbf{C.} Quantisation\\
+\textbf{D.} Differential privacy
+
+\vspace{0.2cm}\textit{Answer: B.}
+\end{practicebox}
+
+\begin{practicebox}[title=\textbf{Q4.7 --- AutoRAG}]
+A team wants to automatically search for the best chunk size, embedder, and top-k for their RAG pipeline. What is this?
+
+\textbf{A.} Agentic RAG\hspace{1em}\textbf{B.} AutoRAG\hspace{1em}\textbf{C.} Watson Discovery\hspace{1em}\textbf{D.} InstructLab
+
+\vspace{0.2cm}\textit{Answer: B.}
+\end{practicebox}
 
 \cleardoublepage

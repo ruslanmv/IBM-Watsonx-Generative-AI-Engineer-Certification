@@ -13,21 +13,25 @@
 \begin{center}
     \textbf{IBM Watsonx Generative AI Engineer Associate (C1000-185)}\\
     Complete Study Guide \& Exam Workbook\\[1cm]
-    
-    Copyright \textcopyright\ 2024 by [Your Name]\\[0.5cm]
-    
-    All rights reserved. No part of this publication may be reproduced, distributed, or transmitted in any form or by any means, including photocopying, recording, or other electronic or mechanical methods, without the prior written permission of the publisher.\\[1cm]
-    
+
+    Copyright \textcopyright\ 2026 by Ruslan Idelfonso Magana Vsevolodovna\\[0.5cm]
+
+    Licensed under the \textbf{Apache License, Version 2.0} (the ``License''); you may not use this work except in compliance with the License. You may obtain a copy of the License at \\
+    \url{http://www.apache.org/licenses/LICENSE-2.0}\\[0.5cm]
+    Unless required by applicable law or agreed to in writing, this work is distributed on an ``\textsc{as is}'' \textsc{basis, without warranties or conditions of any kind}, either express or implied. See the License for the specific language governing permissions and limitations.\\[1cm]
+
     \textbf{Disclaimer}\\
-    This study guide is an independent publication and has not been authorized, sponsored, or otherwise approved by IBM Corporation. IBM, watsonx, watsonx.ai, and InstructLab are trademarks or registered trademarks of IBM Corporation.\\[0.5cm]
-    
-    The information provided in this book is for educational purposes only. While every effort has been made to ensure accuracy, the author and publisher assume no responsibility for errors or omissions.\\[1cm]
-    
-    First Edition: 2024\\
-    ISBN: [To be assigned]\\[1cm]
-    
+    This study guide is an independent publication and has not been authorised, sponsored, or otherwise approved by IBM Corporation. IBM, watsonx, watsonx.ai, watsonx.data, watsonx.governance, Granite, Slate, and InstructLab are trademarks or registered trademarks of IBM Corporation.\\[0.5cm]
+
+    The information provided in this book is for educational and exam-preparation purposes only. While every effort has been made to ensure accuracy against the C1000-185 official study guide and the current watsonx.ai API documentation, the author assumes no responsibility for errors or omissions.\\[1cm]
+
+    First Edition: 2026\\
+    ISBN (paperback): [To be assigned by KDP]\\
+    ISBN (eBook):     [To be assigned by KDP]\\[1cm]
+
     For questions, corrections, or feedback:\\
-    \url{https://github.com/your-repo/ibm-c1000-185-certification}
+    \url{https://github.com/ruslanmv/IBM-Watsonx-Generative-AI-Engineer-Certification}\\
+    \url{https://ruslanmv.com}
 \end{center}
 \vspace*{\fill}
 
@@ -52,27 +56,25 @@
 \chapter*{Preface}
 \addcontentsline{toc}{chapter}{Preface}
 
-The field of Generative AI is rapidly transforming the technological landscape, and IBM's watsonx platform is at the forefront of this revolution. This comprehensive study guide and exam workbook is meticulously crafted to prepare you for the \textbf{IBM Watsonx Generative AI Engineer Associate (C1000-185)} certification exam.
+The field of Generative AI is moving fast, and IBM's \textbf{watsonx} platform is where many enterprises will deploy it. This study guide is the companion text for the YouTube and Udemy series of the same name --- all three formats follow the official \textbf{IBM watsonx Generative AI Engineer v1 -- Associate (C1000-185)} exam blueprint.
 
 \section*{Purpose of This Book}
 
-This book is more than just a collection of facts; it is a structured learning path designed to build a solid foundation in Generative AI concepts, prompt engineering, fine-tuning, Retrieval-Augmented Generation (RAG), deployment, and orchestration, all within the context of the IBM watsonx ecosystem. We focus on practical, exam-oriented knowledge, ensuring that you not only understand the theory but also know how to apply it in real-world scenarios using IBM's tools like watsonx.ai and InstructLab.
+This book is a structured, exam-oriented learning path covering Generative AI concepts, prompt engineering, fine-tuning, Retrieval-Augmented Generation (RAG), deployment, and orchestration on the IBM watsonx platform. Every chapter is mapped 1:1 to a section of the official exam objectives, and every code sample uses the \textbf{current watsonx.ai model catalogue and SDKs} (Granite 3.x, Llama 3.x, Mistral, Granite Guardian, Granite-Embedding, Slate v2, \texttt{ibm-watsonx-ai} Python SDK). Older identifiers such as \texttt{granite-13b-instruct-v2}, \texttt{llama-2-*}, and \texttt{flan-*} are flagged where they appear so you can recognise them on the exam without using them in new work.
 
 \section*{Who This Book Is For}
 
-This study guide is designed for:
-
 \begin{itemize}[leftmargin=*]
-    \item \textbf{AI Engineers and Developers} looking to validate their skills with IBM watsonx
+    \item \textbf{AI Engineers and Developers} validating their skills with IBM watsonx
     \item \textbf{Data Scientists} expanding into generative AI implementation
     \item \textbf{Solution Architects} designing AI-powered enterprise solutions
     \item \textbf{Technical Professionals} seeking IBM certification credentials
-    \item \textbf{Students and Self-Learners} building expertise in enterprise AI platforms
+    \item \textbf{Self-Learners} building expertise in enterprise AI platforms
 \end{itemize}
 
 \section*{How to Use This Book}
 
-This book is structured as both a training manual and a practical workbook to maximize your learning and retention. Each topic within a chapter follows a consistent, easy-to-digest format:
+Each topic within a chapter follows a consistent format so you can study in short sessions and still retain the material:
 
 \begin{table}[h]
 \centering
@@ -80,19 +82,19 @@ This book is structured as both a training manual and a practical workbook to ma
 \toprule
 \normalfont\textbf{Element} & \textbf{Purpose} \\
 \midrule
-Concept Explanation & Provides a clear, beginner-friendly definition and explanation of the core idea \\
+Concept Explanation & Clear, beginner-friendly definition of the core idea \\
 \addlinespace
-Why It Matters & Contextualizes the concept, explaining its importance in the Generative AI industry and its relevance to the C1000-185 exam \\
+Why It Matters & Why this is on the exam and how it shows up in practice \\
 \addlinespace
-Real-World Scenarios & Practical, detailed examples to illustrate the concept's application \\
+Real-World Scenarios & Concrete examples on the watsonx platform \\
 \addlinespace
-Architecture Diagrams & Visual aids to break down complex systems and flows into understandable components \\
+Architecture Diagrams & Visual aids for complex flows \\
 \addlinespace
-watsonx Examples & Specific examples and use cases demonstrating implementation within the IBM watsonx platform \\
+watsonx Examples & Current-API code snippets you can run \\
 \addlinespace
-Practice Questions & End-of-topic exercises (MCQ, scenario-based, short descriptive) to test your understanding \\
+Practice Questions & Exam-style questions to test recall \\
 \addlinespace
-Key Takeaways & Concise chapter summaries to reinforce the most critical points \\
+Key Takeaways & Bullet-point chapter summary \\
 \bottomrule
 \end{tabularx}
 \caption{Book Structure Elements}
@@ -101,18 +103,15 @@ Key Takeaways & Concise chapter summaries to reinforce the most critical points 
 \subsection*{Workbook Components}
 
 \begin{itemize}[leftmargin=*]
-    \item \textbf{Chapter-End Questions}: Each chapter concludes with exam-style questions (multiple choice, scenario-based, short descriptive) to ensure comprehensive topic mastery.
-    
-    \item \textbf{Full Mock Test}: A 62-question mock test at the end of the book, complete with an answer key and detailed explanations, to simulate the actual exam experience.
-    
-    \item \textbf{Glossary}: A comprehensive dictionary of all Generative AI and watsonx terms used throughout the book.
-    
-    \item \textbf{Summary Revision Sheet}: A concise cheat sheet for quick, last-minute revision before the exam.
+    \item \textbf{Chapter-End Questions}: Exam-style MCQ and scenario questions at the end of every chapter.
+    \item \textbf{Full Mock Test}: A 62-question mock exam in Appendix B, with an answer key in Appendix C.
+    \item \textbf{Glossary}: All the GenAI and watsonx terms used in the book, in Appendix A.
+    \item \textbf{Cheat Sheet}: A one-page exam-day revision card in Appendix D.
 \end{itemize}
 
 \section*{Exam Overview}
 
-The IBM Watsonx Generative AI Engineer Associate (C1000-185) certification validates your foundational knowledge and skills in designing, developing, and managing generative AI solutions using the watsonx.ai studio.
+The \textbf{IBM watsonx Generative AI Engineer v1 -- Associate} certification validates that you can design, build, and operate generative AI solutions on watsonx.ai.
 
 \begin{table}[h]
 \centering
@@ -121,12 +120,12 @@ The IBM Watsonx Generative AI Engineer Associate (C1000-185) certification valid
 \normalfont\textbf{Exam Detail} & \textbf{Specification} \\
 \midrule
 Exam Code & C1000-185 \\
-Certification Title & IBM Certified watsonx Generative AI Engineer - Associate \\
+Certification Title & IBM Certified watsonx Generative AI Engineer -- Associate \\
 Number of Questions & 62 \\
 Passing Score & 44 (approximately 71\%) \\
 Time Allowed & 90 minutes \\
-Status & Live \\
-Prerequisites & Recommended 6 months to 1 year of hands-on experience with the product or solution \\
+Delivery & Pearson VUE (online proctored or test center) \\
+Prerequisites & 6--12 months hands-on experience with watsonx.ai \\
 \bottomrule
 \end{tabularx}
 \caption{Exam Specifications}
@@ -145,7 +144,7 @@ Prerequisites & Recommended 6 months to 1 year of hands-on experience with the p
 3 & Fine-Tuning & 31\% \\
 4 & Retrieval-Augmented Generation (RAG) & 17\% \\
 5 & Deployment & 13\% \\
-6 & Integration with Model Orchestration & 8\% \\
+6 & watsonx -- Integration and Model Orchestration & 8\% \\
 \midrule
 & \textbf{Total} & \textbf{100\%} \\
 \bottomrule
@@ -153,9 +152,9 @@ Prerequisites & Recommended 6 months to 1 year of hands-on experience with the p
 \caption{Exam Section Weightings}
 \end{table}
 
-\section*{Study Strategy and 30-Day Learning Plan}
+\examtip{\textbf{Fine-tuning is 31\%} of the test --- almost a third. Knowing PEFT, LoRA, prompt tuning, InstructLab, and the Tuning Studio cold is the single biggest score lever in the entire exam.}
 
-This suggested 30-day plan is designed to help you systematically cover all the material and maximize your readiness for the C1000-185 exam.
+\section*{Study Strategy and 30-Day Learning Plan}
 
 \begin{table}[h]
 \small
@@ -164,53 +163,51 @@ This suggested 30-day plan is designed to help you systematically cover all the 
 \toprule
 \textbf{Week} & \textbf{Days} & \textbf{Focus \& Activities} \\
 \midrule
-\textbf{Week 1:} & Day 1-2 & \textbf{Fundamentals}: Read Chapter 1 (GenAI capabilities, limitations, architecture patterns) \\
-\textbf{Fundamentals} & Day 3-5 & \textbf{Prompt Engineering}: Complete Chapter 2 (zero/few-shot, Prompt Lab) \\
-& Day 6-7 & \textbf{Review}: Complete all practice questions from Chapters 1-2 \\
+\textbf{Week 1:} & Day 1--2 & \textbf{Foundations}: Chapter 1 (capabilities, patterns, model selection) \\
+\textbf{Foundations} & Day 3--5 & \textbf{Prompt Engineering}: Chapter 2 (zero/few-shot, parameters, Prompt Lab) \\
+& Day 6--7 & \textbf{Review}: practice questions from Chapters 1--2 \\
 \midrule
-\textbf{Week 2:} & Day 8-12 & \textbf{Fine-Tuning}: Complete Chapter 3 (LoRA, InstructLab, datasets) - Largest section \\
-\textbf{Deep Dive} & Day 13-14 & \textbf{Review}: Complete all Chapter 3 practice questions and case study \\
+\textbf{Week 2:} & Day 8--12 & \textbf{Fine-Tuning}: Chapter 3 (LoRA, quantization, InstructLab, SDG) --- largest section \\
+\textbf{Deep Dive} & Day 13--14 & \textbf{Review}: Chapter 3 practice + a small Tuning Studio job \\
 \midrule
-\textbf{Week 3:} & Day 15-18 & \textbf{RAG}: Complete Chapter 4 (embeddings, vector DBs, LangChain) \\
-\textbf{Application} & Day 19-21 & \textbf{Deployment}: Complete Chapter 5 (deployment planning, versioning) \\
-& Day 22-23 & \textbf{Integration}: Complete Chapter 6 (API/SDK, orchestration) \\
+\textbf{Week 3:} & Day 15--18 & \textbf{RAG}: Chapter 4 (embeddings, vector DBs, LangChain, agentic RAG) \\
+\textbf{Application} & Day 19--21 & \textbf{Deployment}: Chapter 5 (spaces, versioning, gateway) \\
+& Day 22--23 & \textbf{Integration}: Chapter 6 (SDK, LangChain, MCP) \\
 \midrule
-\textbf{Week 4:} & Day 24-26 & \textbf{Comprehensive Review}: Review all Key Takeaways, revisit challenging topics \\
-\textbf{Final Prep} & Day 27-28 & \textbf{Mock Test}: Take the full 62-question mock test (90 minutes, timed) \\
-& Day 29 & \textbf{Mock Test Review}: Review answers and explanations, study weak areas \\
-& Day 30 & \textbf{Final Polish}: Quick review of Glossary and Revision Sheet. Rest well! \\
+\textbf{Week 4:} & Day 24--26 & \textbf{Comprehensive Review}: re-read all Key Takeaways \\
+\textbf{Final Prep} & Day 27--28 & \textbf{Mock Test}: full 62-question mock under 90-minute timing \\
+& Day 29 & \textbf{Mock Test Review}: study weak areas; redo failed questions \\
+& Day 30 & \textbf{Final Polish}: Glossary + Cheat Sheet, then rest. \\
 \bottomrule
 \end{tabularx}
 \caption{30-Day Study Plan}
 \end{table}
 
-\section*{Prerequisites and Recommended Preparation}
-
-Before starting your exam preparation, ensure you have:
+\section*{Prerequisites}
 
 \begin{itemize}[leftmargin=*]
     \item Basic understanding of machine learning concepts
     \item Familiarity with Python programming
     \item Experience with cloud platforms (preferably IBM Cloud)
     \item Knowledge of REST APIs and web services
-    \item Access to IBM watsonx.ai (trial or production environment)
+    \item Access to IBM watsonx.ai (the free trial covers all the labs in this book)
 \end{itemize}
 
 \section*{Acknowledgments}
 
-This study guide would not have been possible without the extensive documentation provided by IBM, the vibrant watsonx community, and the many professionals who have shared their experiences and insights about the platform.
+Thanks to the IBM watsonx documentation team, the InstructLab maintainers, and the readers of the companion YouTube and Udemy courses whose feedback shaped this edition.
 
 \section*{Your Journey Begins Here}
 
-Your journey to becoming an IBM Certified watsonx Generative AI Engineer Associate begins now. Whether you're new to generative AI or an experienced practitioner looking to validate your skills, this guide will provide the structured learning path you need to succeed.
+Whether you are new to generative AI or a practitioner validating your skills, this guide will get you to a C1000-185 pass.
 
 \vspace{1cm}
 
-\noindent\textit{Good luck with your studies and certification journey!}
+\noindent\textit{Good luck --- I will see you on the other side of the exam.}
 
 \vspace{0.5cm}
 
-\noindent\textbf{[Your Name]}\\
-\textit{Author}
+\noindent\textbf{Ruslan Idelfonso Magana Vsevolodovna}\\
+\textit{Author --- ruslanmv.com}
 
 \cleardoublepage

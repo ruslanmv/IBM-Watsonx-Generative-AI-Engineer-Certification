@@ -1,37 +1,58 @@
-\chapter{Mock Exam Answer Key and Explanations}
+\chapter{Mock Exam --- Answer Key}
 \label{app:answers}
 
-\section{Answer Key}
+Answers are paired with a one-paragraph explanation and a pointer to the chapter / section in this book that covers the topic in depth.
 
-\begin{multicols}{3}
-\begin{enumerate}
-\item C
-\item B
-\item B
-\item C
-% ... continues through Q62
+\begin{enumerate}[leftmargin=*]
+
+\item \textbf{C.} Classification --- output is one of a fixed set of labels. (Ch.\ \ref{ch:foundations}, \S 1.1)
+\item \textbf{B.} Mixture of Experts --- router activates a subset of expert sub-networks per token. (Ch.\ \ref{ch:foundations}, \S 1.2)
+\item \textbf{C.} RAG --- changing facts in your own corpus are exactly what RAG solves. (Ch.\ \ref{ch:rag})
+\item \textbf{B.} Granite 8B + Slate v2 retriever is the IBM-native, lowest-cost answer for an English FAQ bot over a $\sim$500-doc corpus. (Ch.\ \ref{ch:rag}, \S 4.1, 4.4)
+\item \textbf{C.} Agentic architecture --- multi-step, evidence-gathering, tool-using. (Ch.\ \ref{ch:foundations}, \S 1.6; Ch.\ \ref{ch:integration}, \S 6.4)
+\item \textbf{B.} Granite Guardian --- jailbreak, HAP, and groundedness detection. (Ch.\ \ref{ch:foundations}, \S 1.8)
+\item \textbf{B.} Greedy decoding is deterministic by definition. (Ch.\ \ref{ch:prompting}, \S 2.4)
+\item \textbf{C.} Repetition penalty $\sim$1.15 directly counters repetition loops. (Ch.\ \ref{ch:prompting}, \S 2.7)
+\item \textbf{B.} \texttt{max\_new\_tokens} caps the output, \texttt{time\_limit} caps the wall-clock time. (Ch.\ \ref{ch:prompting}, \S 2.4)
+\item \textbf{B.} Prompt template in a Deployment Space gives versioning, governance, and stable variable interface. (Ch.\ \ref{ch:prompting}, \S 2.3; Ch.\ \ref{ch:deployment})
+\item \textbf{C.} Freeform mode removes the UI guardrails for power users. (Ch.\ \ref{ch:prompting}, \S 2.6)
+\item \textbf{A.} Few-shot examples anchor the label vocabulary; stop\_sequences end the output cleanly. (Ch.\ \ref{ch:prompting}, \S 2.1, 2.4)
+\item \textbf{B.} Hallucination = confident, plausible, false output. Mitigate with RAG, low temperature, and Guardian groundedness. (Ch.\ \ref{ch:prompting}, \S 2.8)
+\item \textbf{B.} Hard prompts are human-readable; auditors can review them. (Ch.\ \ref{ch:fine-tuning}, \S 3.1)
+\item \textbf{C.} QLoRA fits a 13B model on a single 24~GB GPU \emph{and} fine-tunes it. (Ch.\ \ref{ch:fine-tuning}, \S 3.4, 3.5)
+\item \textbf{B.} The two LoRA configuration knobs are rank $r$ and scaling factor $\alpha$. (Ch.\ \ref{ch:fine-tuning}, \S 3.5)
+\item \textbf{C.} Data Refinery profiles datasets and saves repeatable flows. (Ch.\ \ref{ch:fine-tuning}, \S 3.3)
+\item \textbf{C.} InstructLab is built for ``new knowledge + new skills'' at scale via taxonomy + SDG + multi-phase tuning. (Ch.\ \ref{ch:fine-tuning}, \S 3.7)
+\item \textbf{B.} Anderson--Darling weights the tails more than K--S. (Ch.\ \ref{ch:fine-tuning}, \S 3.8)
+\item \textbf{B.} Leakage probability $\delta$ is exactly the chance the DP guarantee fails. (Ch.\ \ref{ch:fine-tuning}, \S 3.8)
+\item \textbf{B.} Add LoRA dropout and reduce epochs --- standard regularisation. (Ch.\ \ref{ch:fine-tuning}, \S 3.5)
+\item \textbf{B.} Prompt tuning is the cheapest legitimate option for $\sim$300 examples on watsonx. (Ch.\ \ref{ch:fine-tuning}, \S 3.1, 3.6)
+\item \textbf{B.} InstructLab synthetic data generation uses the LAB method. (Ch.\ \ref{ch:fine-tuning}, \S 3.6, 3.7)
+\item \textbf{B.} \texttt{granite-embedding-278m-multilingual} is IBM-native multilingual. (Ch.\ \ref{ch:rag}, \S 4.1)
+\item \textbf{B.} Credentials + project (or space) ID + optional deployment ID. (Ch.\ \ref{ch:rag}, \S 4.2)
+\item \textbf{C.} watsonx Discovery --- IBM-native, hybrid, governed. (Ch.\ \ref{ch:rag}, \S 4.3)
+\item \textbf{B.} Increase chunk overlap to recover boundary-spanning info. (Ch.\ \ref{ch:rag}, \S 4.4)
+\item \textbf{B.} Adaptive retrieval is the defining property of agentic RAG. (Ch.\ \ref{ch:rag}, \S 4.4)
+\item \textbf{B.} AutoRAG = hyperparameter search over the RAG pipeline. (Ch.\ \ref{ch:rag}, \S 4.4)
+\item \textbf{B.} \texttt{langchain-ibm} for the LangChain bindings + \texttt{ibm-watsonx-ai} for direct SDK. The old \texttt{ibm-watson-machine-learning} package is legacy. (Ch.\ \ref{ch:integration}, \S 6.4)
+\item \textbf{B.} Promote a new version --- previous version stays available for rollback. (Ch.\ \ref{ch:deployment}, \S 5.2)
+\item \textbf{A.} If variables and schema are unchanged, the deployment ID is the same and the app does not change. (Ch.\ \ref{ch:deployment}, \S 5.4)
+\item \textbf{B.} Model Gateway fronts multiple backing models. (Ch.\ \ref{ch:deployment}, \S 5.4)
+\item \textbf{B.} Software / Cloud Pak deploys watsonx.ai into your own environment. (Ch.\ \ref{ch:deployment}, \S 5.5)
+\item \textbf{B.} watsonx AI Pipelines schedules recurring corpus ingest jobs. (Ch.\ \ref{ch:deployment}, \S 5.5)
+\item \textbf{B.} Per-service service ID with a scoped key in a secrets manager. (Ch.\ \ref{ch:integration}, \S 6.1)
+\item \textbf{C.} Exponential backoff with jitter on transient 4xx/5xx errors. (Ch.\ \ref{ch:integration}, \S 6.1)
+\item \textbf{B.} Model Context Protocol (MCP) is the vendor-neutral open standard. (Ch.\ \ref{ch:integration}, \S 6.3)
+\item \textbf{B.} ChatWatsonx + Tools + create\_tool\_calling\_agent + AgentExecutor + Memory. (Ch.\ \ref{ch:integration}, \S 6.4)
+
 \end{enumerate}
-\end{multicols}
 
-\section{Detailed Explanations}
-
-\subsection*{Question 1: Answer C - RAG with regulatory documents}
-
-\textbf{Explanation}: RAG is the most appropriate because:
-\begin{itemize}
-    \item Grounds responses in approved documentation
-    \item Provides citation/source tracking for regulatory compliance
-    \item Keeps knowledge current as documents are updated
-    \item Reduces hallucination risk compared to pure generation
+\section*{Scoring Guide}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{36--40 correct (90\%+):} You are ready --- book the exam.
+    \item \textbf{30--35 correct (75--89\%):} Comfortable margin. Re-read the chapters of any missed questions.
+    \item \textbf{25--29 correct (62--74\%):} On the edge. Focus on Chapter~\ref{ch:fine-tuning} (31\% of the real exam) and re-take the mock.
+    \item \textbf{Below 25:} Not yet. Restart from Chapter~\ref{ch:foundations}, complete every practice question, and retry in two weeks.
 \end{itemize}
-
-\textbf{Why other answers are incorrect}:
-\begin{itemize}
-    \item A: Simple prompting lacks grounding in specific documents
-    \item B: Fine-tuning doesn't provide source attribution and requires retraining for updates
-    \item D: Web search introduces unverified information
-\end{itemize}
-
-% Detailed explanations for all 62 questions...
 
 \cleardoublepage

@@ -1,56 +1,89 @@
-\chapter{Glossary of Terms}
+\chapter{Glossary}
 \label{app:glossary}
 
-\begin{description}[leftmargin=!, labelwidth=\widthof{\bfseries Temperature}]
+A quick-reference dictionary of the terms used in this book and on the C1000-185 exam. Where a term has a current 2026 watsonx model ID associated with it, the ID is listed.
 
-\item[Agent] An AI system that can reason, plan, and use tools to accomplish complex tasks.
-
-\item[Attention Mechanism] The component of transformer models that determines which parts of the input to focus on.
-
-\item[Chunking] Breaking large documents into smaller segments for processing or embedding.
-
-\item[Context Window] The maximum amount of text (in tokens) that an LLM can process at once.
-
-\item[Embedding] A numerical vector representation of text that captures semantic meaning.
-
-\item[Fine-Tuning] Adapting a pre-trained model to specific tasks or domains using additional training.
-
-\item[Foundation Model] A large-scale pre-trained model that can be adapted for various tasks.
-
-\item[Hallucination] When an LLM generates plausible but factually incorrect information.
-
-\item[InstructLab] IBM's open-source tool for customizing foundation models with new knowledge.
-
-\item[Knowledge Cutoff] The date beyond which an LLM has no training data.
-
-\item[LangChain] A framework for building applications with language models.
-
-\item[LoRA] Low-Rank Adaptation - A parameter-efficient fine-tuning technique.
-
-\item[Prompt] The input text provided to an LLM to instruct it on a task.
-
-\item[Prompt Engineering] The practice of designing effective prompts to elicit desired LLM outputs.
-
-\item[Quantization] Reducing model precision to decrease size and computational requirements.
-
-\item[RAG] Retrieval-Augmented Generation - Combining LLMs with external knowledge retrieval.
-
-\item[Temperature] A parameter controlling the randomness of LLM outputs (0-1).
-
-\item[Token] The basic unit of text processed by LLMs (roughly 0.75 words).
-
-\item[Top-k] A parameter limiting sampling to the k most likely next tokens.
-
-\item[Top-p] A parameter for nucleus sampling, selecting tokens whose cumulative probability reaches p.
-
-\item[Transformer] The neural network architecture underlying modern LLMs.
-
-\item[Vector Database] A specialized database for storing and querying embedding vectors.
-
-\item[watsonx.ai] IBM's enterprise platform for foundation models and generative AI.
-
-\item[Zero-Shot] Performing a task without providing examples, relying on pre-trained knowledge.
-
+\begin{description}[leftmargin=*,style=nextline]
+\item[Adapter] A small, trainable add-on to a frozen base model. LoRA is the most common example.
+\item[Agent] An LLM-driven controller that picks tools, executes them, and loops until a goal is met. See ReAct.
+\item[Agentic RAG] RAG where the agent decides when and how to retrieve, possibly multiple times.
+\item[AI Pipelines] watsonx's managed scheduler for data and AI jobs (ingest, embed, index, evaluate).
+\item[Anderson--Darling test] Statistical test for distribution similarity, weighted toward the tails. Used to validate synthetic data quality.
+\item[AutoRAG] Automatic hyperparameter search over the RAG pipeline (chunk size, embedder, $k$, re-ranker).
+\item[Base model] An untuned next-token predictor (e.g.\ \texttt{ibm/granite-3-8b-base}). Starting point for fine-tuning.
+\item[BF16 / FP16 / FP32] Floating-point precisions used in model weights. Smaller = cheaper memory and bandwidth.
+\item[Billing class] watsonx pricing tier (Class 1/2/3/12/13). Higher class = stronger model = higher cost per million tokens.
+\item[Chain] LangChain primitive: a linear or DAG sequence of prompts and parsers.
+\item[Chain-of-Thought (CoT)] Prompting technique: ``think step by step'' before answering.
+\item[Chat model] An instruct model further tuned for multi-turn conversation with system / user / assistant roles.
+\item[Chunking] Splitting documents into pieces for embedding and retrieval.
+\item[Cloud Pak for Data] IBM's on-prem / multi-cloud distribution of watsonx (Software model).
+\item[Context window] The maximum number of tokens (input + output) a model can process at once.
+\item[CRISPE / APE / CARE] Prompt-design frameworks. CRISPE = Capacity, Request, Insight, Style, Personality, Experiment.
+\item[Data Refinery] Visual data-prep tool in watsonx.ai for profiling and cleaning datasets.
+\item[Decoding] How the next token is chosen: \texttt{greedy} (argmax) or \texttt{sample} (with temperature / top-k / top-p).
+\item[Deployment Space] Permission-scoped, audited container for promoted assets and REST endpoints. Production sibling of a Project.
+\item[Differential privacy] Algorithmic noise that makes the presence of any one record statistically undetectable in outputs. Controlled by privacy budget $\varepsilon$, leakage probability $\delta$, and random seed.
+\item[Embedding] A dense vector of floats representing the meaning of a piece of text.
+\item[Factsheet] A governance artefact summarising a model version: intended use, evaluation results, known limitations.
+\item[Few-shot prompting] Including 2--5 worked input/output examples in the prompt.
+\item[Foundation model] A large model trained on broad data, ready for many downstream tasks.
+\item[Full fine-tuning] Updating every weight in the model. Highest cost, highest risk of forgetting, sometimes highest quality.
+\item[Granite] IBM's foundation-model family. Default IBM-native answer on this exam. Current: \texttt{ibm/granite-3-2-8b-instruct}, \texttt{ibm/granite-3-3-8b-instruct}, \texttt{ibm/granite-code-3-8b-instruct}.
+\item[Granite Embedding] IBM's multilingual embedding family: \texttt{ibm/granite-embedding-107m-multilingual}, \texttt{ibm/granite-embedding-278m-multilingual}.
+\item[Granite Guardian] IBM's safety-filter classifier family: \texttt{ibm/granite-guardian-3-8b}, \texttt{ibm/granite-guardian-3-2-5b}. Detects harm, bias, jailbreaks, ungrounded answers.
+\item[Greedy decoding] Always pick the highest-probability next token. Deterministic.
+\item[Hallucination] Confident, plausible-sounding output that is factually wrong.
+\item[Hard prompt] Human-readable text tokens, written by a person.
+\item[HAP] Hate, Abuse, Profanity --- a category of output filters.
+\item[HNSW] Hierarchical Navigable Small World, the most popular vector-index algorithm in production.
+\item[Hybrid search] BM25 (keyword) + dense vector retrieval, fused (often RRF). watsonx Discovery default.
+\item[InstructLab] IBM's open-source toolkit for community model customisation: taxonomy + synthetic data + multi-phase tuning.
+\item[Instruct model] Fine-tuned to follow imperative instructions (``Summarise this'').
+\item[JSONL] JSON-Lines format: one JSON object per line. The Tuning Studio input format.
+\item[Kolmogorov--Smirnov test] Distribution-similarity test; compares two empirical CDFs.
+\item[LangChain] Python / JS framework with chains, agents, tools, memory, retrievers, output parsers.
+\item[LangGraph] LangChain sister project providing explicit state-machine workflows with conditional edges.
+\item[LAB] Large-scale Alignment for chatBots. The InstructLab methodology (Sudalairaj et al., 2024).
+\item[Llama] Meta's open-weight LLM family. Current on watsonx: \texttt{meta-llama/llama-3-3-70b-instruct}, \texttt{meta-llama/llama-3-2-*}.
+\item[LlamaIndex] Alternative to LangChain, RAG-first.
+\item[LoRA] Low-Rank Adaptation. Train two small matrices $A$, $B$ alongside frozen weights.
+\item[MCP] Model Context Protocol. Open standard for exposing tools and data to LLM apps.
+\item[Mistral / Mixtral] Mistral's model family. Current: \texttt{mistralai/mistral-large}, \texttt{mistralai/mixtral-*}.
+\item[MoE] Mixture of Experts. Router activates a subset of expert sub-networks per token.
+\item[Model Gateway] Fronting service for routing requests across multiple backing models / providers.
+\item[Model Card] See Factsheet.
+\item[PEFT] Parameter-Efficient Fine-Tuning umbrella term. Includes LoRA, prompt tuning, etc.
+\item[PII] Personally Identifiable Information --- emails, phones, IDs, addresses.
+\item[Prompt injection] Attacker text overrides developer instructions (``Ignore previous instructions\dots'').
+\item[Prompt Lab] watsonx.ai's no-code prompt builder. Modes: Chat, Structured, Freeform.
+\item[Prompt leaking] The model is tricked into revealing its system prompt.
+\item[Prompt template] Versioned, named asset with variables, model binding, parameters, and (optional) few-shot examples.
+\item[Prompt tuning] Train a learned soft prompt (continuous embeddings) prepended to inputs.
+\item[QLoRA] LoRA on a 4-bit (NF4) quantised base model.
+\item[Quantisation] Reducing the bit-width of weights (FP32 $\to$ FP16/BF16 $\to$ INT8 $\to$ INT4).
+\item[RAG] Retrieval-Augmented Generation. Retrieve relevant chunks then generate.
+\item[ReAct] Reason + Act loop. Core agent pattern.
+\item[Re-ranker] Cross-encoder that re-scores retrieved candidates against the query.
+\item[Reasoning model] LLM that emits an explicit chain-of-thought trace before its final answer.
+\item[Repetition penalty] Sampling parameter that lowers the probability of already-emitted tokens.
+\item[Random seed] Makes a sampling decoder reproducible.
+\item[Slate] IBM's retrieval-specialised English embedder family: \texttt{ibm/slate-30m-english-rtrvr-v2}, \texttt{ibm/slate-125m-english-rtrvr-v2}.
+\item[Soft prompt] Learned continuous embedding vectors prepended to inputs. Not human-readable.
+\item[Stop sequence] A string that, once emitted, ends generation.
+\item[Synthetic Data Generator] watsonx tool that creates statistically-similar synthetic tabular data from real samples or a custom schema.
+\item[Taxonomy] InstructLab's YAML tree of skills and knowledge.
+\item[Temperature] Decoding parameter that scales logits; higher = more diverse.
+\item[Top-K / Top-P] Sampling controls. Top-K keeps the K most likely tokens; Top-P (nucleus) keeps the smallest set whose probability mass $\geq p$.
+\item[Tuning Studio] watsonx.ai workspace for prompt tuning, LoRA, and full fine-tuning.
+\item[Vector database] Storage + nearest-neighbour search for embeddings.
+\item[Watson Assistant] IBM's conversational platform (often fronts watsonx.ai).
+\item[Watson Discovery] IBM's classic enterprise search and document-understanding service.
+\item[watsonx Discovery] Newer hybrid (BM25 + dense) retrieval service for the watsonx era.
+\item[watsonx.ai] Studio for building, tuning, deploying foundation models.
+\item[watsonx.data] Open lakehouse for data feeding watsonx.
+\item[watsonx.governance] Lifecycle, risk, drift, and fairness controls.
+\item[Zero-shot prompting] Prompt with no examples.
 \end{description}
 
 \cleardoublepage
