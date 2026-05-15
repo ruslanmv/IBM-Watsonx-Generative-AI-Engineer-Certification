@@ -1,0 +1,62 @@
+\chapter{One-Page Quick Reference Guide}
+\label{app:cheatsheet}
+
+\small
+
+\section*{LLM Capabilities}
+\begin{tabular}{ll}
+\toprule
+\textbf{Capability} & \textbf{Use Cases} \\
+\midrule
+Text Generation & Content creation, code generation \\
+Question Answering & Customer support, documentation \\
+Summarization & Document processing, reporting \\
+Translation & Language/format conversion \\
+Classification & Content moderation, intent detection \\
+\bottomrule
+\end{tabular}
+
+\section*{Key Limitations}
+• Knowledge cutoff • Hallucinations • Context window • No common sense • Bias
+
+\section*{Architecture Patterns}
+\textbf{Prompting}: Quick tasks, no specialized knowledge needed\\
+\textbf{RAG}: Current/proprietary data, reduce hallucinations\\
+\textbf{Fine-tuning}: Domain language, consistent formatting\\
+\textbf{Agents}: Multi-step tasks, tool use, decision-making
+
+\section*{Prompt Engineering}
+\textbf{Zero-shot}: No examples\\
+\textbf{Few-shot}: 3-5 examples\\
+\textbf{Chain-of-thought}: Step-by-step reasoning
+
+\textbf{Temperature}: 0.1-0.3 (factual), 0.7-1.0 (creative)\\
+\textbf{Top-p}: 0.9-0.95 (typical), lower for more focused\\
+\textbf{Max tokens}: Set based on expected response length
+
+\section*{Fine-Tuning}
+\textbf{LoRA}: Parameter-efficient fine-tuning\\
+\textbf{QLoRA}: LoRA + quantization\\
+\textbf{InstructLab}: Synthetic data, knowledge injection
+
+\section*{RAG Components}
+1. Document chunking\\
+2. Embedding generation\\
+3. Vector storage (FAISS, Chroma)\\
+4. Retrieval (similarity search)\\
+5. Prompt augmentation\\
+6. Response generation
+
+\section*{watsonx.ai Studios}
+\textbf{Prompt Lab}: Experimentation, testing\\
+\textbf{Tuning Studio}: Fine-tuning models\\
+\textbf{Deployment Space}: Production deployment
+
+\section*{Exam Strategy}
+• Read carefully (BEST, MOST, LEAST)\\
+• 90 seconds per question\\
+• Eliminate wrong answers first\\
+• Flag and return to uncertain questions\\
+• Passing: 44/62 (71\%)
+
+\cleardoublepage
