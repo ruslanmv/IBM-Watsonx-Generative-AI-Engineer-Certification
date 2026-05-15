@@ -1,0 +1,265 @@
+\chapter{Practice Exam 2}
+\label{app:practice-exam-2}
+
+A second 31-question practice set, curated from a public C1000-185 question
+bank and rebalanced so the question count per section matches the official
+exam blueprint. Combine this with the Mock Exam in Appendix~\ref{app:mock} for
+a full 71-question drill before the real exam.
+
+Allow yourself 45 minutes and track flagged questions. Answers and explanations
+are in Appendix~\ref{app:practice-exam-2-answers}.
+
+\section*{Section 1 --- Analyze \& Design a GenAI Solution (15\%)}
+\addcontentsline{toc}{section}{Section 1 --- Analyze \& Design a GenAI Solution (15\%)}
+
+\begin{enumerate}[leftmargin=*]
+\item What is a key advantage of using prompt variables in IBM Watsonx for a chatbot application that needs to handle multiple user intents?
+\begin{enumerate}[label=\Alph*.]
+  \item Using prompt variables ensures that the model will always select the most relevant response based on past conversations.
+  \item Prompt variables allow the model to automatically detect the user's intent, ensuring accurate responses.
+  \item Prompt variables allow for the dynamic injection of user-specific details into the response, improving personalization.
+  \item Prompt variables enable developers to predefine multiple static responses for each possible user input.
+\end{enumerate}
+\item You are building a generative AI conversational model to act as a virtual assistant that helps users schedule meetings. The goal is to create a prompt that initiates a conversation in a way that guides the user to provide relevant scheduling information. Which prompt would be the most effective for this use case?
+\begin{enumerate}[label=\Alph*.]
+  \item ``Please provide the user's calendar availability.''
+  \item ``Provide a list of all upcoming events in the user's calendar and ask if they want to add another.''
+  \item ``Ask the user when they want to schedule their meeting.''
+  \item ``Guide the user through scheduling a meeting by asking about their preferred date, time, and attendees.''
+\end{enumerate}
+\item When crafting prompts for a generative AI model, readability is crucial to ensure clarity for both the model and human collaborators. You are asked to optimize the prompt to improve both the generation's accuracy and usability. Which strategy would most effectively balance readability with optimal model performance?
+\begin{enumerate}[label=\Alph*.]
+  \item Craft technical prompts that focus solely on model parameters, ignoring human readability for performance gains.
+  \item Use simple, concise instructions that avoid ambiguity but ensure all necessary constraints are included.
+  \item Focus on minimal prompts to reduce computational load, even if it sacrifices some clarity.
+  \item Create longer, detailed prompts that cover all edge cases to reduce the need for multiple training iterations.
+\end{enumerate}
+\item You are working with a Generative AI model to generate a summary of a large financial report. To reduce costs, you are exploring different model parameters such as minimum and maximum token limits. Which configuration would help minimize generation costs while ensuring an accurate summary of the document?
+\begin{enumerate}[label=\Alph*.]
+  \item Set the maximum token limit to 300 and the minimum token limit to 0, allowing the model to generate a brief summary of the most relevant points while avoiding excessive verbosity.
+  \item Set the maximum token limit to 500 and the minimum token limit to 250 to ensure a balanced summary of key sections with some detailed information.
+  \item Set both the minimum and maximum token limits to 1{,}000 to ensure the entire report is captured in detail, with no important information left out.
+  \item Set the maximum token limit to 700 and the minimum token limit to 600 to ensure a well-rounded summary with all necessary sections and detailed information included.
+\end{enumerate}
+\item You are configuring a chatbot using IBM Watsonx, and you want the chatbot to respond appropriately based on the conversation's context. Which of the following best represents an appropriate stopping criterion for a task where the chatbot generates step-by-step instructions?
+\begin{enumerate}[label=\Alph*.]
+  \item The model will stop generating once it encounters a user query that requires it to reevaluate the entire prompt context and restart from the beginning.
+  \item The model will stop generating once the instruction count reaches five steps, regardless of whether the task has been fully described.
+  \item The model will stop generating once it identifies a natural completion of the task description, such as reaching a final instruction or a conclusion marker (e.g., ``All done'').
+  \item The model will stop generating as soon as the probability of the next token falls below the median probability of previously generated tokens.
+\end{enumerate}
+\end{enumerate}
+
+\section*{Section 2 --- Prompt Engineering (16\%)}
+\addcontentsline{toc}{section}{Section 2 --- Prompt Engineering (16\%)}
+
+\begin{enumerate}[resume,leftmargin=*]
+\item You are tasked with configuring a generative model to assist legal professionals by generating contract clauses. The model should produce complete, contextually relevant clauses but should avoid overly long and redundant text. You must ensure that the generation process stops appropriately once a clause is completed. Which of the following strategies is the most appropriate for configuring stopping criteria?
+\begin{enumerate}[label=\Alph*.]
+  \item Set a maximum token limit of 500 and implement a fixed length stopping criterion.
+  \item Use a beam search algorithm and impose a strict length restriction of 100 tokens.
+  \item Use a stop sequence based on legal clause delimiters and impose a minimum token limit of 50.
+  \item Set the top-k value to 1 and use the default maximum token limit, relying on the model's internal stopping criteria.
+\end{enumerate}
+\item As a Generative AI engineer, you are tasked with optimizing the performance and cost-efficiency of a model by adjusting the model parameters. Given that your objective is to reduce the cost of generation while maintaining acceptable quality, which of the following parameter changes is most likely to result in cost savings?
+\begin{enumerate}[label=\Alph*.]
+  \item Decrease the max tokens parameter.
+  \item Set the temperature parameter to a higher value.
+  \item Increase the top-k sampling value.
+  \item Increase the max tokens parameter to allow for more complex output.
+\end{enumerate}
+\item You are tasked with generating creative text outputs using an AI language model for a marketing campaign. You want to ensure that the responses are diverse and unexpected but still somewhat relevant to the prompt. Which combination of temperature and random seed should you use to achieve this?
+\begin{enumerate}[label=\Alph*.]
+  \item Temperature: 0.1, Random Seed: 42
+  \item Temperature: 1.0, Random Seed: 0
+  \item Temperature: 0.7, Random Seed: None
+  \item Temperature: 1.5, Random Seed: 123
+\end{enumerate}
+\item You are tasked with designing a prompt using a few-shot strategy for Watsonx AI to generate a legal contract summary. You provide two examples of contract summaries before asking the model to summarize a new contract. Which of the following options best demonstrates an effective few-shot prompt for this task?
+\begin{enumerate}[label=\Alph*.]
+  \item ``Example 1: [First Contract]''
+  \item ``Example 1: [First Contract] Summary: [First Contract Summary] Example 2: [Second Contract] Summary: [Second Contract Summary] Generate a summary of the following contract: [New Contract].''
+  \item ``Generate a summary for [New Contract].''
+  \item ``Provide a summary of the following contract: [New Contract]. Example 1: [First Contract] Summary: [First Contract Summary] Example 2: [Second Contract] Summary: [Second Contract Summary].''
+\end{enumerate}
+\item Which of the following represents the most effective use of example input prompts within IBM Watsonx's Prompt Lab for generating a high-quality response?
+\begin{enumerate}[label=\Alph*.]
+  \item Using example prompts that introduce multiple topics at once to evaluate how well the model handles multitasking during response generation.
+  \item Writing prompts that are extremely vague, allowing the model to freely interpret the input and generate diverse responses.
+  \item Using prompts with complex sentence structures and advanced terminology to challenge the model's understanding capabilities.
+  \item Crafting prompts with very specific and detailed instructions, ensuring the model follows a strict framework for the desired response.
+\end{enumerate}
+\end{enumerate}
+
+\section*{Section 3 --- Fine-Tuning (31\%)}
+\addcontentsline{toc}{section}{Section 3 --- Fine-Tuning (31\%)}
+
+\begin{enumerate}[resume,leftmargin=*]
+\item After completing a prompt-tuning experiment, you notice that the model's accuracy in generating relevant responses is high, but the fluency and grammatical correctness of the outputs seem to be suboptimal. What statistical metric would most directly indicate this issue, and what action should you take to improve the output?
+\begin{enumerate}[label=\Alph*.]
+  \item BLEU score; improve prompt engineering to ensure that the model focuses on fluency.
+  \item F1 score; increase the training dataset size to improve overall accuracy.
+  \item ROUGE score; adjust the token generation limit to ensure longer outputs.
+  \item Perplexity score; apply additional language model fine-tuning on grammatical correctness.
+\end{enumerate}
+\item A healthcare organization is deploying a generative AI model to assist in summarizing patient records. Given the sensitivity of patient data, the model must not output Personally Identifiable Information (PII) such as names, addresses, or Social Security numbers. Which of the following strategies would best help prevent the model from unintentionally generating PII?
+\begin{enumerate}[label=\Alph*.]
+  \item Disable the model's ability to use context from previous tokens to prevent PII from being included in the output.
+  \item Fine-tune the model specifically on anonymized datasets with PII removed.
+  \item Increase the temperature and top-k values to reduce the probability of PII being generated.
+  \item Use a post-processing step to detect and mask PII after the model generates the text.
+\end{enumerate}
+\item While working with IBM Watsonx to generate synthetic data, you import a sensitive dataset containing personally identifiable information (PII). You are tasked with anonymizing the imported data before proceeding with any fine-tuning or data augmentation. Which of the following steps is the most appropriate to ensure proper anonymization?
+\begin{enumerate}[label=\Alph*.]
+  \item Randomly shuffle the sensitive data fields to prevent direct re-identification.
+  \item Generate a synthetic version of the dataset that removes all PII automatically.
+  \item Apply a differential privacy algorithm that ensures no individual data point can be traced back to a specific user.
+  \item Use a hashing algorithm to replace PII fields while retaining the ability to reverse the process if needed.
+\end{enumerate}
+\item Which of the following is a key component of IBM's InstructLab framework for customizing large language models (LLMs)?
+\begin{enumerate}[label=\Alph*.]
+  \item A fine-tuning mechanism based on few-shot learning that only updates the model's output layer
+  \item Tools to iteratively optimize the model's alignment with human preferences, such as reinforcement learning from human feedback (RLHF)
+  \item Prompt engineering module designed to automatically generate synthetic training data for prompt-tuned models
+  \item A tokenization algorithm designed to reduce model size by removing unused tokens
+\end{enumerate}
+\item When debating the drawbacks of soft prompts in a generative AI application, which of the following is the most significant challenge compared to hard prompts?
+\begin{enumerate}[label=\Alph*.]
+  \item Soft prompts offer simpler debugging processes because the learned embeddings are directly linked to specific model behaviors and outputs.
+  \item Soft prompts introduce more complexity during the training phase, as the model must learn embeddings that are not inherently interpretable by humans.
+  \item Soft prompts require more human intervention during generation because they depend on predefined patterns and rules for guidance.
+  \item Soft prompts significantly limit the flexibility of the model because they are tied to specific tasks, unlike hard prompts which can generalize to various scenarios.
+\end{enumerate}
+\item Which of the following techniques is the most effective for reducing bias in generative AI models through prompt engineering?
+\begin{enumerate}[label=\Alph*.]
+  \item Fine-tuning the model using training data that explicitly includes examples of biased outputs
+  \item Allowing the model to auto-correct its own responses by cross-referencing with other outputs
+  \item Applying Greedy Decoding to ensure the most likely tokens are selected during generation
+  \item Using neutral and carefully phrased prompts to avoid triggering biased outputs
+\end{enumerate}
+\item You are tasked with fine-tuning a pre-trained language model for a customer support chatbot. The dataset you are using is mostly unstructured text from chat logs. What steps should you take to prepare the dataset for fine-tuning to ensure optimal model performance?
+\begin{enumerate}[label=\Alph*.]
+  \item Normalize the text by removing all punctuation, special characters, and converting text to lowercase.
+  \item Randomly split the data into training, validation, and test sets.
+  \item Use domain-specific tokenization to better capture important keywords and phrases relevant to customer support.
+  \item Use data augmentation techniques like paraphrasing to artificially increase the dataset size.
+\end{enumerate}
+\item You are developing a tuned language model for a healthcare chatbot that provides concise responses to patient inquiries. Using Tuning Studio, you want to ensure the model is well-optimized for generating responses specific to medical terminology while maintaining efficiency. Which of the following represents the correct workflow to create a tuned model using Tuning Studio?
+\begin{enumerate}[label=\Alph*.]
+  \item Select a model, upload the dataset, and let Tuning Studio automatically generate synthetic data to improve model training.
+  \item Select a pre-trained model, upload the custom medical dataset, fine-tune the hyperparameters, and evaluate the model's performance.
+  \item Input the dataset, manually adjust the learning rate and batch size, and export the fine-tuned model without evaluation.
+  \item Load the model, automatically adjust its architecture, and deploy it to production.
+\end{enumerate}
+\item In which scenario would using a soft prompt be more beneficial than a hard prompt in optimizing generative AI outputs?
+\begin{enumerate}[label=\Alph*.]
+  \item When the task requires explicit and consistent user instructions to ensure deterministic outcomes.
+  \item When the model needs to generate a strictly factual output with minimal deviation from the prompt.
+  \item When fine-tuning a pre-trained model for domain-specific tasks, allowing the system to adapt its understanding through learned embeddings.
+  \item When the prompt needs to be manually adjusted by the user in real time during interaction with the AI.
+\end{enumerate}
+\item You are working on a generative AI model for a wide variety of language generation tasks. Your team is debating whether to use soft prompts for optimizing the model's performance. Which of the following is an accurate benefit of using soft prompts, and what is a potential drawback?
+\begin{enumerate}[label=\Alph*.]
+  \item Benefit: Soft prompts allow for fine-grained control during inference. Drawback: Soft prompts may lead to lower performance with large datasets.
+  \item Benefit: Soft prompts reduce the amount of explicit data needed for training. Drawback: Soft prompts might not generalize well across domains.
+  \item Benefit: Soft prompts can optimize performance without retraining the model. Drawback: They are computationally expensive to tune during inference.
+  \item Benefit: Soft prompts offer more control over the output. Drawback: Soft prompts require additional manual engineering for each task.
+\end{enumerate}
+\end{enumerate}
+
+\section*{Section 4 --- Retrieval-Augmented Generation (17\%)}
+\addcontentsline{toc}{section}{Section 4 --- Retrieval-Augmented Generation (17\%)}
+
+\begin{enumerate}[resume,leftmargin=*]
+\item In planning the deployment of a generative AI model that relies on a large corpus of data, you need to organize and version the data repository used for training prompts. Which of the following approaches best ensures efficient data versioning, integrity, and easy rollback during prompt refinement?
+\begin{enumerate}[label=\Alph*.]
+  \item Store data versions directly in the production environment without versioning to save on storage costs.
+  \item Implement a data versioning system like DVC (Data Version Control) or MLflow, integrated with a cloud storage service, to track data changes and link specific data versions to corresponding model and prompt versions.
+  \item Use a relational database to store the corpus, but without tracking any changes to the datasets.
+  \item Store all datasets in a monolithic repository and append new data versions as additional files with timestamps.
+\end{enumerate}
+\item You are tasked with deploying a versioned prompt for a customer-facing generative AI application. The prompts are iteratively improved based on feedback, and you need to ensure that each version of the prompt is tracked and accessible for rollback in case a newer version produces worse results. Which strategy would best ensure that all prompt versions are stored and easily retrievable, while minimizing disruption to the current deployment?
+\begin{enumerate}[label=\Alph*.]
+  \item Deploy prompts directly to production without versioning and manually track changes in a spreadsheet.
+  \item Store each version of the prompt as a separate file in a local folder and manually deploy the desired version when needed.
+  \item Leverage a cloud-based deployment pipeline with integrated versioning that automates prompt rollback and audit tracking.
+  \item Use a version control system like Git to track prompt changes and synchronize the latest version with the deployment environment.
+\end{enumerate}
+\item A team is implementing a Retrieval-Augmented Generation (RAG) system for document search and retrieval. Their goal is to enable users to retrieve contextually relevant documents from a large, unstructured text corpus. They are considering using a vector database to handle this task. In which scenario is a vector database the most appropriate choice for storing and retrieving documents?
+\begin{enumerate}[label=\Alph*.]
+  \item When documents need to be retrieved based on semantic similarity to the user's query, even if the exact terms are not matched.
+  \item When the system must support real-time updates and frequent data modifications, ensuring that query results always reflect the latest state of the data.
+  \item When exact match search is required, such as finding documents containing specific keywords or phrases.
+  \item When all documents are structured and can be queried using traditional SQL queries, focusing on specific fields and categories.
+\end{enumerate}
+\item You are building a question-answering system using a Retrieval-Augmented Generation (RAG) architecture. You are deciding whether to incorporate a vector database into the system to handle the document embeddings. Under which of the following circumstances is the use of a vector database most appropriate?
+\begin{enumerate}[label=\Alph*.]
+  \item When the data consists primarily of binary files such as images and videos, and full-text search is required
+  \item When real-time similarity search over high-dimensional embeddings is needed for large-scale unstructured text data
+  \item When the text corpus consists entirely of predefined categories that can be handled by simple keyword matching algorithms
+  \item When the corpus consists mainly of short, structured text like JSON records and traditional SQL indexing will suffice
+\end{enumerate}
+\item In the context of Retrieval-Augmented Generation (RAG) models, embeddings play a crucial role in retrieving relevant documents. Which of the following best describes the purpose of embeddings in GenAI, particularly within a RAG system?
+\begin{enumerate}[label=\Alph*.]
+  \item Embeddings represent each word in a fixed-length vector based on its semantic meaning, which allows for precise retrieval of documents by directly matching words between the query and the documents.
+  \item Embeddings are used to compress large documents into a smaller format, enabling faster storage and retrieval within a RAG system.
+  \item Embeddings are dense vector representations of words, phrases, or entire documents that capture semantic relationships, making it easier to find similar content in the knowledge base during retrieval.
+  \item Embeddings are primarily used to measure the grammatical correctness of the generated responses by checking the sentence structure in the generated text.
+\end{enumerate}
+\end{enumerate}
+
+\section*{Section 5 --- Deployment (13\%)}
+\addcontentsline{toc}{section}{Section 5 --- Deployment (13\%)}
+
+\begin{enumerate}[resume,leftmargin=*]
+\item You are tasked with deploying a custom prompt template in an enterprise environment. What is the most critical first step in defining the deployment lifecycle to meet client needs?
+\begin{enumerate}[label=\Alph*.]
+  \item Identify the operational requirements and business constraints.
+  \item Establish a model selection strategy for each prompt template.
+  \item Deploy the prompt template directly to production to get rapid feedback.
+  \item Define the monitoring and feedback mechanisms for the prompt's performance.
+\end{enumerate}
+\item You are working on a large-scale enterprise application using IBM watsonx and need to ensure that different versions of your generative AI model prompts are properly managed for deployment. Which of the following is the most appropriate action when planning the deployment of prompt versions?
+\begin{enumerate}[label=\Alph*.]
+  \item Use a deployment space in IBM watsonx to version your prompts, assigning unique tags to each version and ensuring rollback capabilities.
+  \item Embed the prompt version directly into the API request body so that the deployed model can select the correct prompt dynamically at runtime.
+  \item Keep prompt versions in an external document management system and manually track which versions are deployed in the application.
+  \item Store all prompt versions directly in the model's code repository, updating the main branch with each new version.
+\end{enumerate}
+\item A client is deploying a watsonx Generative AI solution to analyze customer feedback in real time. They require a cost-effective solution that can handle occasional traffic spikes but do not expect constant heavy loads. What would be the most appropriate approach to minimize costs while ensuring adequate performance during traffic spikes?
+\begin{enumerate}[label=\Alph*.]
+  \item Deploy a single powerful GPU instance, relying on its ability to handle both regular and peak traffic without scaling.
+  \item Use a fixed number of on-premise servers that can handle peak traffic, but run them at a lower capacity during low-demand periods.
+  \item Deploy the model using a serverless architecture with auto-scaling to handle sudden spikes in traffic.
+  \item Deploy a cloud-based instance with manual scaling to adjust resources when traffic spikes occur.
+\end{enumerate}
+\item A client is planning to deploy a Watsonx Generative AI model and has raised concerns about ethical usage, bias, and accountability in decision-making. Which of the following is the most critical step to ensure AI governance during the deployment phase of the model?
+\begin{enumerate}[label=\Alph*.]
+  \item Monitoring and auditing AI decisions for bias and fairness.
+  \item Implementing a feedback loop for continuous model improvement.
+  \item Training the model on additional data to improve accuracy.
+  \item Testing the model's accuracy on a large set of random data.
+\end{enumerate}
+\end{enumerate}
+
+\section*{Section 6 --- Integration \& Orchestration (8\%)}
+\addcontentsline{toc}{section}{Section 6 --- Integration \& Orchestration (8\%)}
+
+\begin{enumerate}[resume,leftmargin=*]
+\item Your team is building a natural-language processing pipeline using IBM watsonx components, where data from multiple external APIs and user inputs needs to be transformed, analyzed, and routed through various AI models. The process should involve the dynamic selection of models based on input data characteristics. The goal is to minimize latency while maintaining accuracy across tasks like sentiment analysis, text summarization, and query generation. Which IBM watsonx service would you use to implement a flexible, model-orchestration pipeline that meets these requirements, and why?
+\begin{enumerate}[label=\Alph*.]
+  \item IBM watsonx API Gateway to handle external data inputs, route them to different models, and ensure that each input is preprocessed in a low-latency manner.
+  \item IBM watsonx Orchestrator, which allows for the integration and management of multiple AI models and can dynamically route inputs to the appropriate model based on predefined criteria.
+  \item IBM watsonx Model Management to dynamically select and orchestrate the models for different tasks based on real-time data analysis.
+  \item IBM watsonx Data Refinery, as it can preprocess and analyze incoming data, and use its rules-based engine to route it to different models.
+\end{enumerate}
+\item You are tasked with building a Retrieval-Augmented Generation (RAG) system using Elasticsearch for document storage, Watson ML for model hosting, and LangChain for orchestration. The chatbot is supposed to query a large database of medical records and generate responses based on the retrieved information. During testing, you notice that irrelevant documents are often retrieved, leading to low-quality responses. What would be the best approach to improve document relevance in this RAG setup?
+\begin{enumerate}[label=\Alph*.]
+  \item Fine-tune the Watson ML model on a dataset containing both queries and relevant documents, then update Elasticsearch with the model outputs.
+  \item Update the Elasticsearch index by re-indexing documents using embeddings from the Watson ML model.
+  \item Pre-process the medical records in LangChain to remove irrelevant information before sending the query to Elasticsearch.
+  \item Implement a BM25 similarity algorithm in Elasticsearch to improve document retrieval.
+\end{enumerate}
+\end{enumerate}
+
+\cleardoublepage

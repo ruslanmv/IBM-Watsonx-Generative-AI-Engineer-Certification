@@ -4,7 +4,6 @@
 % PACKAGE IMPORTS
 % ============================================================================
 
-% Core packages
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage[english]{babel}
@@ -12,9 +11,8 @@
 \usepackage{microtype}
 \usepackage{textcomp}
 
-% Page layout and geometry --- defaults to KDP-friendly trade paperback (6" x 9")
-% Override with: pdflatex "\def\BookSize{print}\input{main}" for 6x9 print run
-%               pdflatex "\def\BookSize{kdp}\input{main}"   for 8.5x11 letter
+% Page layout and geometry --- KDP letter (8.5"x11") by default; for the
+% 6"x9" paperback trim run with: \def\BookSize{print}\input{main}
 \providecommand{\BookSize}{kdp}
 \usepackage{ifthen}
 \ifthenelse{\equal{\BookSize}{print}}{%
@@ -26,33 +24,26 @@
         headheight=15pt]{geometry}%
 }
 
-% Graphics and colors
 \usepackage{graphicx}
 \usepackage{xcolor}
 \usepackage{tikz}
 \usetikzlibrary{shapes,arrows,positioning,calc}
 
-% Tables and lists
 \usepackage{booktabs}
 \usepackage{longtable}
 \usepackage{tabularx}
 \usepackage{enumitem}
 \usepackage{multicol}
 
-% Code listings  (minted intentionally NOT loaded -- needs -shell-escape +
-% pygments; we use `listings` everywhere instead so the book builds cleanly
-% in any TeX Live container, including the KDP CI workflow.)
+% Code listings (using `listings`, not `minted`, so no -shell-escape)
 \usepackage{listings}
 
-% Mathematics
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{amsthm}
 
-% Headers and footers
 \usepackage{fancyhdr}
 
-% Hyperlinks
 \usepackage{hyperref}
 \hypersetup{
     colorlinks=true,
@@ -66,11 +57,9 @@
     pdfkeywords={IBM, watsonx, AI, certification, C1000-185, generative AI, Granite, LoRA, RAG, InstructLab}
 }
 
-% Bibliography
 \usepackage[backend=bibtex,style=alphabetic,sorting=nty]{biblatex}
 \addbibresource{bibliography/references.bib}
 
-% Additional useful packages
 \usepackage{float}
 \usepackage{caption}
 \usepackage{subcaption}
@@ -78,7 +67,6 @@
 \usepackage{tcolorbox}
 \tcbuselibrary{breakable,skins}
 
-% Better URL line-breaking in body text
 \Urlmuskip=0mu plus 1mu\relax
 
 % ============================================================================
@@ -98,35 +86,11 @@
 % CUSTOM ENVIRONMENTS AND BOXES
 % ============================================================================
 
-% Example box
-\newtcolorbox{examplebox}[1][]{
-    colback=ibmlightblue!10, colframe=ibmblue,
-    fonttitle=\bfseries, title=Example, breakable, #1
-}
-
-% Important note box
-\newtcolorbox{notebox}[1][]{
-    colback=ibmwarning!10, colframe=ibmwarning,
-    fonttitle=\bfseries, title=Important, breakable, #1
-}
-
-% Key concept box
-\newtcolorbox{keybox}[1][]{
-    colback=ibmsuccess!10, colframe=ibmsuccess,
-    fonttitle=\bfseries, title=Key Concept, breakable, #1
-}
-
-% Warning box
-\newtcolorbox{warningbox}[1][]{
-    colback=ibmerror!10, colframe=ibmerror,
-    fonttitle=\bfseries, title=Warning, breakable, #1
-}
-
-% Exercise/Practice box
-\newtcolorbox{practicebox}[1][]{
-    colback=ibmlightgray, colframe=ibmgray,
-    fonttitle=\bfseries, title=Practice Question, breakable, #1
-}
+\newtcolorbox{examplebox}[1][]{colback=ibmlightblue!10, colframe=ibmblue, fonttitle=\bfseries, title=Example, breakable, #1}
+\newtcolorbox{notebox}[1][]{colback=ibmwarning!10,    colframe=ibmwarning, fonttitle=\bfseries, title=Important, breakable, #1}
+\newtcolorbox{keybox}[1][]{colback=ibmsuccess!10,    colframe=ibmsuccess, fonttitle=\bfseries, title=Key Concept, breakable, #1}
+\newtcolorbox{warningbox}[1][]{colback=ibmerror!10,  colframe=ibmerror,   fonttitle=\bfseries, title=Warning, breakable, #1}
+\newtcolorbox{practicebox}[1][]{colback=ibmlightgray, colframe=ibmgray,   fonttitle=\bfseries, title=Practice Question, breakable, #1}
 
 % ============================================================================
 % CODE LISTING STYLES
@@ -177,12 +141,9 @@
 % CUSTOM COMMANDS
 % ============================================================================
 
-\newcommand{\examtip}[1]{%
-    \begin{notebox}[title=\textbf{Exam Tip}]#1\end{notebox}}
-\newcommand{\realworld}[1]{%
-    \begin{examplebox}[title=\textbf{Real-World Scenario}]#1\end{examplebox}}
-\newcommand{\watsonxfeature}[1]{%
-    \begin{keybox}[title=\textbf{watsonx.ai Feature}]#1\end{keybox}}
+\newcommand{\examtip}[1]{\begin{notebox}[title=\textbf{Exam Tip}]#1\end{notebox}}
+\newcommand{\realworld}[1]{\begin{examplebox}[title=\textbf{Real-World Scenario}]#1\end{examplebox}}
+\newcommand{\watsonxfeature}[1]{\begin{keybox}[title=\textbf{watsonx.ai Feature}]#1\end{keybox}}
 
 % ============================================================================
 % DOCUMENT METADATA
@@ -202,11 +163,9 @@
 
 \begin{document}
 
-% Front matter (Roman page numbers)
 \frontmatter
 \input{chapters/00-frontmatter}
 
-% Main content (Arabic page numbers)
 \mainmatter
 \input{chapters/ch01-foundations}
 \input{chapters/ch02-prompt-engineering}
@@ -215,18 +174,17 @@
 \input{chapters/ch05-deployment}
 \input{chapters/ch06-integration}
 
-% Back matter
 \backmatter
 \input{chapters/99-backmatter}
 
-% Bibliography
 \printbibliography[heading=bibintoc,title={References and Further Reading}]
 
-% Appendices
 \appendix
 \input{chapters/appendix-a-glossary}
 \input{chapters/appendix-b-mock-exam}
 \input{chapters/appendix-c-answers}
 \input{chapters/appendix-d-cheatsheet}
+\input{chapters/appendix-e-practice-exam-2}
+\input{chapters/appendix-f-practice-exam-2-answers}
 
 \end{document}

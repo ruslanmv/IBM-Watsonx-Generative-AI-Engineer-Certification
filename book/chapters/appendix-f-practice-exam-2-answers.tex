@@ -1,0 +1,76 @@
+\chapter{Practice Exam 2 --- Answer Key}
+\label{app:practice-exam-2-answers}
+
+For each question of Practice Exam 2 (Appendix~\ref{app:practice-exam-2}),
+the correct option letter and the matching full text are below.
+Where a question reads as ambiguous on the exam, prefer the IBM-default
+answer that aligns with the chapter cited in parentheses.
+
+\section*{Section 1 --- Analyze \& Design a GenAI Solution (15\%)}
+\addcontentsline{toc}{section}{Section 1 answers}
+
+\begin{enumerate}[leftmargin=*]
+  \item \textbf{C.} Prompt variables allow for the dynamic injection of user-specific details into the response, improving personalization. \hfill Ch.~\ref{ch:foundations}
+  \item \textbf{D.} ``Guide the user through scheduling a meeting by asking about their preferred date, time, and attendees.'' \hfill Ch.~\ref{ch:foundations}
+  \item \textbf{B.} Use simple, concise instructions that avoid ambiguity but ensure all necessary constraints are included. \hfill Ch.~\ref{ch:foundations}
+  \item \textbf{A.} Set the maximum token limit to 300 and the minimum token limit to 0, allowing the model to generate a brief summary of the most relevant points while avoiding excessive verbosity. \hfill Ch.~\ref{ch:foundations}
+  \item \textbf{C.} The model will stop generating once it identifies a natural completion of the task description, such as reaching a final instruction or a conclusion marker (e.g., ``All done''). \hfill Ch.~\ref{ch:foundations}
+\end{enumerate}
+
+\section*{Section 2 --- Prompt Engineering (16\%)}
+\addcontentsline{toc}{section}{Section 2 answers}
+
+\begin{enumerate}[resume,leftmargin=*]
+  \item \textbf{C.} Use a stop sequence based on legal clause delimiters and impose a minimum token limit of 50. \hfill Ch.~\ref{ch:prompting}
+  \item \textbf{A.} Decrease the max tokens parameter. \hfill Ch.~\ref{ch:prompting}
+  \item \textbf{C.} Temperature: 0.7, Random Seed: None. \hfill Ch.~\ref{ch:prompting}
+  \item \textbf{B.} ``Example 1: [First Contract] Summary: [First Contract Summary] Example 2: [Second Contract] Summary: [Second Contract Summary] Generate a summary of the following contract: [New Contract].'' \hfill Ch.~\ref{ch:prompting}
+  \item \textbf{D.} Crafting prompts with very specific and detailed instructions, ensuring the model follows a strict framework for the desired response. \hfill Ch.~\ref{ch:prompting}
+\end{enumerate}
+
+\section*{Section 3 --- Fine-Tuning (31\%)}
+\addcontentsline{toc}{section}{Section 3 answers}
+
+\begin{enumerate}[resume,leftmargin=*]
+  \item \textbf{D.} Perplexity score; apply additional language-model fine-tuning on grammatical correctness. \hfill Ch.~\ref{ch:fine-tuning}
+  \item \textbf{B.} Fine-tune the model specifically on anonymized datasets with PII removed. \hfill Ch.~\ref{ch:fine-tuning}
+  \item \textbf{C.} Apply a differential-privacy algorithm that ensures no individual data point can be traced back to a specific user. \hfill Ch.~\ref{ch:fine-tuning}
+  \item \textbf{B.} Tools to iteratively optimize the model's alignment with human preferences, such as reinforcement learning from human feedback (RLHF). \hfill Ch.~\ref{ch:fine-tuning}
+  \item \textbf{B.} Soft prompts introduce more complexity during the training phase, as the model must learn embeddings that are not inherently interpretable by humans. \hfill Ch.~\ref{ch:fine-tuning}
+  \item \textbf{D.} Using neutral and carefully phrased prompts to avoid triggering biased outputs. \hfill Ch.~\ref{ch:fine-tuning}
+  \item \textbf{C.} Use domain-specific tokenization to better capture important keywords and phrases relevant to customer support. \hfill Ch.~\ref{ch:fine-tuning}
+  \item \textbf{B.} Select a pre-trained model, upload the custom medical dataset, fine-tune the hyperparameters, and evaluate the model's performance. \hfill Ch.~\ref{ch:fine-tuning}
+  \item \textbf{C.} When fine-tuning a pre-trained model for domain-specific tasks, allowing the system to adapt its understanding through learned embeddings. \hfill Ch.~\ref{ch:fine-tuning}
+  \item \textbf{B.} Benefit: Soft prompts reduce the amount of explicit data needed for training. Drawback: Soft prompts might not generalize well across domains. \hfill Ch.~\ref{ch:fine-tuning}
+\end{enumerate}
+
+\section*{Section 4 --- Retrieval-Augmented Generation (17\%)}
+\addcontentsline{toc}{section}{Section 4 answers}
+
+\begin{enumerate}[resume,leftmargin=*]
+  \item \textbf{B.} Implement a data versioning system like DVC (Data Version Control) or MLflow, integrated with a cloud storage service, to track data changes and link specific data versions to corresponding model and prompt versions. \hfill Ch.~\ref{ch:rag}
+  \item \textbf{D.} Use a version control system like Git to track prompt changes and synchronize the latest version with the deployment environment. \hfill Ch.~\ref{ch:rag}
+  \item \textbf{A.} When documents need to be retrieved based on semantic similarity to the user's query, even if the exact terms are not matched. \hfill Ch.~\ref{ch:rag}
+  \item \textbf{B.} When real-time similarity search over high-dimensional embeddings is needed for large-scale unstructured text data. \hfill Ch.~\ref{ch:rag}
+  \item \textbf{C.} Embeddings are dense vector representations of words, phrases, or entire documents that capture semantic relationships, making it easier to find similar content in the knowledge base during retrieval. \hfill Ch.~\ref{ch:rag}
+\end{enumerate}
+
+\section*{Section 5 --- Deployment (13\%)}
+\addcontentsline{toc}{section}{Section 5 answers}
+
+\begin{enumerate}[resume,leftmargin=*]
+  \item \textbf{A.} Identify the operational requirements and business constraints. \hfill Ch.~\ref{ch:deployment}
+  \item \textbf{A.} Use a deployment space in IBM watsonx to version your prompts, assigning unique tags to each version and ensuring rollback capabilities. \hfill Ch.~\ref{ch:deployment}
+  \item \textbf{C.} Deploy the model using a serverless architecture with auto-scaling to handle sudden spikes in traffic. \hfill Ch.~\ref{ch:deployment}
+  \item \textbf{A.} Monitoring and auditing AI decisions for bias and fairness. \hfill Ch.~\ref{ch:deployment}
+\end{enumerate}
+
+\section*{Section 6 --- Integration \& Orchestration (8\%)}
+\addcontentsline{toc}{section}{Section 6 answers}
+
+\begin{enumerate}[resume,leftmargin=*]
+  \item \textbf{B.} IBM watsonx Orchestrator, which allows for the integration and management of multiple AI models and can dynamically route inputs to the appropriate model based on predefined criteria. \hfill Ch.~\ref{ch:integration}
+  \item \textbf{B.} Update the Elasticsearch index by re-indexing documents using embeddings from the Watson ML model. \hfill Ch.~\ref{ch:integration}
+\end{enumerate}
+
+\cleardoublepage
