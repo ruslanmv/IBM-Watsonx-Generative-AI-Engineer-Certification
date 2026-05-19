@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 460" font-family="Helvetica, Arial, sans-serif">
+  <rect width="800" height="460" fill="#ffffff"/>
+  <text x="400" y="30" text-anchor="middle" font-size="20" font-weight="700" fill="#003865">Hard Prompts vs Soft Prompts (Prompt Tuning)</text>
+  <text x="400" y="52" text-anchor="middle" font-size="12" fill="#525F6B">Both prepend "instructions" to the input. One is text; the other is a learned vector.</text>
+
+  <defs>
+    <marker id="aH" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#0072C6"/>
+    </marker>
+  </defs>
+
+  <!-- Left: hard prompt -->
+  <rect x="40" y="80" width="340" height="350" rx="12" fill="#F0F4FA" stroke="#0072C6" stroke-width="2"/>
+  <text x="210" y="106" text-anchor="middle" font-size="14" font-weight="700" fill="#003865">Hard prompt (text)</text>
+  <text x="210" y="124" text-anchor="middle" font-size="11" fill="#525F6B">human-readable · no training · cheap</text>
+
+  <g font-size="11" font-family="JetBrains Mono, Courier New, monospace" fill="#003865">
+    <rect x="56"  y="144" width="60" height="32" rx="4" fill="#FFF7E6" stroke="#FFB71B"/>
+    <text x="86"  y="164" text-anchor="middle">"You"</text>
+    <rect x="120" y="144" width="60" height="32" rx="4" fill="#FFF7E6" stroke="#FFB71B"/>
+    <text x="150" y="164" text-anchor="middle">"are"</text>
+    <rect x="184" y="144" width="60" height="32" rx="4" fill="#FFF7E6" stroke="#FFB71B"/>
+    <text x="214" y="164" text-anchor="middle">"a"</text>
+    <rect x="248" y="144" width="100" height="32" rx="4" fill="#FFF7E6" stroke="#FFB71B"/>
+    <text x="298" y="164" text-anchor="middle">"lawyer"</text>
+  </g>
+  <text x="210" y="194" text-anchor="middle" font-size="10" fill="#7A4D00" font-style="italic">discrete tokens, picked by a human</text>
+
+  <line x1="210" y1="210" x2="210" y2="234" stroke="#0072C6" stroke-width="2" marker-end="url(#aH)"/>
+
+  <rect x="56" y="236" width="308" height="60" rx="8" fill="#003865"/>
+  <text x="210" y="262" text-anchor="middle" font-weight="700" fill="#ffffff" font-size="13">Frozen base model</text>
+  <text x="210" y="280" text-anchor="middle" fill="#ffffff" font-size="10" opacity="0.85">e.g., granite-3-2-8b-instruct</text>
+
+  <rect x="56" y="316" width="308" height="98" rx="8" fill="#ffffff" stroke="#0072C6" stroke-width="1.5"/>
+  <text x="210" y="338" text-anchor="middle" font-size="12" font-weight="700" fill="#003865">Properties</text>
+  <g font-size="10" fill="#525F6B">
+    <text x="72" y="358">• <tspan fill="#003865">Zero training cost.</tspan> Just write text.</text>
+    <text x="72" y="374">• Edit at run-time; A/B test instantly.</text>
+    <text x="72" y="390">• Costs tokens at inference (longer = pricier).</text>
+    <text x="72" y="406">• Quality plateau: hard to teach <tspan font-style="italic">new behaviour</tspan>.</text>
+  </g>
+
+  <!-- Right: soft prompt -->
+  <rect x="420" y="80" width="340" height="350" rx="12" fill="#F4E9FF" stroke="#8A3FFC" stroke-width="2"/>
+  <text x="590" y="106" text-anchor="middle" font-size="14" font-weight="700" fill="#5A189A">Soft prompt (prompt tuning)</text>
+  <text x="590" y="124" text-anchor="middle" font-size="11" fill="#525F6B">learned vectors · small training · ≈ LoRA-class quality</text>
+
+  <g font-size="11" font-family="JetBrains Mono, Courier New, monospace" fill="#5A189A">
+    <rect x="436" y="144" width="62" height="32" rx="4" fill="#ffffff" stroke="#8A3FFC"/>
+    <text x="467" y="164" text-anchor="middle">v₁</text>
+    <rect x="502" y="144" width="62" height="32" rx="4" fill="#ffffff" stroke="#8A3FFC"/>
+    <text x="533" y="164" text-anchor="middle">v₂</text>
+    <rect x="568" y="144" width="62" height="32" rx="4" fill="#ffffff" stroke="#8A3FFC"/>
+    <text x="599" y="164" text-anchor="middle">v₃</text>
+    <rect x="634" y="144" width="110" height="32" rx="4" fill="#ffffff" stroke="#8A3FFC"/>
+    <text x="689" y="164" text-anchor="middle">… v₁₀₀</text>
+  </g>
+  <text x="590" y="194" text-anchor="middle" font-size="10" fill="#5A189A" font-style="italic">continuous embedding vectors — not human-readable</text>
+
+  <line x1="590" y1="210" x2="590" y2="234" stroke="#8A3FFC" stroke-width="2" marker-end="url(#aH)"/>
+
+  <rect x="436" y="236" width="308" height="60" rx="8" fill="#003865"/>
+  <text x="590" y="262" text-anchor="middle" font-weight="700" fill="#ffffff" font-size="13">Frozen base model</text>
+  <text x="590" y="280" text-anchor="middle" fill="#ffffff" font-size="10" opacity="0.85">only the soft-prompt vectors are trainable</text>
+
+  <rect x="436" y="316" width="308" height="98" rx="8" fill="#ffffff" stroke="#8A3FFC" stroke-width="1.5"/>
+  <text x="590" y="338" text-anchor="middle" font-size="12" font-weight="700" fill="#5A189A">Properties</text>
+  <g font-size="10" fill="#525F6B">
+    <text x="452" y="358">• Tiny artefact (~&lt; 1 MB per task).</text>
+    <text x="452" y="374">• Cheap to train; competitive with LoRA on size.</text>
+    <text x="452" y="390">• Cannot be inspected as text → audit harder.</text>
+    <text x="452" y="406">• watsonx Tuning Studio: <tspan font-style="italic">Prompt Tuning</tspan> option.</text>
+  </g>
+</svg>

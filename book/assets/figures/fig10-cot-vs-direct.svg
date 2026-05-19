@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 460" font-family="Helvetica, Arial, sans-serif">
+  <rect width="800" height="460" fill="#ffffff"/>
+  <text x="400" y="30" text-anchor="middle" font-size="20" font-weight="700" fill="#003865">Chain-of-Thought vs Direct Prompting</text>
+  <text x="400" y="52" text-anchor="middle" font-size="12" fill="#525F6B">Asking the model to "show your work" reduces errors on multi-step problems.</text>
+
+  <!-- Left: direct -->
+  <rect x="40" y="80" width="340" height="350" rx="12" fill="#FBEAEC" stroke="#DA1E28" stroke-width="2"/>
+  <text x="210" y="106" text-anchor="middle" font-size="14" font-weight="700" fill="#8A0D14">Direct prompt</text>
+
+  <rect x="56" y="124" width="308" height="80" rx="6" fill="#ffffff" stroke="#DA1E28" stroke-width="1"/>
+  <text x="68" y="142" font-size="10" font-weight="700" fill="#8A0D14">PROMPT</text>
+  <text x="68" y="160" font-size="11" font-family="JetBrains Mono, Courier New, monospace" fill="#003865">If a train leaves at 14:25 and arrives at</text>
+  <text x="68" y="174" font-size="11" font-family="JetBrains Mono, Courier New, monospace" fill="#003865">16:10 having stopped 12 min mid-route,</text>
+  <text x="68" y="188" font-size="11" font-family="JetBrains Mono, Courier New, monospace" fill="#003865">how long was the train actually moving?</text>
+
+  <rect x="56" y="216" width="308" height="60" rx="6" fill="#ffffff" stroke="#DA1E28" stroke-width="1"/>
+  <text x="68" y="234" font-size="10" font-weight="700" fill="#8A0D14">MODEL</text>
+  <text x="68" y="254" font-size="14" font-family="JetBrains Mono, Courier New, monospace" fill="#DA1E28" font-weight="700">1h 45min ✗</text>
+
+  <rect x="56" y="294" width="308" height="120" rx="6" fill="#ffffff" stroke="#DA1E28" stroke-width="1"/>
+  <text x="68" y="312" font-size="10" font-weight="700" fill="#8A0D14">WHY IT FAILS</text>
+  <text x="68" y="330" font-size="10" fill="#525F6B">No intermediate steps surfaced.</text>
+  <text x="68" y="346" font-size="10" fill="#525F6B">Model jumps to a plausible-looking answer</text>
+  <text x="68" y="362" font-size="10" fill="#525F6B">that forgets the 12-minute stop.</text>
+  <text x="68" y="386" font-size="10" font-style="italic" fill="#8A0D14">Common on arithmetic, logic, multi-hop QA.</text>
+
+  <!-- Right: CoT -->
+  <rect x="420" y="80" width="340" height="350" rx="12" fill="#E8F5EC" stroke="#009E60" stroke-width="2"/>
+  <text x="590" y="106" text-anchor="middle" font-size="14" font-weight="700" fill="#005934">Chain-of-Thought (CoT)</text>
+
+  <rect x="436" y="124" width="308" height="100" rx="6" fill="#ffffff" stroke="#009E60" stroke-width="1"/>
+  <text x="448" y="142" font-size="10" font-weight="700" fill="#005934">PROMPT</text>
+  <text x="448" y="160" font-size="11" font-family="JetBrains Mono, Courier New, monospace" fill="#003865">If a train leaves at 14:25 and arrives at</text>
+  <text x="448" y="174" font-size="11" font-family="JetBrains Mono, Courier New, monospace" fill="#003865">16:10 having stopped 12 min mid-route,</text>
+  <text x="448" y="188" font-size="11" font-family="JetBrains Mono, Courier New, monospace" fill="#003865">how long was it actually moving?</text>
+  <text x="448" y="206" font-size="11" font-family="JetBrains Mono, Courier New, monospace" fill="#009E60" font-weight="700">Think step-by-step.</text>
+
+  <rect x="436" y="236" width="308" height="140" rx="6" fill="#ffffff" stroke="#009E60" stroke-width="1"/>
+  <text x="448" y="254" font-size="10" font-weight="700" fill="#005934">MODEL</text>
+  <text x="448" y="272" font-size="10" font-family="JetBrains Mono, Courier New, monospace" fill="#003865">Step 1: 16:10 − 14:25 = 1h 45min total</text>
+  <text x="448" y="288" font-size="10" font-family="JetBrains Mono, Courier New, monospace" fill="#003865">Step 2: subtract the 12-min stop</text>
+  <text x="448" y="304" font-size="10" font-family="JetBrains Mono, Courier New, monospace" fill="#003865">Step 3: 105 − 12 = 93 minutes</text>
+  <text x="448" y="328" font-size="14" font-family="JetBrains Mono, Courier New, monospace" fill="#009E60" font-weight="700">93 min (1h 33min) ✓</text>
+  <text x="448" y="358" font-size="10" font-style="italic" fill="#525F6B">Each step is verifiable by the reader.</text>
+
+  <rect x="436" y="386" width="308" height="32" rx="6" fill="#F0F4FA" stroke="#0072C6" stroke-width="1"/>
+  <text x="590" y="406" text-anchor="middle" font-size="11" font-weight="700" fill="#003865">Trigger phrase: "Think step-by-step."</text>
+</svg>

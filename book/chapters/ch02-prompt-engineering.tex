@@ -1,9 +1,32 @@
 \chapter{Prompt Engineering}
 \label{ch:prompting}
 
-This chapter covers \textbf{Section 2: Prompt Engineering (16\% of the exam)}. The exam expects you to write prompts, choose parameters, manage templates, and understand the risks. Every sub-section below maps to an official objective (2.1--2.8).
+\epigraph{``Most production AI is prompt engineering. The rest is plumbing.''}{}
+
+This chapter covers \textbf{Section~2: Prompt Engineering (16\% of the exam)}. The exam expects you to write prompts, choose parameters, manage templates, and understand the risks. Every sub-section below maps to an official objective (2.1--2.8). If you have not yet read Chapter~\ref{ch:foundations}, do so first --- model selection (Section~1.5) drives the prompt choices in this chapter.
+
+\begin{objectivesbox}
+By the end of this chapter you will be able to:
+\begin{itemize}[leftmargin=*,nosep]
+    \item Distinguish \textbf{zero-shot}, \textbf{few-shot}, and \textbf{chain-of-thought} prompting (Objective~2.1).
+    \item Design prompts that match the model and the use case (2.2--2.3).
+    \item Tune decoding parameters --- temperature, top-$p$, top-$k$, repetition penalty, stop sequences (2.4).
+    \item Use \textbf{Prompt Lab} templates and variables effectively (2.5).
+    \item Apply prompting frameworks: CRISPE, APE, CARE (2.6).
+    \item Recognise and mitigate \textbf{prompt risks}: injection, jailbreaks, PII leakage (2.7--2.8).
+\end{itemize}
+\end{objectivesbox}
 
 \section{Zero-Shot vs Few-Shot Prompting (Objective 2.1)}
+
+Before introducing the three styles, study Figure~\ref{fig:cot-vs-direct} side-by-side. Asking the model to ``think step-by-step'' --- the simplest form of chain-of-thought --- dramatically reduces errors on multi-step problems.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.95\textwidth]{assets/figures/fig10-cot-vs-direct}
+\caption{Direct prompting (left) jumps to a confident wrong answer. Chain-of-Thought (right) surfaces verifiable intermediate steps.}
+\label{fig:cot-vs-direct}
+\end{figure}
 
 \subsection{Zero-Shot Prompting}
 You describe the task and give no examples. The model has to figure it out from its training.
@@ -44,6 +67,13 @@ Sentiment:"""
 \examtip{If an exam scenario shows \emph{2--5 input/output pairs in the prompt}, it is few-shot. If it shows only the task description, it is zero-shot. The exam often asks ``which is the cheapest correct approach?'' --- the answer is zero-shot if the model is large/capable enough.}
 
 \section{Designing Prompts Based on Use Case (Objective 2.2)}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.95\textwidth]{assets/figures/fig08-prompt-anatomy}
+\caption{The five regions of a production prompt. Most exam scenarios test whether you put the right thing in the right region.}
+\label{fig:prompt-anatomy}
+\end{figure}
 
 \subsection{Match the Model to the Use Case}
 You already saw the rules in Chapter~1.5. For chatty multi-turn use cases, pick an \emph{instruct} or \emph{chat} variant. For one-shot transforms, an instruct model is enough. For coding, prefer \texttt{ibm/granite-code-3-8b-instruct}.
@@ -166,6 +196,13 @@ print(client.deployments.get_id(deployment))
 \examtip{Exam phrase to recognise: \emph{``versioned, governed, audit-friendly prompt''} $\rightarrow$ prompt \emph{template} in a deployment space, \emph{not} a free-text prompt in the SDK call.}
 
 \section{Best Model Parameters (Objective 2.4)}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.95\textwidth]{assets/figures/fig09-decoding-parameters}
+\caption{How temperature, top-$k$, and top-$p$ reshape the next-token distribution. Left: greedy / low temperature. Right: higher temperature with both pruning strategies applied.}
+\label{fig:decoding-parameters}
+\end{figure}
 
 \subsection{Decoding Methods}
 

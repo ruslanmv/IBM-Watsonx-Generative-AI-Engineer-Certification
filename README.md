@@ -9,6 +9,7 @@
 [![Exam Aligned: C1000-185](https://img.shields.io/badge/Exam-C1000--185-0F62FE?logo=ibm&logoColor=white)](https://www.ibm.com/training/certification/C1000-185)
 [![Slides: live](https://img.shields.io/badge/Slides-Live%20on%20GitHub%20Pages-7c8aff)](https://ruslanmv.github.io/IBM-Watsonx-Generative-AI-Engineer-Certification/)
 [![Format: LaTeX Book](https://img.shields.io/badge/Book-LaTeX-008080)](./book)
+[![Download Study Guide PDF](https://img.shields.io/badge/Download-Study%20Guide%20PDF-DC382D?logo=adobeacrobatreader&logoColor=white)](https://github.com/ruslanmv/IBM-Watsonx-Generative-AI-Engineer-Certification/releases/latest/download/c1000-185-study-guide.pdf)
 [![YouTube](https://img.shields.io/badge/YouTube-Tutorials-FF0000?logo=youtube&logoColor=white)](./docs)
 [![Udemy](https://img.shields.io/badge/Udemy-Course-A435F0?logo=udemy&logoColor=white)](./udemy)
 [![Stars](https://img.shields.io/github/stars/ruslanmv/IBM-Watsonx-Generative-AI-Engineer-Certification?style=social)](https://github.com/ruslanmv/IBM-Watsonx-Generative-AI-Engineer-Certification/stargazers)
@@ -479,7 +480,6 @@ By contributing, you agree that your contribution is licensed under the Apache L
 
 ## 🔗 Official IBM resources
 
-- [**Exam C1000-185 page**](https://www.ibm.com/training/certification/C1000-185)
 - [**Official study guide (PDF)**](./docs/official/guide.pdf) — bundled here for reference
 - [**watsonx.ai documentation**](https://www.ibm.com/docs/en/watsonx)
 - [**watsonx.ai API reference**](https://cloud.ibm.com/apidocs/watsonx-ai)

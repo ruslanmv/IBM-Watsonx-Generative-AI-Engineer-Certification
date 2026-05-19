@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 460" font-family="Helvetica, Arial, sans-serif">
+  <rect width="800" height="460" fill="#ffffff"/>
+  <text x="400" y="32" text-anchor="middle" font-size="20" font-weight="700" fill="#003865">Promotion Flow — Project → Dev → Staging → Prod</text>
+  <text x="400" y="52" text-anchor="middle" font-size="12" fill="#525F6B">A prompt template, tuned model, or AI service moves through four deployment spaces.</text>
+
+  <defs>
+    <marker id="aD" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#0072C6"/>
+    </marker>
+  </defs>
+
+  <!-- 4 boxes -->
+  <g font-size="11" fill="#003865">
+    <rect x="30" y="120" width="170" height="120" rx="10" fill="#F0F4FA" stroke="#525F6B" stroke-width="2"/>
+    <text x="115" y="148" text-anchor="middle" font-weight="700" font-size="14">Project</text>
+    <text x="115" y="170" text-anchor="middle" font-size="10" fill="#525F6B">build &amp; experiment</text>
+    <text x="115" y="194" text-anchor="middle" font-size="10">• prompt template</text>
+    <text x="115" y="210" text-anchor="middle" font-size="10">• tuned LoRA</text>
+    <text x="115" y="226" text-anchor="middle" font-size="10">• notebooks</text>
+
+    <line x1="200" y1="180" x2="225" y2="180" stroke="#0072C6" stroke-width="2" marker-end="url(#aD)"/>
+
+    <rect x="225" y="120" width="170" height="120" rx="10" fill="#E8F5EC" stroke="#009E60" stroke-width="2"/>
+    <text x="310" y="148" text-anchor="middle" font-weight="700" font-size="14" fill="#005934">Dev Space</text>
+    <text x="310" y="170" text-anchor="middle" font-size="10" fill="#525F6B">end-to-end test</text>
+    <text x="310" y="194" text-anchor="middle" font-size="10">• deploy as endpoint</text>
+    <text x="310" y="210" text-anchor="middle" font-size="10">• synthetic load</text>
+    <text x="310" y="226" text-anchor="middle" font-size="10">• unit / integration tests</text>
+
+    <line x1="395" y1="180" x2="420" y2="180" stroke="#0072C6" stroke-width="2" marker-end="url(#aD)"/>
+
+    <rect x="420" y="120" width="170" height="120" rx="10" fill="#FFF7E6" stroke="#FFB71B" stroke-width="2"/>
+    <text x="505" y="148" text-anchor="middle" font-weight="700" font-size="14" fill="#7A4D00">Staging</text>
+    <text x="505" y="170" text-anchor="middle" font-size="10" fill="#525F6B">shadow prod traffic</text>
+    <text x="505" y="194" text-anchor="middle" font-size="10">• governance factsheet</text>
+    <text x="505" y="210" text-anchor="middle" font-size="10">• bias / drift evals</text>
+    <text x="505" y="226" text-anchor="middle" font-size="10">• Guardian rules locked</text>
+
+    <line x1="590" y1="180" x2="615" y2="180" stroke="#0072C6" stroke-width="2" marker-end="url(#aD)"/>
+
+    <rect x="615" y="120" width="155" height="120" rx="10" fill="#FBEAEC" stroke="#DA1E28" stroke-width="2"/>
+    <text x="692" y="148" text-anchor="middle" font-weight="700" font-size="14" fill="#8A0D14">Prod</text>
+    <text x="692" y="170" text-anchor="middle" font-size="10" fill="#525F6B">real users</text>
+    <text x="692" y="194" text-anchor="middle" font-size="10">• canary 1→10→100%</text>
+    <text x="692" y="210" text-anchor="middle" font-size="10">• monitoring on</text>
+    <text x="692" y="226" text-anchor="middle" font-size="10">• rollback button ready</text>
+  </g>
+
+  <!-- Top label: who -->
+  <text x="115" y="100" text-anchor="middle" font-size="11" font-weight="700" fill="#525F6B">Data Scientist</text>
+  <text x="310" y="100" text-anchor="middle" font-size="11" font-weight="700" fill="#525F6B">ML Engineer</text>
+  <text x="505" y="100" text-anchor="middle" font-size="11" font-weight="700" fill="#525F6B">SRE + Governance Lead</text>
+  <text x="692" y="100" text-anchor="middle" font-size="11" font-weight="700" fill="#525F6B">SRE on-call</text>
+
+  <!-- Governance factsheet ribbon attached to staging->prod -->
+  <rect x="420" y="270" width="350" height="50" rx="10" fill="#F0F4FA" stroke="#0072C6" stroke-width="1.5"/>
+  <text x="595" y="290" text-anchor="middle" font-size="12" font-weight="700" fill="#003865">watsonx.governance — Factsheet attaches here</text>
+  <text x="595" y="306" text-anchor="middle" font-size="10" fill="#525F6B">version, metrics, evals, prompt diff, approver, audit trail</text>
+  <line x1="505" y1="240" x2="505" y2="268" stroke="#0072C6" stroke-width="1.5" stroke-dasharray="3,3" marker-end="url(#aD)"/>
+
+  <!-- Rollback arrow from prod -->
+  <path d="M 692 240 Q 692 360 115 360 Q 60 360 60 240" stroke="#DA1E28" stroke-width="2" fill="none" stroke-dasharray="6,4" marker-end="url(#aD)"/>
+  <rect x="320" y="346" width="160" height="28" rx="6" fill="#FBEAEC" stroke="#DA1E28"/>
+  <text x="400" y="364" text-anchor="middle" font-size="11" font-weight="700" fill="#8A0D14">Rollback path (any stage)</text>
+
+  <!-- Bottom note -->
+  <rect x="40" y="394" width="720" height="50" rx="8" fill="#FFF7E6" stroke="#FFB71B" stroke-width="1"/>
+  <text x="400" y="412" text-anchor="middle" font-size="11" font-weight="700" fill="#7A4D00">Exam rule</text>
+  <text x="400" y="430" text-anchor="middle" font-size="11" fill="#7A4D00">Projects are for <tspan font-style="italic">building</tspan>. Spaces are for <tspan font-style="italic">deploying</tspan>. Never deploy directly from a Project.</text>
+</svg>

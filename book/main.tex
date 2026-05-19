@@ -29,6 +29,21 @@
 \usepackage{tikz}
 \usetikzlibrary{shapes,arrows,positioning,calc}
 
+% ============================================================================
+% COLOR DEFINITIONS (IBM Brand Colors)
+% Defined BEFORE hyperref so linkcolor=ibmblue resolves correctly.
+% ============================================================================
+
+\definecolor{ibmblue}{RGB}{0,114,206}
+\definecolor{ibmdarkblue}{RGB}{0,56,101}
+\definecolor{ibmlightblue}{RGB}{120,178,232}
+\definecolor{ibmgray}{RGB}{82,95,107}
+\definecolor{ibmlightgray}{RGB}{240,240,240}
+\definecolor{ibmwarning}{RGB}{255,183,27}
+\definecolor{ibmerror}{RGB}{218,30,40}
+\definecolor{ibmsuccess}{RGB}{0,158,96}
+\definecolor{ibmpurple}{RGB}{138,63,252}
+
 \usepackage{booktabs}
 \usepackage{longtable}
 \usepackage{tabularx}
@@ -43,44 +58,38 @@
 \usepackage{amsthm}
 
 \usepackage{fancyhdr}
+\usepackage{titlesec}     % chapter / section title styling
+\usepackage{titletoc}     % TOC tweaks
+\usepackage{epigraph}     % chapter-opening quote
 
 \usepackage{hyperref}
 \hypersetup{
     colorlinks=true,
-    linkcolor=ibmblue,
-    filecolor=magenta,
+    linkcolor=ibmdarkblue,
+    filecolor=ibmpurple,
     urlcolor=ibmblue,
-    citecolor=ibmblue,
-    pdftitle={IBM Watsonx Generative AI Engineer Associate (C1000-185) Study Guide},
+    citecolor=ibmsuccess,
+    pdftitle={IBM watsonx Generative AI Engineer Associate (C1000-185) Study Guide},
     pdfauthor={Ruslan Idelfonso Magana Vsevolodovna},
     pdfsubject={IBM Certification Study Guide},
-    pdfkeywords={IBM, watsonx, AI, certification, C1000-185, generative AI, Granite, LoRA, RAG, InstructLab}
+    pdfkeywords={IBM, watsonx, AI, certification, C1000-185, generative AI, Granite, LoRA, RAG, InstructLab, MCP, agents}
 }
+\usepackage[noabbrev,capitalise]{cleveref}
 
 \usepackage[backend=bibtex,style=alphabetic,sorting=nty]{biblatex}
 \addbibresource{bibliography/references.bib}
 
 \usepackage{float}
 \usepackage{caption}
-\usepackage{subcaption}
-\usepackage{mdframed}
+\captionsetup{font=small,labelfont=bf,labelsep=period}
 \usepackage{tcolorbox}
 \tcbuselibrary{breakable,skins}
 
+% Index of key terms (compile with `makeindex main`)
+\usepackage{imakeidx}
+\makeindex[title=Index,intoc,columns=2]
+
 \Urlmuskip=0mu plus 1mu\relax
-
-% ============================================================================
-% COLOR DEFINITIONS (IBM Brand Colors)
-% ============================================================================
-
-\definecolor{ibmblue}{RGB}{0,114,206}
-\definecolor{ibmdarkblue}{RGB}{0,56,101}
-\definecolor{ibmlightblue}{RGB}{120,178,232}
-\definecolor{ibmgray}{RGB}{82,95,107}
-\definecolor{ibmlightgray}{RGB}{240,240,240}
-\definecolor{ibmwarning}{RGB}{255,183,27}
-\definecolor{ibmerror}{RGB}{218,30,40}
-\definecolor{ibmsuccess}{RGB}{0,158,96}
 
 % ============================================================================
 % CUSTOM ENVIRONMENTS AND BOXES
@@ -91,6 +100,19 @@
 \newtcolorbox{keybox}[1][]{colback=ibmsuccess!10,    colframe=ibmsuccess, fonttitle=\bfseries, title=Key Concept, breakable, #1}
 \newtcolorbox{warningbox}[1][]{colback=ibmerror!10,  colframe=ibmerror,   fonttitle=\bfseries, title=Warning, breakable, #1}
 \newtcolorbox{practicebox}[1][]{colback=ibmlightgray, colframe=ibmgray,   fonttitle=\bfseries, title=Practice Question, breakable, #1}
+
+% Learning objectives at chapter start
+\newtcolorbox{objectivesbox}[1][]{colback=ibmpurple!8, colframe=ibmpurple,
+    fonttitle=\bfseries, title=Learning Objectives, breakable,
+    enhanced, drop fuzzy shadow=ibmpurple!30, #1}
+
+% Key Takeaways at chapter end
+\newtcolorbox{takeawaybox}[1][]{colback=ibmdarkblue!8, colframe=ibmdarkblue,
+    fonttitle=\bfseries, title=Key Takeaways, breakable, enhanced, #1}
+
+% Quick reference / exam-only fact callout
+\newtcolorbox{factbox}[1][]{colback=ibmblue!5, colframe=ibmblue!60,
+    fonttitle=\bfseries, title=Quick Fact, breakable, #1}
 
 % ============================================================================
 % CODE LISTING STYLES
@@ -112,7 +134,7 @@
     upquote=true, literate={`}{{\textasciigrave}}1
 }
 
-\lstdefinestyle{jsonsstyle}{
+\lstdefinestyle{jsonstyle}{
     basicstyle=\ttfamily\small,
     commentstyle=\color{ibmgray}\itshape,
     stringstyle=\color{ibmsuccess},
@@ -123,6 +145,20 @@
     backgroundcolor=\color{ibmlightgray},
     showstringspaces=false, breaklines=true
 }
+% Backwards-compatible alias for chapters that referenced the old name.
+\lstdefinestyle{jsonsstyle}{style=jsonstyle}
+
+\lstdefinestyle{shellstyle}{
+    basicstyle=\ttfamily\small,
+    commentstyle=\color{ibmgray}\itshape,
+    keywordstyle=\color{ibmblue}\bfseries,
+    stringstyle=\color{ibmsuccess},
+    frame=leftline, framerule=2pt,
+    rulecolor=\color{ibmblue},
+    backgroundcolor=\color{ibmlightgray},
+    showstringspaces=false, breaklines=true,
+    morekeywords={pip,python,curl,docker,helm,kubectl}
+}
 
 % ============================================================================
 % HEADER AND FOOTER SETUP
@@ -130,12 +166,52 @@
 
 \pagestyle{fancy}
 \fancyhf{}
-\fancyhead[LE]{\nouppercase{\leftmark}}
-\fancyhead[RO]{\nouppercase{\rightmark}}
+\fancyhead[LE]{\nouppercase{\small\itshape\leftmark}}
+\fancyhead[RO]{\nouppercase{\small\itshape\rightmark}}
 \fancyfoot[LE,RO]{\thepage}
-\fancyfoot[CE,CO]{\small IBM C1000-185 Study Guide \textbullet\ ruslanmv.com}
+\fancyfoot[CE,CO]{\footnotesize\color{ibmgray}IBM C1000-185 Study Guide \textbullet\ ruslanmv.com}
 \renewcommand{\headrulewidth}{0.4pt}
 \renewcommand{\footrulewidth}{0.4pt}
+
+% Show only section titles (not "Chapter N. Title") in headers
+\renewcommand{\chaptermark}[1]{\markboth{\thechapter.\ #1}{}}
+\renewcommand{\sectionmark}[1]{\markright{\thesection\ \ #1}}
+
+% ============================================================================
+% CHAPTER / SECTION TITLE STYLING (subtle, editorial)
+% ============================================================================
+
+\titleformat{\chapter}[display]
+    {\normalfont\sffamily\huge\bfseries\color{ibmdarkblue}}
+    {\filright\Large\sffamily CHAPTER \thechapter}
+    {1ex}
+    {\titlerule[1pt]\vspace{1ex}\filright\Huge}
+    [\vspace{0.5ex}{\color{ibmblue}\titlerule[0.4pt]}]
+
+\titleformat{\section}
+    {\normalfont\sffamily\Large\bfseries\color{ibmdarkblue}}
+    {\thesection}{0.8em}{}
+
+\titleformat{\subsection}
+    {\normalfont\sffamily\large\bfseries\color{ibmblue}}
+    {\thesubsection}{0.7em}{}
+
+\titleformat{\subsubsection}
+    {\normalfont\sffamily\normalsize\bfseries\color{ibmgray}}
+    {\thesubsubsection}{0.6em}{}
+
+% Show subsections in TOC, but not subsubsections (keeps TOC scannable)
+\setcounter{tocdepth}{1}
+\setcounter{secnumdepth}{3}
+
+% Better paragraph spacing for a printed book
+\setlength{\parskip}{0.4em}
+\setlength{\parindent}{0pt}
+
+% Epigraph defaults
+\setlength{\epigraphwidth}{0.55\textwidth}
+\renewcommand{\epigraphflush}{flushright}
+\renewcommand{\epigraphsize}{\small\itshape}
 
 % ============================================================================
 % CUSTOM COMMANDS
@@ -145,17 +221,30 @@
 \newcommand{\realworld}[1]{\begin{examplebox}[title=\textbf{Real-World Scenario}]#1\end{examplebox}}
 \newcommand{\watsonxfeature}[1]{\begin{keybox}[title=\textbf{watsonx.ai Feature}]#1\end{keybox}}
 
+% Shortcut for marking text and indexing it in one go: \term{LoRA}
+\newcommand{\term}[1]{\textbf{#1}\index{#1}}
+% Mark a model identifier consistently: \modelid{ibm/granite-3-2-8b-instruct}
+\newcommand{\modelid}[1]{\texttt{\detokenize{#1}}\index{models!#1}}
+% Mark a watsonx product: \product{watsonx.governance}
+\newcommand{\product}[1]{\textbf{#1}\index{watsonx!#1}}
+
 % ============================================================================
 % DOCUMENT METADATA
 % ============================================================================
 
 \title{%
-    \Huge\textbf{IBM Watsonx Generative AI Engineer Associate}\\
-    \LARGE\textbf{(C1000-185)}\\[1cm]
-    \Large Complete Study Guide \& Exam Workbook
+    \vspace*{1cm}
+    {\color{ibmdarkblue}\rule{\linewidth}{1.2pt}}\\[0.6cm]
+    \sffamily\Huge\textbf{IBM watsonx\textsuperscript{\textregistered}}\\[0.3cm]
+    {\Large\sffamily Generative AI Engineer --- Associate}\\[0.4cm]
+    {\large\sffamily\color{ibmgray}Exam C1000-185}\\[0.5cm]
+    {\color{ibmblue}\rule{\linewidth}{0.4pt}}\\[0.8cm]
+    {\LARGE\sffamily Complete Study Guide \&\ Exam Workbook}\\[0.3cm]
+    {\large\itshape\color{ibmgray}First Edition}
 }
-\author{Ruslan Idelfonso Magana Vsevolodovna}
-\date{First Edition \textbullet\ \the\year{}}
+\author{\Large Ruslan Idelfonso Magana Vsevolodovna\\[0.2cm]
+        \normalsize\itshape\color{ibmgray}Senior AI Engineer \textbullet\ IBM watsonx Practitioner}
+\date{\the\year{}}
 
 % ============================================================================
 % BEGIN DOCUMENT
@@ -186,5 +275,8 @@
 \input{chapters/appendix-d-cheatsheet}
 \input{chapters/appendix-e-practice-exam-2}
 \input{chapters/appendix-f-practice-exam-2-answers}
+\input{chapters/appendix-g-objective-map}
+
+\printindex
 
 \end{document}

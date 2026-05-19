@@ -1,11 +1,33 @@
 \chapter{Fine-Tuning}
 \label{ch:fine-tuning}
 
-\textbf{Section 3 is 31\% of the exam --- the largest single section.} Master this chapter and you have one third of the points already.
+\epigraph{``Fine-tune the behaviour, not the knowledge. For knowledge, use RAG.''}{}
 
-This chapter covers all eight sub-objectives 3.1--3.8: hard vs soft prompts, prompt cost optimisation, data preparation, quantisation, LoRA, InstructLab, and the synthetic-data generator (with Kolmogorov--Smirnov, Anderson--Darling, and differential privacy).
+\textbf{Section~3 is 31\% of the exam --- the largest single section.} Master this chapter and you have one third of the points already.
+
+This chapter covers all eight sub-objectives 3.1--3.8: hard vs soft prompts, prompt cost optimisation, data preparation, quantisation, LoRA, InstructLab, and the synthetic-data generator (with Kolmogorov--Smirnov, Anderson--Darling, and differential privacy). Where this chapter touches retrieval, see Chapter~\ref{ch:rag}; where it touches deployment of tuned assets, see Chapter~\ref{ch:deployment}.
+
+\begin{objectivesbox}
+By the end of this chapter you will be able to:
+\begin{itemize}[leftmargin=*,nosep]
+    \item Compare \textbf{hard prompts} and \textbf{soft prompts (prompt tuning)} (Objective~3.1).
+    \item Pick the cheapest customisation that meets a requirement: prompting vs PEFT vs full fine-tune (3.2).
+    \item Prepare a \textbf{high-quality fine-tuning dataset}: size, format (JSONL), quality, splits (3.3).
+    \item Reason about \textbf{quantisation} --- FP32 $\to$ FP16/BF16 $\to$ INT8 $\to$ INT4 trade-offs (3.4).
+    \item Explain \textbf{LoRA} and \textbf{QLoRA} at the math level (low-rank $A \cdot B$ update, 4-bit base) (3.5).
+    \item Use \textbf{IBM InstructLab} --- taxonomy, synthetic data generation, the LAB methodology (3.6).
+    \item Evaluate a tuned model with the right metrics (3.7) and optimise cost on watsonx (3.8).
+\end{itemize}
+\end{objectivesbox}
 
 \section{Hard vs Soft Prompts (Objective 3.1)}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.95\textwidth]{assets/figures/fig11-hard-vs-soft-prompt}
+\caption{Hard prompts are human-readable tokens; soft prompts (prompt tuning) are learned vectors prepended in the embedding space. Both keep the base model frozen.}
+\label{fig:hard-vs-soft}
+\end{figure}
 
 \subsection{Definitions}
 
@@ -105,6 +127,13 @@ Before fine-tuning, you have to get your data into the right shape in watsonx.
 
 \section{Model Quantisation (Objective 3.4)}
 
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.95\textwidth]{assets/figures/fig13-quantisation-ladder}
+\caption{Each step down the ladder halves memory: 32 → 16 → 8 → 4 bits per weight, with a small quality cost that QAT and QLoRA can largely reclaim.}
+\label{fig:quantisation-ladder}
+\end{figure}
+
 \begin{keybox}
 \textbf{Quantisation} represents model weights and/or activations with fewer bits (FP32 $\to$ FP16 / BF16 $\to$ INT8 $\to$ INT4). Smaller bits $\Rightarrow$ smaller VRAM, faster inference, lower cost --- with some loss of precision.
 \end{keybox}
@@ -135,6 +164,13 @@ FP8                               & Native 8-bit float on Hopper+ GPUs & Trainin
 \end{table}
 
 \section{LoRA (Objective 3.5)}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.95\textwidth]{assets/figures/fig12-lora-decomposition}
+\caption{LoRA freezes the big weight matrix $W$ and learns a low-rank update $\Delta W = A \cdot B$. Only $A$ and $B$ are trained — typically less than $0.1\%$ of the parameters of full fine-tuning.}
+\label{fig:lora}
+\end{figure}
 
 \begin{keybox}
 \textbf{LoRA --- Low-Rank Adaptation} freezes the base model and trains two small matrices $A \in \mathbb{R}^{r \times d}$ and $B \in \mathbb{R}^{d \times r}$ alongside it. The effective weight update is $\Delta W = \frac{\alpha}{r} \cdot B A$, applied at inference time.
@@ -226,6 +262,13 @@ The taxonomy organises curation, makes contributions reviewable, and lets you ta
 \textbf{LAB} stands for \textbf{Large-scale Alignment for chatBots} (Sudalairaj et al., 2024). It uses a \emph{teacher} model to generate diverse training examples from seed prompts, filtered by a critic model. This is how IBM scales Granite tuning without needing millions of human labels.
 
 \section{Customising LLMs with InstructLab (Objective 3.7)}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.95\textwidth]{assets/figures/fig14-instructlab-taxonomy}
+\caption{An InstructLab leaf node (left) holds a few human-written seed Q\&A pairs; SDG and the LAB phased-training method (right) expand it into a tuned model.}
+\label{fig:instructlab}
+\end{figure}
 
 \begin{keybox}
 \textbf{InstructLab} (\texttt{ilab}) is IBM's open-source toolkit for community model customisation. Components: taxonomy, synthetic data generation (SDG), and multi-phase alignment training.

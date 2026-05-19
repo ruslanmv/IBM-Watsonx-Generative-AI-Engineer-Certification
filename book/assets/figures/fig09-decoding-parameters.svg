@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 480" font-family="Helvetica, Arial, sans-serif">
+  <rect width="800" height="480" fill="#ffffff"/>
+  <text x="400" y="32" text-anchor="middle" font-size="20" font-weight="700" fill="#003865">Decoding Parameters — Probability Shape</text>
+  <text x="400" y="54" text-anchor="middle" font-size="12" fill="#525F6B">How temperature, top-$k$, and top-$p$ change which token comes next.</text>
+
+  <!-- Panel 1: greedy / low temp -->
+  <g>
+    <text x="190" y="92" text-anchor="middle" font-size="14" font-weight="700" fill="#003865">Greedy / low temperature (≈0.0)</text>
+    <text x="190" y="110" text-anchor="middle" font-size="11" fill="#525F6B">deterministic · factual Q&amp;A, classification</text>
+    <!-- axes -->
+    <line x1="80"  y1="280" x2="320" y2="280" stroke="#525F6B" stroke-width="1"/>
+    <line x1="80"  y1="130" x2="80"  y2="280" stroke="#525F6B" stroke-width="1"/>
+    <!-- spikey single bar -->
+    <rect x="100" y="140" width="20" height="140" fill="#0072C6"/>
+    <rect x="130" y="270" width="20" height="10" fill="#0072C6"/>
+    <rect x="160" y="274" width="20" height="6" fill="#0072C6"/>
+    <rect x="190" y="276" width="20" height="4" fill="#0072C6"/>
+    <rect x="220" y="277" width="20" height="3" fill="#0072C6"/>
+    <rect x="250" y="278" width="20" height="2" fill="#0072C6"/>
+    <rect x="280" y="278" width="20" height="2" fill="#0072C6"/>
+    <!-- labels -->
+    <text x="80" y="300" font-size="9" fill="#525F6B">tokens, ranked by probability →</text>
+    <text x="60" y="200" font-size="9" fill="#525F6B" transform="rotate(-90 60 200)">P(token)</text>
+    <text x="110" y="132" font-size="10" font-weight="700" fill="#003865">"Paris"</text>
+  </g>
+
+  <!-- Panel 2: sampling / high temp -->
+  <g>
+    <text x="590" y="92" text-anchor="middle" font-size="14" font-weight="700" fill="#003865">Sampling / higher temperature (~0.8)</text>
+    <text x="590" y="110" text-anchor="middle" font-size="11" fill="#525F6B">creative · brainstorming, marketing copy</text>
+    <line x1="460" y1="280" x2="720" y2="280" stroke="#525F6B" stroke-width="1"/>
+    <line x1="460" y1="130" x2="460" y2="280" stroke="#525F6B" stroke-width="1"/>
+    <!-- flatter distribution -->
+    <rect x="480" y="170" width="20" height="110" fill="#8A3FFC"/>
+    <rect x="510" y="190" width="20" height="90"  fill="#8A3FFC"/>
+    <rect x="540" y="210" width="20" height="70"  fill="#8A3FFC"/>
+    <rect x="570" y="220" width="20" height="60"  fill="#8A3FFC"/>
+    <rect x="600" y="230" width="20" height="50"  fill="#8A3FFC"/>
+    <rect x="630" y="240" width="20" height="40"  fill="#8A3FFC"/>
+    <rect x="660" y="250" width="20" height="30"  fill="#8A3FFC"/>
+    <rect x="690" y="255" width="20" height="25"  fill="#8A3FFC"/>
+
+    <!-- top-k cut-off line at k=3 -->
+    <line x1="570" y1="120" x2="570" y2="290" stroke="#DA1E28" stroke-width="2" stroke-dasharray="6,4"/>
+    <text x="570" y="320" text-anchor="middle" font-size="11" font-weight="700" fill="#DA1E28">top-k = 3</text>
+    <text x="570" y="334" text-anchor="middle" font-size="9" fill="#DA1E28">drop everything to the right</text>
+
+    <!-- top-p shaded area to first ~70% of mass (cumulative roughly to col 4) -->
+    <rect x="480" y="170" width="120" height="110" fill="#009E60" opacity="0.15"/>
+    <text x="540" y="156" text-anchor="middle" font-size="11" font-weight="700" fill="#009E60">top-p = 0.7</text>
+    <text x="540" y="168" text-anchor="middle" font-size="9" fill="#009E60">keep smallest set ≥ p</text>
+  </g>
+
+  <!-- legend / rules at bottom -->
+  <rect x="40" y="360" width="720" height="100" rx="10" fill="#F0F4FA" stroke="#0072C6" stroke-width="1"/>
+  <g font-size="11" fill="#003865">
+    <text x="56" y="384" font-weight="700">Quick rules</text>
+    <text x="56" y="404">• <tspan font-weight="700">temperature</tspan> reshapes the distribution: low = peaky (deterministic), high = flat (creative).</text>
+    <text x="56" y="420">• <tspan font-weight="700">top-k</tspan> keeps only the k highest-probability tokens.</text>
+    <text x="56" y="436">• <tspan font-weight="700">top-p</tspan> (nucleus) keeps the smallest set of tokens whose cumulative probability ≥ p.</text>
+    <text x="56" y="452">• Use them <tspan font-style="italic">together</tspan>: temperature shapes; top-k / top-p prune the long tail.</text>
+  </g>
+</svg>

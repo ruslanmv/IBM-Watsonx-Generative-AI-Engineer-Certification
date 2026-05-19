@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 480" font-family="Helvetica, Arial, sans-serif">
+  <rect width="800" height="480" fill="#ffffff"/>
+  <text x="400" y="32" text-anchor="middle" font-size="20" font-weight="700" fill="#003865">Chunking Strategies — Three Common Choices</text>
+  <text x="400" y="54" text-anchor="middle" font-size="12" fill="#525F6B">How you slice a document drives retrieval quality more than which vector DB you pick.</text>
+
+  <!-- Each strategy: a document rectangle with slicing overlays + pros/cons -->
+
+  <!-- 1. Fixed-size -->
+  <text x="40" y="90" font-size="14" font-weight="700" fill="#003865">1 · Fixed-size chunks</text>
+  <text x="40" y="106" font-size="11" fill="#525F6B">Slice every N tokens, regardless of content boundaries.</text>
+  <rect x="40" y="116" width="480" height="60" rx="4" fill="#F0F4FA" stroke="#525F6B"/>
+  <!-- slices -->
+  <line x1="160" y1="116" x2="160" y2="176" stroke="#DA1E28" stroke-width="2"/>
+  <line x1="280" y1="116" x2="280" y2="176" stroke="#DA1E28" stroke-width="2"/>
+  <line x1="400" y1="116" x2="400" y2="176" stroke="#DA1E28" stroke-width="2"/>
+  <text x="100" y="152" text-anchor="middle" font-size="11" fill="#003865">512 tok</text>
+  <text x="220" y="152" text-anchor="middle" font-size="11" fill="#003865">512 tok</text>
+  <text x="340" y="152" text-anchor="middle" font-size="11" fill="#003865">512 tok</text>
+  <text x="460" y="152" text-anchor="middle" font-size="11" fill="#003865">512 tok</text>
+  <rect x="540" y="116" width="220" height="60" rx="6" fill="#FFF7E6" stroke="#FFB71B"/>
+  <text x="552" y="136" font-size="10" font-weight="700" fill="#7A4D00">+ Cheapest</text>
+  <text x="552" y="152" font-size="10" fill="#525F6B">+ Deterministic</text>
+  <text x="552" y="168" font-size="10" fill="#525F6B">− Cuts mid-sentence; loses meaning</text>
+
+  <!-- 2. Recursive -->
+  <text x="40" y="220" font-size="14" font-weight="700" fill="#003865">2 · Recursive (paragraph-aware)</text>
+  <text x="40" y="236" font-size="11" fill="#525F6B">Try to split on paragraphs first, then sentences, then words. Stop when chunks fit.</text>
+  <rect x="40" y="246" width="480" height="60" rx="4" fill="#F0F4FA" stroke="#525F6B"/>
+  <line x1="170" y1="246" x2="170" y2="306" stroke="#009E60" stroke-width="2"/>
+  <line x1="250" y1="246" x2="250" y2="306" stroke="#009E60" stroke-width="2"/>
+  <line x1="380" y1="246" x2="380" y2="306" stroke="#009E60" stroke-width="2"/>
+  <line x1="450" y1="246" x2="450" y2="306" stroke="#009E60" stroke-width="2"/>
+  <text x="105" y="282" text-anchor="middle" font-size="11" fill="#003865">¶</text>
+  <text x="210" y="282" text-anchor="middle" font-size="11" fill="#003865">¶</text>
+  <text x="315" y="282" text-anchor="middle" font-size="11" fill="#003865">¶ ¶</text>
+  <text x="415" y="282" text-anchor="middle" font-size="11" fill="#003865">¶</text>
+  <text x="485" y="282" text-anchor="middle" font-size="11" fill="#003865">¶</text>
+  <rect x="540" y="246" width="220" height="60" rx="6" fill="#E8F5EC" stroke="#009E60"/>
+  <text x="552" y="266" font-size="10" font-weight="700" fill="#005934">+ LangChain default</text>
+  <text x="552" y="282" font-size="10" fill="#525F6B">+ Respects natural boundaries</text>
+  <text x="552" y="298" font-size="10" fill="#525F6B">− Chunk sizes uneven</text>
+
+  <!-- 3. Semantic -->
+  <text x="40" y="350" font-size="14" font-weight="700" fill="#003865">3 · Semantic / sentence-aware</text>
+  <text x="40" y="366" font-size="11" fill="#525F6B">Embed each sentence; split where embedding similarity drops sharply (topic shift).</text>
+  <rect x="40" y="376" width="480" height="60" rx="4" fill="#F0F4FA" stroke="#525F6B"/>
+  <line x1="200" y1="376" x2="200" y2="436" stroke="#8A3FFC" stroke-width="2"/>
+  <line x1="360" y1="376" x2="360" y2="436" stroke="#8A3FFC" stroke-width="2"/>
+  <text x="120" y="412" text-anchor="middle" font-size="11" fill="#003865">topic A</text>
+  <text x="280" y="412" text-anchor="middle" font-size="11" fill="#003865">topic B</text>
+  <text x="440" y="412" text-anchor="middle" font-size="11" fill="#003865">topic C</text>
+  <rect x="540" y="376" width="220" height="60" rx="6" fill="#F4E9FF" stroke="#8A3FFC"/>
+  <text x="552" y="396" font-size="10" font-weight="700" fill="#5A189A">+ Highest retrieval quality</text>
+  <text x="552" y="412" font-size="10" fill="#525F6B">+ One topic per chunk</text>
+  <text x="552" y="428" font-size="10" fill="#525F6B">− Slowest to index</text>
+
+  <!-- Rule of thumb -->
+  <rect x="40" y="446" width="720" height="28" rx="6" fill="#F0F4FA" stroke="#0072C6"/>
+  <text x="400" y="464" text-anchor="middle" font-size="11" font-weight="700" fill="#003865">Start with recursive 512/64 (chunk/overlap). Move to semantic only if retrieval quality is low.</text>
+</svg>

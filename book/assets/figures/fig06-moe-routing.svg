@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 460" font-family="Helvetica, Arial, sans-serif">
+  <rect width="800" height="460" fill="#ffffff"/>
+  <text x="400" y="32" text-anchor="middle" font-size="20" font-weight="700" fill="#003865">Mixture of Experts (MoE) Routing</text>
+  <text x="400" y="54" text-anchor="middle" font-size="12" fill="#525F6B">Per token, a gate picks the top-k of N experts. Most weights stay idle.</text>
+
+  <defs>
+    <marker id="aM" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#0072C6"/>
+    </marker>
+  </defs>
+
+  <!-- Input token -->
+  <rect x="40" y="200" width="140" height="48" rx="8" fill="#F0F4FA" stroke="#0072C6" stroke-width="2"/>
+  <text x="110" y="220" text-anchor="middle" font-size="13" font-weight="700" fill="#003865">Input token</text>
+  <text x="110" y="238" text-anchor="middle" font-size="11" fill="#525F6B">"loan"</text>
+
+  <line x1="180" y1="224" x2="220" y2="224" stroke="#0072C6" stroke-width="2" marker-end="url(#aM)"/>
+
+  <!-- Gate -->
+  <polygon points="280,168 320,224 280,280 240,224" fill="#FFF7E6" stroke="#FFB71B" stroke-width="2"/>
+  <text x="280" y="220" text-anchor="middle" font-size="12" font-weight="700" fill="#7A4D00">Gate</text>
+  <text x="280" y="236" text-anchor="middle" font-size="10" fill="#7A4D00">router</text>
+
+  <!-- 8 experts -->
+  <g font-size="11" fill="#003865">
+    <!-- experts arranged in two columns x=420 and x=560, y from 90 to 360 with 8 boxes total -->
+    <!-- left column 4 -->
+    <rect x="420" y="90"  width="120" height="44" rx="6" fill="#F0F4FA" stroke="#525F6B" stroke-width="1.5"/>
+    <text x="480" y="118" text-anchor="middle">Expert 1</text>
+
+    <rect x="420" y="156" width="120" height="44" rx="6" fill="#F0F4FA" stroke="#525F6B" stroke-width="1.5"/>
+    <text x="480" y="184" text-anchor="middle">Expert 2</text>
+
+    <!-- selected -->
+    <rect x="420" y="222" width="120" height="44" rx="6" fill="#E8F5EC" stroke="#009E60" stroke-width="2.5"/>
+    <text x="480" y="244" text-anchor="middle" font-weight="700" fill="#005934">Expert 3 ★</text>
+    <text x="480" y="258" text-anchor="middle" font-size="9" fill="#525F6B">active</text>
+
+    <rect x="420" y="288" width="120" height="44" rx="6" fill="#F0F4FA" stroke="#525F6B" stroke-width="1.5"/>
+    <text x="480" y="316" text-anchor="middle">Expert 4</text>
+
+    <!-- right column 4 -->
+    <rect x="580" y="90"  width="120" height="44" rx="6" fill="#F0F4FA" stroke="#525F6B" stroke-width="1.5"/>
+    <text x="640" y="118" text-anchor="middle">Expert 5</text>
+
+    <!-- selected -->
+    <rect x="580" y="156" width="120" height="44" rx="6" fill="#E8F5EC" stroke="#009E60" stroke-width="2.5"/>
+    <text x="640" y="178" text-anchor="middle" font-weight="700" fill="#005934">Expert 6 ★</text>
+    <text x="640" y="192" text-anchor="middle" font-size="9" fill="#525F6B">active</text>
+
+    <rect x="580" y="222" width="120" height="44" rx="6" fill="#F0F4FA" stroke="#525F6B" stroke-width="1.5"/>
+    <text x="640" y="250" text-anchor="middle">Expert 7</text>
+
+    <rect x="580" y="288" width="120" height="44" rx="6" fill="#F0F4FA" stroke="#525F6B" stroke-width="1.5"/>
+    <text x="640" y="316" text-anchor="middle">Expert 8</text>
+  </g>
+
+  <!-- gate arrows to all 8 (dashed except chosen) -->
+  <g stroke-width="1" stroke-dasharray="3,3" stroke="#525F6B" fill="none">
+    <line x1="318" y1="200" x2="420" y2="110"/>
+    <line x1="318" y1="210" x2="420" y2="174"/>
+    <line x1="320" y1="240" x2="420" y2="304"/>
+    <line x1="318" y1="200" x2="580" y2="110"/>
+    <line x1="318" y1="218" x2="580" y2="240"/>
+    <line x1="320" y1="246" x2="580" y2="308"/>
+  </g>
+  <!-- chosen arrows -->
+  <line x1="320" y1="224" x2="420" y2="240" stroke="#009E60" stroke-width="2.5" marker-end="url(#aM)"/>
+  <line x1="320" y1="222" x2="580" y2="174" stroke="#009E60" stroke-width="2.5" marker-end="url(#aM)"/>
+
+  <!-- Callout stats -->
+  <rect x="40" y="360" width="720" height="80" rx="10" fill="#F0F4FA" stroke="#0072C6" stroke-width="1"/>
+  <text x="56" y="384" font-size="13" font-weight="700" fill="#003865">Mixtral 8×7B example</text>
+  <g font-size="11" fill="#525F6B">
+    <text x="56" y="406">Total params: <tspan font-weight="700" fill="#003865">47B</tspan> · Active per token: <tspan font-weight="700" fill="#003865">~13B</tspan> · Cost-per-token like a 13B, quality like a 70B.</text>
+    <text x="56" y="424">Exam clue: phrasing such as "47B-parameter model routes each token to ~13B" = MoE.</text>
+  </g>
+</svg>

@@ -22,3 +22,9 @@ main.fdb_latexmk
 
 # Local exports
 /exports/
+
+# Figure PDFs are auto-generated from SVG sources; SVG is the source of truth.
+assets/figures/*.pdf
+main.idx
+main.ilg
+main.ind

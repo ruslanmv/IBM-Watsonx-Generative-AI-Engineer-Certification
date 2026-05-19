@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 480" font-family="Helvetica, Arial, sans-serif">
+  <rect width="800" height="480" fill="#ffffff"/>
+  <text x="400" y="32" text-anchor="middle" font-size="20" font-weight="700" fill="#003865">Agentic RAG — Loop Until Confident</text>
+  <text x="400" y="54" text-anchor="middle" font-size="12" fill="#525F6B">The agent decides whether one retrieval is enough or it needs to refine the query and retrieve again.</text>
+
+  <defs>
+    <marker id="aA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#0072C6"/>
+    </marker>
+  </defs>
+
+  <!-- Circular loop of 4 nodes -->
+
+  <!-- Plan (top) -->
+  <rect x="320" y="90" width="160" height="60" rx="10" fill="#F0F4FA" stroke="#0072C6" stroke-width="2"/>
+  <text x="400" y="114" text-anchor="middle" font-weight="700" font-size="13" fill="#003865">1. Plan</text>
+  <text x="400" y="132" text-anchor="middle" font-size="11" fill="#525F6B">decompose user query</text>
+
+  <!-- Retrieve (right) -->
+  <rect x="550" y="200" width="180" height="60" rx="10" fill="#E8F5EC" stroke="#009E60" stroke-width="2"/>
+  <text x="640" y="224" text-anchor="middle" font-weight="700" font-size="13" fill="#005934">2. Retrieve</text>
+  <text x="640" y="242" text-anchor="middle" font-size="11" fill="#525F6B">vector store · top-k</text>
+
+  <!-- Reason (bottom) -->
+  <rect x="320" y="310" width="160" height="60" rx="10" fill="#F4E9FF" stroke="#8A3FFC" stroke-width="2"/>
+  <text x="400" y="334" text-anchor="middle" font-weight="700" font-size="13" fill="#5A189A">3. Reason</text>
+  <text x="400" y="352" text-anchor="middle" font-size="11" fill="#525F6B">LLM evaluates evidence</text>
+
+  <!-- Decision diamond -->
+  <polygon points="180,230 250,170 320,230 250,290" fill="#FFF7E6" stroke="#FFB71B" stroke-width="2"/>
+  <text x="250" y="226" text-anchor="middle" font-size="11" font-weight="700" fill="#7A4D00">Enough?</text>
+  <text x="250" y="242" text-anchor="middle" font-size="10" fill="#525F6B">confidence ≥ θ</text>
+
+  <!-- arrows -->
+  <line x1="480" y1="120" x2="555" y2="200" stroke="#0072C6" stroke-width="2" marker-end="url(#aA)"/>
+  <line x1="640" y1="260" x2="480" y2="330" stroke="#0072C6" stroke-width="2" marker-end="url(#aA)"/>
+  <line x1="320" y1="340" x2="265" y2="290" stroke="#0072C6" stroke-width="2" marker-end="url(#aA)"/>
+  <!-- if not enough → back to plan with refined query -->
+  <path d="M 240 168 Q 240 130 320 120" stroke="#DA1E28" stroke-width="2" fill="none" stroke-dasharray="5,3" marker-end="url(#aA)"/>
+  <text x="220" y="148" font-size="10" font-weight="700" fill="#DA1E28">NO — refine</text>
+
+  <!-- if yes → answer -->
+  <line x1="180" y1="230" x2="80" y2="230" stroke="#009E60" stroke-width="2" marker-end="url(#aA)"/>
+  <text x="148" y="220" font-size="10" font-weight="700" fill="#009E60">YES</text>
+
+  <rect x="20" y="210" width="100" height="40" rx="8" fill="#003865"/>
+  <text x="70" y="234" text-anchor="middle" font-weight="700" fill="#ffffff" font-size="12">Answer</text>
+
+  <!-- Bottom panel: example trace -->
+  <rect x="40" y="390" width="720" height="80" rx="10" fill="#F0F4FA" stroke="#0072C6" stroke-width="1"/>
+  <text x="56" y="412" font-size="12" font-weight="700" fill="#003865">Example trace</text>
+  <g font-size="11" fill="#525F6B">
+    <text x="56" y="432">Q: "What's the penalty for late delivery under our standard contract?"</text>
+    <text x="56" y="448">Loop 1 → retrieve "termination" clauses (off-topic) → reason: insufficient → refine query: "late delivery liquidated damages"</text>
+    <text x="56" y="464">Loop 2 → retrieve "§7.4 liquidated damages" → reason: confident → answer with §7.4 citation. <tspan font-weight="700" fill="#003865">Done.</tspan></text>
+  </g>
+</svg>

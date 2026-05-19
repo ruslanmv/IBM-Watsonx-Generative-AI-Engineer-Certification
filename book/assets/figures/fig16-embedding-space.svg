@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 460" font-family="Helvetica, Arial, sans-serif">
+  <rect width="800" height="460" fill="#ffffff"/>
+  <text x="400" y="32" text-anchor="middle" font-size="20" font-weight="700" fill="#003865">Embedding Space — Semantic Clusters</text>
+  <text x="400" y="54" text-anchor="middle" font-size="12" fill="#525F6B">Similar meanings end up near each other in a high-dim vector space (here 2-D for show).</text>
+
+  <!-- axes -->
+  <line x1="60" y1="400" x2="540" y2="400" stroke="#525F6B" stroke-width="1"/>
+  <line x1="60" y1="400" x2="60"  y2="100" stroke="#525F6B" stroke-width="1"/>
+  <text x="540" y="416" font-size="10" fill="#525F6B">dim 1 →</text>
+  <text x="52"  y="96"  font-size="10" fill="#525F6B" text-anchor="end">↑ dim 2</text>
+
+  <!-- finance cluster (left top) -->
+  <ellipse cx="160" cy="200" rx="100" ry="70" fill="#0072C6" opacity="0.08" stroke="#0072C6" stroke-dasharray="4,3"/>
+  <text x="160" y="138" text-anchor="middle" font-size="13" font-weight="700" fill="#0072C6">finance</text>
+  <g font-size="11" fill="#003865">
+    <circle cx="120" cy="180" r="4" fill="#0072C6"/>
+    <text x="128" y="184">"loan"</text>
+    <circle cx="180" cy="170" r="4" fill="#0072C6"/>
+    <text x="188" y="174">"mortgage"</text>
+    <circle cx="200" cy="220" r="4" fill="#0072C6"/>
+    <text x="208" y="224">"credit score"</text>
+    <circle cx="120" cy="230" r="4" fill="#0072C6"/>
+    <text x="128" y="234">"interest"</text>
+    <circle cx="160" cy="200" r="4" fill="#0072C6"/>
+  </g>
+
+  <!-- animals cluster (right) -->
+  <ellipse cx="420" cy="160" rx="100" ry="60" fill="#009E60" opacity="0.08" stroke="#009E60" stroke-dasharray="4,3"/>
+  <text x="420" y="106" text-anchor="middle" font-size="13" font-weight="700" fill="#009E60">animals</text>
+  <g font-size="11" fill="#003865">
+    <circle cx="380" cy="140" r="4" fill="#009E60"/>
+    <text x="388" y="144">"cat"</text>
+    <circle cx="430" cy="150" r="4" fill="#009E60"/>
+    <text x="438" y="154">"kitten"</text>
+    <circle cx="460" cy="180" r="4" fill="#009E60"/>
+    <text x="468" y="184">"dog"</text>
+    <circle cx="380" cy="190" r="4" fill="#009E60"/>
+    <text x="388" y="194">"puppy"</text>
+  </g>
+
+  <!-- tech cluster (bottom) -->
+  <ellipse cx="280" cy="340" rx="110" ry="40" fill="#8A3FFC" opacity="0.08" stroke="#8A3FFC" stroke-dasharray="4,3"/>
+  <text x="280" y="324" text-anchor="middle" font-size="13" font-weight="700" fill="#8A3FFC">tech</text>
+  <g font-size="11" fill="#003865">
+    <circle cx="220" cy="350" r="4" fill="#8A3FFC"/>
+    <text x="228" y="354">"router"</text>
+    <circle cx="280" cy="362" r="4" fill="#8A3FFC"/>
+    <text x="288" y="366">"server"</text>
+    <circle cx="340" cy="346" r="4" fill="#8A3FFC"/>
+    <text x="348" y="350">"firewall"</text>
+  </g>
+
+  <!-- Query vector lands in finance -->
+  <circle cx="170" cy="208" r="7" fill="#DA1E28" stroke="#ffffff" stroke-width="2"/>
+  <text x="178" y="208" font-size="11" font-weight="700" fill="#DA1E28">query</text>
+  <text x="178" y="222" font-size="10" fill="#DA1E28">"loan default"</text>
+
+  <!-- arrow from origin to query -->
+  <defs>
+    <marker id="aE" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#DA1E28"/>
+    </marker>
+  </defs>
+  <line x1="60" y1="400" x2="170" y2="208" stroke="#DA1E28" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#aE)"/>
+
+  <!-- Right panel explanation -->
+  <rect x="580" y="80" width="200" height="340" rx="12" fill="#F0F4FA" stroke="#0072C6" stroke-width="1"/>
+  <text x="680" y="106" text-anchor="middle" font-size="13" font-weight="700" fill="#003865">Why it works</text>
+  <g font-size="11" fill="#003865">
+    <text x="592" y="132">An embedder maps every</text>
+    <text x="592" y="148">piece of text to a vector.</text>
+    <text x="592" y="172"><tspan font-weight="700">Real space:</tspan> 384 dims</text>
+    <text x="592" y="188">(slate-125m) or 768</text>
+    <text x="592" y="204">(granite-embedding).</text>
+    <text x="592" y="232"><tspan font-weight="700">Similarity:</tspan></text>
+    <text x="592" y="248">cosine of two vectors.</text>
+    <text x="592" y="272">→ Retrieval finds the</text>
+    <text x="592" y="288">chunks whose vectors are</text>
+    <text x="592" y="304">closest to the query.</text>
+    <text x="592" y="332" font-style="italic" fill="#0072C6">Keyword search would miss</text>
+    <text x="592" y="348" font-style="italic" fill="#0072C6">"loan default" if the docs</text>
+    <text x="592" y="364" font-style="italic" fill="#0072C6">say "delinquent borrower."</text>
+    <text x="592" y="388" font-style="italic" fill="#0072C6">Embeddings catch both.</text>
+  </g>
+</svg>
