@@ -3,6 +3,9 @@
 # IBM watsonx Generative AI Engineer — Associate
 ### Complete Certification Course · Exam **C1000-185**
 
+![alt text](book.jpeg)
+
+
 > The open, multi-format, exam-aligned course for the IBM watsonx Generative AI Engineer Associate certification — slide decks, hands-on labs, mock exams, and a LaTeX study guide. Built for self-learners and study groups.
 
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](./LICENSE)
