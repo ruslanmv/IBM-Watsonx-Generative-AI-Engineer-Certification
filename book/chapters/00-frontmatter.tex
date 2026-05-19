@@ -39,51 +39,89 @@
 \cleardoublepage
 
 % Table of Contents
-\tableofcontents
+\pagestyle{plain}
+\renewcommand{\contentsname}{Contents}
+{\let\cleardoublepage\clearpage \tableofcontents}
 
 \cleardoublepage
 
-% List of Figures
-\listoffigures
+% List of Figures --- force plain page style so the running header
+% does not bleed into the Preface that follows.
+{\let\cleardoublepage\clearpage
+ \pagestyle{plain}
+ \renewcommand{\listfigurename}{List of Figures}
+ \listoffigures}
 
 \cleardoublepage
 
-% List of Tables
-\listoftables
+% List of Tables --- same discipline as List of Figures.
+{\let\cleardoublepage\clearpage
+ \pagestyle{plain}
+ \renewcommand{\listtablename}{List of Tables}
+ \listoftables}
 
 \cleardoublepage
+\pagestyle{fancy}
 
 % ============================================================================
 % PREFACE
 % ============================================================================
 \chapter*{Preface}
 \addcontentsline{toc}{chapter}{Preface}
+\markboth{Preface}{Preface}
 
-\epigraph{``The half-life of a tool in this field has become shorter than the half-life of a project that uses it.''}{}
+\epigraph{``The half-life of a tool in this field is shorter than the half-life of a project that uses it.''}{}
 
-\noindent The last three years have rewritten the playbook for every IT organisation that ships software. What used to be a research field --- large language models, retrieval-augmented generation, agentic systems, vector databases, governed model serving --- is now production infrastructure, and the technologies underneath it are turning over every quarter. Model catalogues that were authoritative twelve months ago are now half-deprecated. Best practices for prompt design, fine-tuning, evaluation, and safety filtering are settling, but only just. Vendors are racing to publish updates that engineers have to digest at the same speed.
+\section*{Why this guide exists}
 
-This book exists because the certification at its centre --- the \textbf{IBM watsonx Generative AI Engineer Associate}, exam code \textbf{C1000-185} --- happens to be one of the clearest, vendor-published checklists of what an engineer needs to know to keep pace with that pipeline. It does not capture everything, and no single certification can. But its six objectives --- analysis and design, prompt engineering, fine-tuning, retrieval-augmented generation, deployment, and integration --- map almost exactly onto the topics that a modern IT team needs to staff in \the\year{}. Preparing for the exam is, in practice, preparing yourself for the next twenty months of work.
+Generative AI has moved from experimentation to enterprise delivery. The work is no longer just writing a clever prompt in a notebook. A production AI engineer now has to choose the right foundation model, design the prompt and retrieval layers around it, decide when tuning is justified, deploy the system behind governed endpoints, and prove that the result is safe, traceable, and cost-effective.
 
-\section*{Why this guide exists, and why now}
+This guide exists because the work has changed. The \textbf{IBM watsonx Generative AI Engineer Associate} certification, exam code \textbf{C1000-185}, is not only a checklist of objectives. It is a useful map of what modern AI engineering teams are now expected to do. Its six sections --- analysis and design, prompt engineering, fine-tuning, retrieval-augmented generation, deployment, and integration --- track almost exactly with the topics a serious IT team is staffing today.
 
-Three things have changed in a way that justifies a study guide rather than a blog post.
+\section*{What changed in the work}
 
-The first is the \emph{cadence of the model catalogue}. The watsonx.ai catalogue rotated several times in the eighteen months before this edition went to press. \texttt{granite-13b-instruct-v2}, \texttt{llama-2-70b-chat}, \texttt{flan-t5-xxl}, and the \texttt{mpt-*} family have all been deprecated. Granite~3.x, Llama~3.x, Mistral, Granite Guardian, Granite Embedding and Slate~v2 took their place. Every code listing, every model identifier, and every API parameter in this book has been validated against the current \texttt{ibm-watsonx-ai} Python SDK and the public watsonx.ai REST API. Where a deprecated identifier appears, it is flagged so candidates can recognise it on the exam without picking it in new work.
+Three years ago, many AI projects centred on building models. Today, most enterprise generative AI work is model \emph{selection}, prompt design, retrieval, evaluation, tuning, deployment, integration, and governance. The engineer is not usually training a transformer from scratch. The engineer is deciding how to make an existing foundation model useful, reliable, and auditable inside a business process.
 
-The second is the \emph{shape of the work itself}. Three years ago, an AI engineer's day was building models. Today it is selecting between off-the-shelf foundation models, designing the prompt and retrieval layers that make them useful, customising them with parameter-efficient methods such as LoRA and InstructLab, and shipping all of that into governed production systems. The exam reflects that shift: roughly one-third of the questions are about fine-tuning, and most of the rest are about the prompt, retrieval, deployment, and integration layers that wrap a foundation model. There is almost nothing in this book about training a transformer from scratch, because almost nobody on a production team does that.
+The exam reflects that shift. Fine-tuning is the largest single weighting, but the surrounding skills carry the rest of the score: prompt engineering, RAG, deployment, integration, and the safety and governance that wrap them. Passing requires more than memorising model names. It requires recognising which engineering decision a scenario is actually asking about, and choosing the answer that an experienced team would defend in a design review.
 
-The third is the \emph{maturity of safety and governance}. Generative AI's first wave shipped without much of either. The second wave --- the one this book documents --- ships them by default. Granite Guardian, watsonx.governance factsheets, drift monitoring, demographic-parity tests, audit-grade logging --- they are no longer optional features. The certification tests them as core engineering skills, and so does this book.
+\section*{What changed in the platform}
 
-\section*{The AI boom, in three numbers}
+The watsonx.ai catalogue moves quickly. In the eighteen months before this edition went to press, identifiers such as \texttt{granite-13b-instruct-v2}, \texttt{llama-2-70b-chat}, \texttt{flan-t5-xxl}, and the \texttt{mpt-*} family were deprecated. Newer Granite~3.x, Llama~3.x, and Mistral models now anchor the recommended patterns, alongside Granite Guardian for safety, the Granite Embedding family for multilingual retrieval, and Slate~v2 for English retrieval. Every code listing, model identifier, and API parameter in this book has been validated against the current \texttt{ibm-watsonx-ai} Python SDK and the public REST API. Deprecated identifiers are flagged where they appear, so candidates recognise them on the exam without choosing them in new work.
 
-Three numbers carry the context. Spending on generative AI infrastructure has moved from a rounding error in 2022 to a major line in nearly every enterprise IT budget in \the\year{}. The number of public foundation models worth considering in production has gone from a handful to dozens, with model families turning over roughly every six to twelve months. And the volume of regulation around how those models can be deployed has moved from almost zero to a working framework in every major jurisdiction. An engineer who is current on the technology stack but absent on the governance layer is now half-trained; the same is true in the other direction. This book treats both as part of the same job.
+A second platform change is structural rather than catalogue-wise. Prompt templates, deployment spaces, the Model Gateway, AI Pipelines, watsonx Discovery, and watsonx.governance are now first-class production primitives, not optional add-ons. The book treats them that way --- as the artefacts a production engineering team works with, not as feature highlights.
 
-\section*{The Acme case study --- one thread through every chapter}
+\section*{What changed in governance}
 
-To keep the material grounded, the book follows a single fictional engagement from beginning to end. \textbf{Acme Bank} --- the canonical placeholder for any large, regulated enterprise --- has asked its AI team to build the \textbf{Acme Assistant}, an internal tool for the bank's customer-support staff. The Assistant must answer policy questions, draft replies to customer emails, summarise long claim threads, and escalate cleanly when it should not answer at all. Cost matters. Compliance matters. Audit trails matter.
+The first wave of generative AI projects often treated safety as something to add later. The second wave cannot. Prompt injection, hallucination, PII exposure, toxic output, audit logging, drift monitoring, model factsheets, and groundedness checks are now part of the engineering work, not the risk-team's separate worry. Granite Guardian and watsonx.governance are not side topics in this book; they appear in every chapter, because they appear in every governed deployment.
 
-The AI engineer at Acme is, in the prose that follows, sometimes \emph{they}, sometimes \emph{you}, sometimes \emph{the team}. The case study is the thread that ties Chapter~1 (\emph{what is the Assistant actually supposed to do?}), Chapter~2 (\emph{the first prompt and what broke}), Chapter~3 (\emph{when prompting alone wasn't enough}), Chapter~4 (\emph{the policy documents change every Monday}), Chapter~5 (\emph{rolling it out to eight hundred agents}), and Chapter~6 (\emph{wiring it to Watson Assistant and the bank's CRM}). You can read each chapter on its own --- the book is also a reference --- but the Acme thread is what turns the abstract decisions into decisions you can argue with.
+There is almost nothing in this book about training a transformer from scratch, because almost nobody on a production team does that. There is a lot about making an off-the-shelf transformer behave well enough that a regulator, a compliance officer, and a support lead are all willing to sign off.
+
+\section*{The enterprise case used throughout the book}
+
+To keep the material grounded, the book follows a composite case: a regulated enterprise building an internal generative AI assistant for support operations. The case is composite, drawn from common patterns rather than from any specific organisation, and the perspective is that of the AI delivery team --- engineers, architects, governance leads, and platform owners --- making the same decisions in the order any such team meets them.
+
+The assistant must answer policy questions from governed documents, summarise long case histories, draft compliant replies, avoid unsupported claims, protect sensitive information, and escalate when it should not answer. Cost matters. Latency matters. Compliance matters. Every answer must be explainable enough for an auditor and useful enough for a support agent. Each chapter revisits the same program from a different engineering angle.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabularx}{\textwidth}{l X}
+\toprule
+\textbf{Chapter} & \textbf{The engineering decision} \\
+\midrule
+1 -- Analyze \& Design       & What kind of generative AI problem is this, and which architecture does it deserve? \\
+2 -- Prompt Engineering      & How do we control the model's behaviour from the outside, through prompts and parameters? \\
+3 -- Fine-Tuning             & When is prompting not enough, and which tuning technique fits the gap? \\
+4 -- RAG                     & How do we ground answers in enterprise knowledge that changes faster than the model? \\
+5 -- Deployment              & How do we make the system production-ready: versioned, monitored, governed, reversible? \\
+6 -- Integration             & How do we connect the model to the real business workflow without losing the audit trail? \\
+\bottomrule
+\end{tabularx}
+\caption{The six engineering decisions this book is organised around.}
+\label{tab:decisions}
+\end{table}
+
+Three rules of thumb recur through the chapters. \emph{When the facts change, retrieve; when the behaviour must change, tune.} \emph{If the workflow needs tools, use orchestration.} \emph{If the output affects people, govern it.} A reader who comes away with those three rules, and a working vocabulary of the watsonx components that implement them, has the spine of the certification.
 
 \section*{Who this book is for}
 
@@ -93,7 +131,7 @@ This is a book for the AI engineer, data scientist, or solution architect who ne
 
 The book has three layers. The \emph{chapters} explain --- one chapter per official exam section, weighted to match the blueprint. The \emph{appendices} are reference and practice --- a glossary, two full mock exams with answer keys, a one-page cheatsheet, and an objective-by-objective map back into the chapters. The \emph{index} at the back lets you find a single term, model identifier, or watsonx product without scanning the table of contents.
 
-Inside a chapter, the rhythm is intentionally varied. Some sections open with a problem from the Acme engagement and arrive at the concept through the problem. Some open with the concept and immediately put it to work. A short \emph{exam tip} appears where the certification has a recognisable question pattern; a \emph{warning} appears where a deprecation or a common pitfall could cost points. There is no fixed template. If you read the same kind of box on every page you would stop noticing them, and the book would stop working.
+Inside a chapter, the rhythm is intentionally varied. Some sections open with the enterprise problem and arrive at the concept through the problem. Some open with the concept and put it to work on the next page. A short \emph{exam tip} appears where the certification has a recognisable question pattern; a \emph{warning} appears where a deprecation or a common pitfall could cost points. There is no fixed template. If you read the same kind of box on every page you would stop noticing them, and the book would stop working.
 
 \subsection*{Workbook components}
 
@@ -171,7 +209,7 @@ If you have never seen a transformer block, never trained a model, and never wri
 
 Three typographic rules run through every chapter. \texttt{Monospaced text} is code, file paths, API parameters, and model identifiers (\texttt{ibm/granite-3-2-8b-instruct} is one). \emph{Italics} introduce a new term where it is first defined, and occasionally mark an aside. \textbf{Bold} marks the few words a candidate should be able to recite back from memory.
 
-Coloured boxes appear sparingly. A \textcolor{ibmsuccess}{\textbf{Key Concept}} states a rule worth memorising; an \textcolor{ibmblue}{\textbf{Example}} gives a concrete scenario, usually from the Acme engagement; an \textcolor{ibmwarning}{\textbf{Important}} or \textcolor{ibmwarning}{\textbf{Exam Tip}} flags a question pattern the certification uses; a \textcolor{ibmerror}{\textbf{Warning}} marks a pitfall or a deprecated identifier; a \textcolor{ibmgray}{\textbf{Practice Question}} is a self-test with an answer at the end of the chapter. If a chapter ever feels like every paragraph is in a box, that is a bug.
+Coloured boxes appear sparingly. A \textcolor{ibmsuccess}{\textbf{Key Concept}} states a rule worth memorising; an \textcolor{ibmblue}{\textbf{Example}} gives a concrete enterprise scenario; an \textcolor{ibmwarning}{\textbf{Important}} or \textcolor{ibmwarning}{\textbf{Exam Tip}} flags a question pattern the certification uses; a \textcolor{ibmerror}{\textbf{Warning}} marks a pitfall or a deprecated identifier; a \textcolor{ibmgray}{\textbf{Practice Question}} is a self-test with an answer at the end of the chapter. If a chapter ever feels like every paragraph is in a box, that is a bug.
 
 \section*{Acknowledgements}
 

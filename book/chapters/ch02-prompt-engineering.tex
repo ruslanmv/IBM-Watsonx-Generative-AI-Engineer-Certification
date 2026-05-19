@@ -3,9 +3,9 @@
 
 \epigraph{``Most production AI is prompt engineering. The rest is plumbing.''}{}
 
-The first version of the Acme Assistant was a single sentence: \emph{``You are a helpful banking assistant. Answer the user.''} On the third test query, it confidently invented an interest rate that no Acme product actually offered. On the fifth, it answered a question about VAT rules using a German tax code that may or may not exist. By the end of the morning, the AI engineer at Acme had three pages of notes, all of them variations of the same theme: the prompt was the problem.
+The first prompt in an enterprise project is usually too trusting. It assumes the model understands the business, knows the boundaries, remembers the policy, follows the tone guide, refuses unsafe requests, and produces the right format every time. It does none of those things by default. The first version of a typical governed assistant is a single sentence --- something like \emph{``You are a helpful assistant. Answer the user.''} --- and within minutes of testing the system has confidently invented a product, cited a regulation that may or may not exist, or answered in the wrong tone for the brand. A morning of notes from that first test session, all variations on the same theme, is what this chapter turns into a discipline.
 
-That morning's notes are this chapter. Section~2 of the exam is prompt engineering, sixteen percent of the test. It assumes you have already read Chapter~\ref{ch:foundations}, because model selection (Section~1.5) drives almost every prompt-engineering choice that follows. What this chapter adds is the craft on top: how to structure a prompt, how to tune the parameters that decode it, how to package it as a versioned asset, and how to wrap it against the four risk families that any consumer-facing prompt has to survive.
+Prompt engineering is the discipline of turning a general-purpose model into a controlled interface for a specific task. The exam treats it as Section~2 --- sixteen percent of the test --- and assumes you have already read Chapter~\ref{ch:foundations}, because model selection drives almost every prompt-engineering choice that follows. In this chapter, the prompt becomes an engineering artefact: versioned, parameterised, tested, evaluated, and guarded against hallucination, prompt injection, PII exposure, and unsafe output. By the last page, you will be able to take a prototype prompt and harden it into something the platform team is willing to ship.
 
 \section{Zero-shot, few-shot, and asking the model to think}
 
@@ -18,7 +18,7 @@ That morning's notes are this chapter. Section~2 of the exam is prompt engineeri
 
 \subsection{Zero-shot}
 
-The cheapest prompt is the one with no examples. You describe the task and the model figures it out from its training. The Acme intent classifier started this way --- one sentence describing the task, one ticket, one label out. For a task the model has seen a thousand times in its training data (sentiment, simple summarisation, common-language translation), zero-shot is enough and you should not pay the context-window cost of examples.
+The cheapest prompt is the one with no examples. You describe the task and the model figures it out from its training. The intent classifier inside a governed assistant typically starts this way --- one sentence describing the task, one ticket, one label out. For a task the model has seen a thousand times in its training data (sentiment, simple summarisation, common-language translation), zero-shot is enough and you should not pay the context-window cost of examples.
 
 \begin{examplebox}[title=\textbf{Zero-shot classification}]
 \begin{lstlisting}[style=pythonstyle]
@@ -52,7 +52,7 @@ Sentiment:"""
 
 \subsection{Chain-of-thought}
 
-The last lever in this section is the simplest and the most under-used. Adding the phrase \emph{``Think step-by-step''} before the answer prompt forces the model to write out its reasoning before its conclusion. On multi-step problems --- contract penalty calculations at Acme, multi-policy reasoning, anything with arithmetic --- accuracy jumps and errors become inspectable. The cost is more tokens out. The catch is that a regulator may not want the reasoning trace surfaced to end users, which is why a chain-of-thought system prompt is usually paired with a parser that returns only the final answer to the application.
+The last lever in this section is the simplest and the most under-used. Adding the phrase \emph{``Think step-by-step''} before the answer prompt forces the model to write out its reasoning before its conclusion. On multi-step problems --- contract-penalty calculations, multi-policy reasoning, anything with arithmetic --- accuracy jumps and errors become inspectable. The cost is more tokens out. The catch is that a regulator may not want the reasoning trace surfaced to end users, which is why a chain-of-thought system prompt is usually paired with a parser that returns only the final answer to the application while the trace is captured in the audit log.
 
 \examtip{If a scenario shows two to five input-output pairs in the prompt, it is few-shot. If it shows only the task description, it is zero-shot. If it shows \emph{``let's think step by step''} or a numbered reasoning trace, it is chain-of-thought. When the exam phrasing is \emph{``cheapest correct approach''} for a task the model already knows well, the answer is zero-shot.}
 
@@ -65,7 +65,7 @@ The last lever in this section is the simplest and the most under-used. Adding t
 \label{fig:prompt-anatomy}
 \end{figure}
 
-A production prompt has five regions, in this order: a \emph{role/system} block that establishes the persona and refusal rules; a \emph{context} block that grounds the model (in RAG, this is where the retrieved chunks land); an \emph{examples} block when you want few-shot; a \emph{task} block with the actual question; and an \emph{output-schema} block that locks the response format. Treat them as separate concerns. When the Acme Assistant misbehaves, ninety percent of the time it's because two of these regions were collapsed into one and the model got confused about what was instruction and what was content.
+A production prompt has five regions, in this order: a \emph{role/system} block that establishes the persona and refusal rules; a \emph{context} block that grounds the model (in RAG, this is where the retrieved chunks land); an \emph{examples} block when you want few-shot; a \emph{task} block with the actual question; and an \emph{output-schema} block that locks the response format. Treat them as separate concerns. When an enterprise assistant misbehaves in testing, ninety percent of the time it is because two of these regions were collapsed into one and the model could not tell instruction from content.
 
 Chat-style and freeform prompts are not the same shape on the wire. A chat-capable model takes a structured list of \texttt{(role, content)} messages and honours the \texttt{system} role separately from user input --- that separation is itself a defence against prompt injection. A freeform call sends one big string. Use the chat shape for anything customer-facing.
 
@@ -249,7 +249,7 @@ Beyond the editor itself, Prompt Lab gives you side-by-side model comparison, li
 
 \section{The four risk families every prompt has to survive}
 
-The same four risk families appear in Chapter~\ref{ch:foundations} under the security section. Here they show up again because the prompt is where most of them are mitigated. The Acme Assistant's prompt evolved through all four.
+The same four risk families appear in Chapter~\ref{ch:foundations} under the security section. Here they show up again because the prompt is where most of them are mitigated. The production prompt of any governed assistant evolves through all four before it ships.
 
 \emph{Hallucination} is the model producing a confident, plausible answer that is factually wrong. Underlying causes: it is a probabilistic next-token predictor; the training data was missing or contradictory; the prompt is out-of-distribution; the temperature was too high. The mitigation stack is layered: ground the model with RAG (Chapter~\ref{ch:rag}) so it has source text to lean on, lower the temperature, use greedy decoding for factual tasks, add an explicit refusal instruction (\emph{``If the answer is not in the context, say `I do not know'.''}), and for high-stakes outputs add a verification step --- a second LLM call as a fact-checker, or Granite Guardian's groundedness check on the output.
 
@@ -263,11 +263,11 @@ The same four risk families appear in Chapter~\ref{ch:foundations} under the sec
 
 \subsection{A reference production prompt}
 
-The Acme Assistant's first production prompt, after the morning that opens this chapter, ended up looking like this. Notice the five regions from Figure~\ref{fig:prompt-anatomy} all present and labelled, the explicit refusal instruction, and the locked output schema.
+A first production prompt for a governed support assistant --- after the morning of failed test queries that opens this chapter --- typically ends up looking like the block below. Notice the five regions from Figure~\ref{fig:prompt-anatomy} all present and labelled, the explicit refusal instruction, and the locked output schema.
 
 \begin{examplebox}[title=\textbf{Reference production prompt skeleton}]
 \begin{lstlisting}[style=pythonstyle]
-SYSTEM = """You are a senior support agent at Acme Bank.
+SYSTEM = """You are a senior support agent at the enterprise.
 Answer ONLY from the policy excerpts in <context>.
 If the answer is not in the context, reply:
   'I do not know -- please contact a human agent.'
