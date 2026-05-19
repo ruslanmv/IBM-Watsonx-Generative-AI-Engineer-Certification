@@ -377,14 +377,64 @@
 </section>
 
 <section>
-  <span class="checkpoint-label">✅ Module 1 Checkpoint</span>
-  <p class="checkpoint-q">Which watsonx product owns model bias monitoring and lifecycle audit reports?</p>
+  <span class="checkpoint-label">✅ Module 1 Quiz · Q1 / 5</span>
+  <p class="checkpoint-q">You are tasked with integrating watsonx.ai into a legacy system that operates over HTTP and requires strict security and monitoring of the API calls. The legacy system lacks modern authentication mechanisms like OAuth. Which integration method would best suit the needs of this environment while ensuring security and efficient API management?</p>
   <ul class="checkpoint-opts">
-    <li>A. watsonx.ai</li>
-    <li>B. watsonx.data</li>
-    <li class="correct">C. watsonx.governance</li>
-    <li>D. IBM Cloud Pak for Data</li>
+    <li class="correct"><strong>A.</strong> Use REST API with API key-based authentication, leveraging HTTPS for encrypted communication between the legacy system and watsonx.ai.</li>
+    <li><strong>B.</strong> Implement a GraphQL API to allow the legacy system to query specific fields and reduce payload size, thereby improving efficiency.</li>
+    <li><strong>C.</strong> Use a REST API with OAuth authentication and token management to secure the communication.</li>
+    <li><strong>D.</strong> Directly embed the watsonx.ai SDK into the legacy system to handle API management and security, eliminating the need for external API calls.</li>
   </ul>
+  <p class="xsmall" style="margin-top:10px; text-align:left;"><span class="hl3">Answer: A</span> &nbsp;·&nbsp; the correct option is highlighted in green. Real-style C1000-185 question.</p>
+  <aside class="slide-footer">ruslanmv.com · C1000-185 · 01 / Getting Started · Q1</aside>
+</section>
+<section>
+  <span class="checkpoint-label">✅ Module 1 Quiz · Q2 / 5</span>
+  <p class="checkpoint-q">A financial institution is using a generative AI model to create reports based on transaction data. During deployment, the institution notices that the model sometimes fabricates trends or patterns that do not exist in the underlying data. This is an example of a hallucination. Which of the following techniques would best minimize this risk during inference?</p>
+  <ul class="checkpoint-opts">
+    <li><strong>A.</strong> Increase the top-p value to ensure more tokens are considered during generation.</li>
+    <li><strong>B.</strong> Reduce the model size to decrease its capacity to hallucinate complex patterns.</li>
+    <li><strong>C.</strong> Disable the model&#x27;s autoregressive capability to prevent it from generating future predictions.</li>
+    <li class="correct"><strong>D.</strong> Use a retrieval-augmented generation (RAG) model that incorporates external financial data into the generation process.</li>
+  </ul>
+  <p class="xsmall" style="margin-top:10px; text-align:left;"><span class="hl3">Answer: D</span> &nbsp;·&nbsp; the correct option is highlighted in green. Real-style C1000-185 question.</p>
+  <aside class="slide-footer">ruslanmv.com · C1000-185 · 01 / Getting Started · Q2</aside>
+</section>
+<section>
+  <span class="checkpoint-label">✅ Module 1 Quiz · Q3 / 5</span>
+  <p class="checkpoint-q">A healthcare organization is deploying a generative AI model to assist in summarizing patient records. Given the sensitivity of patient data, the model must not output Personally Identifiable Information (PII) such as names, addresses, or Social Security numbers. Which of the following strategies would best help prevent the model from unintentionally generating PII?</p>
+  <ul class="checkpoint-opts">
+    <li><strong>A.</strong> Disable the model&#x27;s ability to use context from previous tokens to prevent PII from being included in the output.</li>
+    <li class="correct"><strong>B.</strong> Fine-tune the model specifically on anonymized datasets with PII removed.</li>
+    <li><strong>C.</strong> Increase the temperature and top-k values to reduce the probability of PII being generated.</li>
+    <li><strong>D.</strong> Use a post-processing step to detect and mask PII after the model generates the text.</li>
+  </ul>
+  <p class="xsmall" style="margin-top:10px; text-align:left;"><span class="hl3">Answer: B</span> &nbsp;·&nbsp; the correct option is highlighted in green. Real-style C1000-185 question.</p>
+  <aside class="slide-footer">ruslanmv.com · C1000-185 · 01 / Getting Started · Q3</aside>
+</section>
+<section>
+  <span class="checkpoint-label">✅ Module 1 Quiz · Q4 / 5</span>
+  <p class="checkpoint-q">You are using IBM watsonx&#x27;s generative AI model to generate responses for a chatbot, and you want to ensure that the model stops generating text when it encounters a specific phrase like &quot;:End of Response.&quot; Which of the following settings for stop sequences is most appropriate to achieve this goal?</p>
+  <ul class="checkpoint-opts">
+    <li><strong>A.</strong> Set the stop sequence to &quot;\ n\ n&quot;</li>
+    <li><strong>B.</strong> Set the stop sequence to &quot;STOP&quot;</li>
+    <li class="correct"><strong>C.</strong> Set the stop sequence to &quot;End of Response&quot;</li>
+    <li><strong>D.</strong> Set the stop sequence to &quot;&lt;|stop|&gt;&quot;</li>
+  </ul>
+  <p class="xsmall" style="margin-top:10px; text-align:left;"><span class="hl3">Answer: C</span> &nbsp;·&nbsp; the correct option is highlighted in green. Real-style C1000-185 question.</p>
+  <aside class="slide-footer">ruslanmv.com · C1000-185 · 01 / Getting Started · Q4</aside>
+</section>
+<section>
+  <span class="checkpoint-label">✅ Module 1 Quiz · Q5 / 5</span>
+  <p class="checkpoint-q">You are working on tuning a generative AI model in IBM watsonx.ai for better performance in generating conversational responses. You have been asked to add new data to the project. What is the most effective approach to adding data for model tuning?</p>
+  <ul class="checkpoint-opts">
+    <li><strong>A.</strong> Add only the test set data to ensure robust evaluation of the model</li>
+    <li><strong>B.</strong> Add unstructured data with no labels for semi-supervised learning</li>
+    <li><strong>C.</strong> Add only outlier data to improve the model&#x27;s ability to handle edge cases</li>
+    <li class="correct"><strong>D.</strong> Add new labeled training data that closely resembles the use case scenarios</li>
+  </ul>
+  <p class="xsmall" style="margin-top:10px; text-align:left;"><span class="hl3">Answer: D</span> &nbsp;·&nbsp; the correct option is highlighted in green. Real-style C1000-185 question.</p>
+  <aside class="slide-footer">ruslanmv.com · C1000-185 · 01 / Getting Started · Q5</aside>
 </section>
 <aside class="slide-footer">ruslanmv.com · C1000-185 · 01 / Getting Started</aside>
 </section>
@@ -464,14 +514,64 @@ Need: high-quality output for a business task
 </section>
 
 <section>
-  <span class="checkpoint-label">✅ Module 2 Checkpoint</span>
-  <p class="checkpoint-q">A bank wants a chatbot that answers questions using its <em>internal policy PDFs</em>, updated weekly. Cheapest correct architecture?</p>
+  <span class="checkpoint-label">✅ Module 2 Quiz · Q1 / 5</span>
+  <p class="checkpoint-q">After completing a prompt-tuning experiment, you notice that the model&#x27;s accuracy in generating relevant responses is high, but the fluency and grammatical correctness of the outputs seem to be suboptimal. What statistical metric would most directly indicate this issue, and what action should you take to improve the output?</p>
   <ul class="checkpoint-opts">
-    <li>A. Fine-tune Granite on the PDFs every week</li>
-    <li class="correct">B. RAG over the PDFs with embeddings + vector DB</li>
-    <li>C. Pre-train a new model from scratch</li>
-    <li>D. Use zero-shot prompting with a public model</li>
+    <li><strong>A.</strong> BLEU score; improve prompt engineering to ensure that the model focuses on fluency.</li>
+    <li><strong>B.</strong> F1 score; increase the training dataset size to improve overall accuracy.</li>
+    <li><strong>C.</strong> ROUGE score; adjust the token generation limit to ensure longer outputs.</li>
+    <li class="correct"><strong>D.</strong> Perplexity score; apply additional language model fine-tuning on grammatical correctness.</li>
   </ul>
+  <p class="xsmall" style="margin-top:10px; text-align:left;"><span class="hl3">Answer: D</span> &nbsp;·&nbsp; the correct option is highlighted in green. Real-style C1000-185 question.</p>
+  <aside class="slide-footer">ruslanmv.com · C1000-185 · 02 / Fundamentals · Q1</aside>
+</section>
+<section>
+  <span class="checkpoint-label">✅ Module 2 Quiz · Q2 / 5</span>
+  <p class="checkpoint-q">You are tasked with configuring a generative model to assist legal professionals by generating contract clauses. The model should produce complete, contextually relevant clauses but should avoid overly long and redundant text. You must ensure that the generation process stops appropriately once a clause is completed. Which of the following strategies is the most appropriate for configuring stopping criteria?</p>
+  <ul class="checkpoint-opts">
+    <li><strong>A.</strong> Set a maximum token limit of 500 and implement a fixed length stopping criterion.</li>
+    <li><strong>B.</strong> Use a beam search algorithm and impose a strict length restriction of 100 tokens.</li>
+    <li class="correct"><strong>C.</strong> Use a stop sequence based on legal clause delimiters and impose a minimum token limit of 50.</li>
+    <li><strong>D.</strong> Set the top-k value to 1 and use the default maximum token limit, relying on the model&#x27;s internal stopping criteria.</li>
+  </ul>
+  <p class="xsmall" style="margin-top:10px; text-align:left;"><span class="hl3">Answer: C</span> &nbsp;·&nbsp; the correct option is highlighted in green. Real-style C1000-185 question.</p>
+  <aside class="slide-footer">ruslanmv.com · C1000-185 · 02 / Fundamentals · Q2</aside>
+</section>
+<section>
+  <span class="checkpoint-label">✅ Module 2 Quiz · Q3 / 5</span>
+  <p class="checkpoint-q">You want a generative AI model to summarize a lengthy text in one sentence. You provide the following prompt: &quot;Summarize the following paragraph in one sentence: &#x27;Artificial intelligence (AI) is the simulation of human intelligence in machines that are programmed to think and learn. The field of AI includes everything from speech recognition to problem-solving and robotics.&#x27;&quot; No prior examples are given. What type of prompting is being used, and what are the expectations?</p>
+  <ul class="checkpoint-opts">
+    <li class="correct"><strong>A.</strong> Zero-shot prompting, with the expectation that the model can summarize common concepts like AI due to pre-training.</li>
+    <li><strong>B.</strong> Zero-shot prompting, but it requires the addition of a few examples for the model to generate a summary.</li>
+    <li><strong>C.</strong> Few-shot prompting, but the model will likely struggle without a few examples of summaries provided.</li>
+    <li><strong>D.</strong> Zero-shot prompting, but the model may fail without detailed instructions on what aspects of the text to focus on.</li>
+  </ul>
+  <p class="xsmall" style="margin-top:10px; text-align:left;"><span class="hl3">Answer: A</span> &nbsp;·&nbsp; the correct option is highlighted in green. Real-style C1000-185 question.</p>
+  <aside class="slide-footer">ruslanmv.com · C1000-185 · 02 / Fundamentals · Q3</aside>
+</section>
+<section>
+  <span class="checkpoint-label">✅ Module 2 Quiz · Q4 / 5</span>
+  <p class="checkpoint-q">You are tasked with inspecting and validating a dataset using IBM Watson&#x27;s Data Refinery tool. The dataset will be used for an AI application that performs natural language processing (NLP) on customer support tickets. Upon inspection, you discover that the &#x27;ticket_description&#x27; field contains numerous instances of null values and inconsistent formats. What is the most appropriate action to take next using Data Refinery?</p>
+  <ul class="checkpoint-opts">
+    <li><strong>A.</strong> Replace all null values with zeros, as this will standardize the dataset.</li>
+    <li><strong>B.</strong> Proceed with training the model without any changes, as missing data will not impact NLP models significantly.</li>
+    <li class="correct"><strong>C.</strong> Use Data Refinery&#x27;s &quot;Data Quality&quot; feature to generate a profiling report and assess the scope of the issues.</li>
+    <li><strong>D.</strong> Delete all rows containing null values in the &#x27;ticket_description&#x27; field.</li>
+  </ul>
+  <p class="xsmall" style="margin-top:10px; text-align:left;"><span class="hl3">Answer: C</span> &nbsp;·&nbsp; the correct option is highlighted in green. Real-style C1000-185 question.</p>
+  <aside class="slide-footer">ruslanmv.com · C1000-185 · 02 / Fundamentals · Q4</aside>
+</section>
+<section>
+  <span class="checkpoint-label">✅ Module 2 Quiz · Q5 / 5</span>
+  <p class="checkpoint-q">In a Retrieval-Augmented Generation (RAG) system, the retriever plays a crucial role in retrieving relevant documents or passages from a knowledge base. What is the primary function of a retriever in this architecture?</p>
+  <ul class="checkpoint-opts">
+    <li class="correct"><strong>A.</strong> The retriever finds and retrieves documents from a knowledge base that are semantically similar to the input query, often using vector embeddings to compare similarity.</li>
+    <li><strong>B.</strong> The retriever performs tokenization and splitting of large documents into smaller chunks, making them easier to index.</li>
+    <li><strong>C.</strong> The retriever generates the final response based on the retrieved documents and the user&#x27;s query.</li>
+    <li><strong>D.</strong> The retriever modifies the transformer-based model&#x27;s weights in real-time to improve the relevance of future retrievals.</li>
+  </ul>
+  <p class="xsmall" style="margin-top:10px; text-align:left;"><span class="hl3">Answer: A</span> &nbsp;·&nbsp; the correct option is highlighted in green. Real-style C1000-185 question.</p>
+  <aside class="slide-footer">ruslanmv.com · C1000-185 · 02 / Fundamentals · Q5</aside>
 </section>
 <aside class="slide-footer">ruslanmv.com · C1000-185 · 02 / GenAI Fundamentals</aside>
 </section>
@@ -551,14 +651,64 @@ Need: high-quality output for a business task
 </section>
 
 <section>
-  <span class="checkpoint-label">✅ Module 3 Checkpoint</span>
-  <p class="checkpoint-q">Your summarizer occasionally invents quotes. Single-knob change to reduce this <em>most</em>?</p>
+  <span class="checkpoint-label">✅ Module 3 Quiz · Q1 / 5</span>
+  <p class="checkpoint-q">In the context of analyzing prompt-tuning results, which statistical measure is most important to assess how well the tuned model generalizes to unseen data?</p>
   <ul class="checkpoint-opts">
-    <li>A. Increase temperature to 1.2</li>
-    <li>B. Increase max_new_tokens</li>
-    <li class="correct">C. Lower temperature to ~0.2 and use chain-of-thought grounding instructions</li>
-    <li>D. Switch to a smaller model</li>
+    <li><strong>A.</strong> Number of epochs completed</li>
+    <li class="correct"><strong>B.</strong> Validation loss</li>
+    <li><strong>C.</strong> Accuracy on the training dataset</li>
+    <li><strong>D.</strong> Training loss</li>
   </ul>
+  <p class="xsmall" style="margin-top:10px; text-align:left;"><span class="hl3">Answer: B</span> &nbsp;·&nbsp; the correct option is highlighted in green. Real-style C1000-185 question.</p>
+  <aside class="slide-footer">ruslanmv.com · C1000-185 · 03 / Prompt Engineering · Q1</aside>
+</section>
+<section>
+  <span class="checkpoint-label">✅ Module 3 Quiz · Q2 / 5</span>
+  <p class="checkpoint-q">You are optimizing a generative AI chatbot for concise responses to user queries, ensuring that it doesn&#x27;t over-generate unnecessary content. However, you observe that the model occasionally stops prematurely, cutting off relevant information. What configuration best addresses this issue without allowing for excessive output?</p>
+  <ul class="checkpoint-opts">
+    <li><strong>A.</strong> Stop Sequence = &#x27;.&#x27;, Max Tokens = 150</li>
+    <li><strong>B.</strong> Stop Sequence = &#x27;.&#x27; (period followed by a space), Max Tokens = 300</li>
+    <li class="correct"><strong>C.</strong> Stop Sequence = &#x27;&lt;/end&gt;&#x27;, Max Tokens = 250</li>
+    <li><strong>D.</strong> Stop Sequence = &#x27;.&#x27;, Max Tokens = 500</li>
+  </ul>
+  <p class="xsmall" style="margin-top:10px; text-align:left;"><span class="hl3">Answer: C</span> &nbsp;·&nbsp; the correct option is highlighted in green. Real-style C1000-185 question.</p>
+  <aside class="slide-footer">ruslanmv.com · C1000-185 · 03 / Prompt Engineering · Q2</aside>
+</section>
+<section>
+  <span class="checkpoint-label">✅ Module 3 Quiz · Q3 / 5</span>
+  <p class="checkpoint-q">In IBM Watsonx Generative AI, controlling model parameters is crucial for managing the output generation process. Which of the following statements correctly describes how adjusting the temperature parameter influences the model&#x27;s response?</p>
+  <ul class="checkpoint-opts">
+    <li class="correct"><strong>A.</strong> A higher temperature parameter introduces more randomness, leading to less predictable responses.</li>
+    <li><strong>B.</strong> Decreasing the temperature parameter produces more creative and diverse responses.</li>
+    <li><strong>C.</strong> The temperature parameter has no impact on the diversity or creativity of the model&#x27;s output but controls response length.</li>
+    <li><strong>D.</strong> Increasing the temperature parameter results in more deterministic and repetitive responses.</li>
+  </ul>
+  <p class="xsmall" style="margin-top:10px; text-align:left;"><span class="hl3">Answer: A</span> &nbsp;·&nbsp; the correct option is highlighted in green. Real-style C1000-185 question.</p>
+  <aside class="slide-footer">ruslanmv.com · C1000-185 · 03 / Prompt Engineering · Q3</aside>
+</section>
+<section>
+  <span class="checkpoint-label">✅ Module 3 Quiz · Q4 / 5</span>
+  <p class="checkpoint-q">You are using IBM Watsonx to control the randomness of a language model&#x27;s output by adjusting the top-k parameter. What happens when you reduce the top-k value from 50 to 5 during text generation?</p>
+  <ul class="checkpoint-opts">
+    <li><strong>A.</strong> Lowering the top-k value forces the model to generate shorter outputs by limiting the number of tokens available for selection.</li>
+    <li><strong>B.</strong> Reducing the top-k value reduces the model&#x27;s ability to predict rare or uncommon words, leading to less accurate outputs.</li>
+    <li class="correct"><strong>C.</strong> The model will now consider only the top 5 most probable tokens at each step, making the output more deterministic and focused.</li>
+    <li><strong>D.</strong> Reducing the top-k value increases the temperature of the model, making the outputs more creative and diverse.</li>
+  </ul>
+  <p class="xsmall" style="margin-top:10px; text-align:left;"><span class="hl3">Answer: C</span> &nbsp;·&nbsp; the correct option is highlighted in green. Real-style C1000-185 question.</p>
+  <aside class="slide-footer">ruslanmv.com · C1000-185 · 03 / Prompt Engineering · Q4</aside>
+</section>
+<section>
+  <span class="checkpoint-label">✅ Module 3 Quiz · Q5 / 5</span>
+  <p class="checkpoint-q">In planning the deployment of a generative AI model that relies on a large corpus of data, you need to organize and version the data repository used for training prompts. Which of the following approaches best ensures efficient data versioning, integrity, and easy rollback during prompt refinement?</p>
+  <ul class="checkpoint-opts">
+    <li><strong>A.</strong> Store data versions directly in the production environment without versioning to save on storage costs.</li>
+    <li class="correct"><strong>B.</strong> Implement a data versioning system like DVC (Data Version Control) or MLflow, integrated with a cloud storage service, to track data changes and link specific data versions to corresponding model and prompt versions.</li>
+    <li><strong>C.</strong> Use a relational database to store the corpus, but without tracking any changes to the datasets.</li>
+    <li><strong>D.</strong> Store all datasets in a monolithic repository and append new data versions as additional files with timestamps.</li>
+  </ul>
+  <p class="xsmall" style="margin-top:10px; text-align:left;"><span class="hl3">Answer: B</span> &nbsp;·&nbsp; the correct option is highlighted in green. Real-style C1000-185 question.</p>
+  <aside class="slide-footer">ruslanmv.com · C1000-185 · 03 / Prompt Engineering · Q5</aside>
 </section>
 <aside class="slide-footer">ruslanmv.com · C1000-185 · 03 / Prompt Engineering</aside>
 </section>
@@ -675,14 +825,64 @@ Disk size  : tens of MB instead of tens of GB
 </section>
 
 <section>
-  <span class="checkpoint-label">✅ Module 4 Checkpoint</span>
-  <p class="checkpoint-q">You have a 4×A10 GPU node and need to specialize Granite-13B on 3,000 legal-clause examples. Best approach?</p>
+  <span class="checkpoint-label">✅ Module 4 Quiz · Q1 / 5</span>
+  <p class="checkpoint-q">You are tasked with building a customer service chatbot powered by a generative AI model for a large financial institution. Customers often provide sensitive personal and financial information in their queries. What is the best method to ensure the model does not generate responses containing sensitive personal data?</p>
   <ul class="checkpoint-opts">
-    <li>A. Full fine-tune in FP32</li>
-    <li>B. Train an entirely new model from scratch</li>
-    <li class="correct">C. QLoRA — 4-bit base + LoRA adapters via Tuning Studio</li>
-    <li>D. Continue with zero-shot prompting only</li>
+    <li class="correct"><strong>A.</strong> Implement differential privacy to reduce the likelihood that sensitive data from user inputs is exposed in the model&#x27;s responses.</li>
+    <li><strong>B.</strong> Restrict the model to only respond to predefined template-based answers to eliminate the risk of personal data being generated.</li>
+    <li><strong>C.</strong> Use supervised fine-tuning to train the model on data that excludes all personally identifiable information (PII).</li>
+    <li><strong>D.</strong> Limit the model&#x27;s ability to generate personalized responses by focusing on generalized outputs, reducing the risk of data exposure.</li>
   </ul>
+  <p class="xsmall" style="margin-top:10px; text-align:left;"><span class="hl3">Answer: A</span> &nbsp;·&nbsp; the correct option is highlighted in green. Real-style C1000-185 question.</p>
+  <aside class="slide-footer">ruslanmv.com · C1000-185 · 04 / Fine-Tuning · Q1</aside>
+</section>
+<section>
+  <span class="checkpoint-label">✅ Module 4 Quiz · Q2 / 5</span>
+  <p class="checkpoint-q">You are preparing a dataset to fine-tune a language model for sentiment analysis. The dataset consists of user reviews with a mix of neutral, positive, and negative sentiments. Which of the following strategies will best ensure that the model learns balanced sentiment detection?</p>
+  <ul class="checkpoint-opts">
+    <li class="correct"><strong>A.</strong> Ensure an equal distribution of positive, negative, and neutral sentiment examples</li>
+    <li><strong>B.</strong> Convert neutral examples into either positive or negative to simplify the task</li>
+    <li><strong>C.</strong> Focus only on neutral and negative examples to challenge the model</li>
+    <li><strong>D.</strong> Increase the number of positive sentiment examples in the dataset</li>
+  </ul>
+  <p class="xsmall" style="margin-top:10px; text-align:left;"><span class="hl3">Answer: A</span> &nbsp;·&nbsp; the correct option is highlighted in green. Real-style C1000-185 question.</p>
+  <aside class="slide-footer">ruslanmv.com · C1000-185 · 04 / Fine-Tuning · Q2</aside>
+</section>
+<section>
+  <span class="checkpoint-label">✅ Module 4 Quiz · Q3 / 5</span>
+  <p class="checkpoint-q">You are tasked with generating synthetic data for fine-tuning a large language model (LLM) using the IBM Watsonx User Interface. You want to generate relevant training samples to improve the model&#x27;s accuracy in a text classification task. Which action should you prioritize to generate high-quality synthetic data using the interface?</p>
+  <ul class="checkpoint-opts">
+    <li><strong>A.</strong> Avoid using domain-specific prompts to keep the synthetic data unbiased and more generalizable.</li>
+    <li><strong>B.</strong> Select only a few generic prompts to generate the largest volume of data possible, ensuring variety.</li>
+    <li><strong>C.</strong> Choose a diverse set of prompts that span different domains unrelated to the original dataset.</li>
+    <li class="correct"><strong>D.</strong> Customize prompt templates to closely mimic the structure and format of the original training data.</li>
+  </ul>
+  <p class="xsmall" style="margin-top:10px; text-align:left;"><span class="hl3">Answer: D</span> &nbsp;·&nbsp; the correct option is highlighted in green. Real-style C1000-185 question.</p>
+  <aside class="slide-footer">ruslanmv.com · C1000-185 · 04 / Fine-Tuning · Q3</aside>
+</section>
+<section>
+  <span class="checkpoint-label">✅ Module 4 Quiz · Q4 / 5</span>
+  <p class="checkpoint-q">While working with IBM Watsonx, you are asked to ensure that the synthetic data generated has a low privacy leakage probability. During the generation process, you must adjust settings related to privacy leakage probability. Which factor most directly affects the probability of privacy leakage when generating synthetic data with differential privacy?</p>
+  <ul class="checkpoint-opts">
+    <li><strong>A.</strong> The quality and variance of the synthetic data generated.</li>
+    <li><strong>B.</strong> The use of ensemble models to train on different portions of the dataset and reduce dependency on individual records.</li>
+    <li><strong>C.</strong> The size of the original dataset used for training.</li>
+    <li class="correct"><strong>D.</strong> The amount of noise added to the synthetic data during the differential privacy process.</li>
+  </ul>
+  <p class="xsmall" style="margin-top:10px; text-align:left;"><span class="hl3">Answer: D</span> &nbsp;·&nbsp; the correct option is highlighted in green. Real-style C1000-185 question.</p>
+  <aside class="slide-footer">ruslanmv.com · C1000-185 · 04 / Fine-Tuning · Q4</aside>
+</section>
+<section>
+  <span class="checkpoint-label">✅ Module 4 Quiz · Q5 / 5</span>
+  <p class="checkpoint-q">You are tasked with fine-tuning a large language model (LLM) to perform sentiment analysis on product reviews. The dataset contains customer reviews, but some reviews are very short, and others contain irrelevant data like product specifications or spam. You want to prepare the dataset for fine-tuning by ensuring the data is clean, relevant, and representative of the task at hand. Which of the following steps is most critical to ensure the dataset is suitable for fine-tuning?</p>
+  <ul class="checkpoint-opts">
+    <li><strong>A.</strong> Increase the learning rate to adjust for inconsistencies in the dataset</li>
+    <li class="correct"><strong>B.</strong> Filter the dataset to remove irrelevant or outlier reviews</li>
+    <li><strong>C.</strong> Increase the number of epochs to handle the noisy data</li>
+    <li><strong>D.</strong> Randomly remove 10% of the dataset to reduce noise</li>
+  </ul>
+  <p class="xsmall" style="margin-top:10px; text-align:left;"><span class="hl3">Answer: B</span> &nbsp;·&nbsp; the correct option is highlighted in green. Real-style C1000-185 question.</p>
+  <aside class="slide-footer">ruslanmv.com · C1000-185 · 04 / Fine-Tuning · Q5</aside>
 </section>
 <aside class="slide-footer">ruslanmv.com · C1000-185 · 04 / Fine-Tuning</aside>
 </section>
@@ -791,14 +991,64 @@ print(qa.run("What is our refund policy for enterprise contracts?"))
 </section>
 
 <section>
-  <span class="checkpoint-label">✅ Module 5 Checkpoint</span>
-  <p class="checkpoint-q">Your RAG bot retrieves correct chunks but the answer ignores them. First thing to try?</p>
+  <span class="checkpoint-label">✅ Module 5 Quiz · Q1 / 5</span>
+  <p class="checkpoint-q">You are building a customer support chatbot for an e-commerce company using IBM watsonx and LangChain. The chatbot will interact with an external database that holds customer order history, shipping details, and product catalog data. You need to create a LangChain chain that dynamically generates responses using prompt templates tailored to customer queries, retrieves data from the external database, and incorporates LLMs to refine the answers. The goal is to provide accurate, context-aware responses to questions about order status and product details. Which LangChain strategy will best ensure that the chatbot provides accurate, dynamic responses based on real-time customer data?</p>
   <ul class="checkpoint-opts">
-    <li>A. Switch to a bigger model</li>
-    <li class="correct">B. Tighten the prompt: <em>"Answer ONLY from the context below. If the answer is not present, say so."</em></li>
-    <li>C. Increase temperature</li>
-    <li>D. Reduce chunk overlap to 0</li>
+    <li class="correct"><strong>A.</strong> Use a RetrievalChain to query the external database and combine the retrieved data with a dynamic prompt template before sending it to an LLM.</li>
+    <li><strong>B.</strong> Design a ParallelChain where multiple LLMs process different aspects of the customer query, such as order history and product details, combining them in the final answer.</li>
+    <li><strong>C.</strong> Implement a SimpleChain that directly connects the chatbot to the external database and generates responses from pre-defined LLM outputs.</li>
+    <li><strong>D.</strong> Apply a MemoryChain that remembers past customer queries and uses this memory to answer future questions more accurately.</li>
   </ul>
+  <p class="xsmall" style="margin-top:10px; text-align:left;"><span class="hl3">Answer: A</span> &nbsp;·&nbsp; the correct option is highlighted in green. Real-style C1000-185 question.</p>
+  <aside class="slide-footer">ruslanmv.com · C1000-185 · 05 / RAG · Q1</aside>
+</section>
+<section>
+  <span class="checkpoint-label">✅ Module 5 Quiz · Q2 / 5</span>
+  <p class="checkpoint-q">Your team is tasked with enhancing a document search engine using IBM watsonx Discovery. The search engine will be used to help employees quickly find relevant internal documentation, such as policy guides, project specifications, and technical manuals. You have decided to use Retrieval-Augmented Generation (RAG) to enhance this search engine&#x27;s performance. The current focus is on selecting the best retriever for the task and setting up a vector database to store document embeddings. Which of the following retriever types is most suitable for this RAG-based search engine setup, considering the diverse and unstructured nature of the documents, and why?</p>
+  <ul class="checkpoint-opts">
+    <li><strong>A.</strong> Sparse retriever with BM25 ranking in combination with a traditional relational database.</li>
+    <li><strong>B.</strong> Rule-based retriever using manually crafted rules to find documents based on predefined logic.</li>
+    <li><strong>C.</strong> Hybrid retriever that combines sparse retrieval methods with dense embeddings stored in a flat-file system.</li>
+    <li class="correct"><strong>D.</strong> Sparse retriever with BM25 ranking in combination with a traditional relational database.</li>
+  </ul>
+  <p class="xsmall" style="margin-top:10px; text-align:left;"><span class="hl3">Answer: D</span> &nbsp;·&nbsp; the correct option is highlighted in green. Real-style C1000-185 question.</p>
+  <aside class="slide-footer">ruslanmv.com · C1000-185 · 05 / RAG · Q2</aside>
+</section>
+<section>
+  <span class="checkpoint-label">✅ Module 5 Quiz · Q3 / 5</span>
+  <p class="checkpoint-q">You are working on a Retrieval-Augmented Generation (RAG) system where large-scale document retrieval is a critical component. To improve the efficiency and accuracy of retrieval, you need to store and query vector embeddings. Given that the system needs to handle billions of high-dimensional embeddings while maintaining low latency for search queries, you are evaluating the use of a vector database. Which of the following databases would be the most appropriate choice for this purpose, and why?</p>
+  <ul class="checkpoint-opts">
+    <li><strong>A.</strong> Relational databases with B-tree indexes.</li>
+    <li><strong>B.</strong> A document-based NoSQL database like MongoDB, utilizing full-text search capabilities.</li>
+    <li class="correct"><strong>C.</strong> A vector database like Pinecone or Weaviate that supports approximate nearest neighbor (ANN) search.</li>
+    <li><strong>D.</strong> A graph database like Neo4j, which is designed for traversing relationships between data points.</li>
+  </ul>
+  <p class="xsmall" style="margin-top:10px; text-align:left;"><span class="hl3">Answer: C</span> &nbsp;·&nbsp; the correct option is highlighted in green. Real-style C1000-185 question.</p>
+  <aside class="slide-footer">ruslanmv.com · C1000-185 · 05 / RAG · Q3</aside>
+</section>
+<section>
+  <span class="checkpoint-label">✅ Module 5 Quiz · Q4 / 5</span>
+  <p class="checkpoint-q">You are tasked with implementing a Retrieval-Augmented Generation (RAG) pipeline for a customer service chatbot. Your goal is to ensure that the model can query a vast knowledge base, retrieve relevant documents, and generate responses that reference these documents. You are using the transformers and faiss libraries in Python to achieve this. After retrieving the relevant passages, the generative model will then process them to formulate a final response. What is the most appropriate sequence of steps for implementing this RAG pipeline?</p>
+  <ul class="checkpoint-opts">
+    <li><strong>A.</strong> Generate the response first using the transformer model -&gt; Retrieve documents from the knowledge base -&gt; Encode the documents using FAISS -&gt; Use the retrieved documents to fine-tune the generated response.</li>
+    <li class="correct"><strong>B.</strong> Use the FAISS library to create an index -&gt; Encode the input query using the transformer model -&gt; Retrieve the most relevant documents -&gt; Pass the retrieved documents to the generative model for response generation.</li>
+    <li><strong>C.</strong> Encode the query using FAISS -&gt; Use the transformer model to retrieve documents from the knowledge base -&gt; Generate a response using the encoded documents.</li>
+    <li><strong>D.</strong> Initialize the generative model -&gt; Use FAISS to encode the retrieved documents -&gt; Pass the encoded documents to the transformer model for response generation.</li>
+  </ul>
+  <p class="xsmall" style="margin-top:10px; text-align:left;"><span class="hl3">Answer: B</span> &nbsp;·&nbsp; the correct option is highlighted in green. Real-style C1000-185 question.</p>
+  <aside class="slide-footer">ruslanmv.com · C1000-185 · 05 / RAG · Q4</aside>
+</section>
+<section>
+  <span class="checkpoint-label">✅ Module 5 Quiz · Q5 / 5</span>
+  <p class="checkpoint-q">Consider an organization implementing a RAG system to enhance the accuracy of their internal documentation search tool. The retriever is responsible for fetching relevant documents based on user queries. What is the core capability of the retriever in this context?</p>
+  <ul class="checkpoint-opts">
+    <li><strong>A.</strong> To perform entity recognition and classify documents based on specific keywords, ignoring the overall document meaning.</li>
+    <li><strong>B.</strong> To generate new responses based on training data, without relying on external data sources.</li>
+    <li class="correct"><strong>C.</strong> To return relevant documents or passages from a knowledge base by calculating semantic similarity between the query and documents.</li>
+    <li><strong>D.</strong> To perform pre-defined template matching on queries to retrieve documents that exactly match pre-configured templates.</li>
+  </ul>
+  <p class="xsmall" style="margin-top:10px; text-align:left;"><span class="hl3">Answer: C</span> &nbsp;·&nbsp; the correct option is highlighted in green. Real-style C1000-185 question.</p>
+  <aside class="slide-footer">ruslanmv.com · C1000-185 · 05 / RAG · Q5</aside>
 </section>
 <aside class="slide-footer">ruslanmv.com · C1000-185 · 05 / RAG</aside>
 </section>
@@ -881,14 +1131,64 @@ print(model.generate_text("Summarize:\n" + article))
 </section>
 
 <section>
-  <span class="checkpoint-label">✅ Module 6 Checkpoint</span>
-  <p class="checkpoint-q">You need to deploy a tuned Granite model with a stable HTTPS endpoint and quarterly redeploys with rollback. Pick the watsonx primitive.</p>
+  <span class="checkpoint-label">✅ Module 6 Quiz · Q1 / 5</span>
+  <p class="checkpoint-q">You are deploying a Generative AI solution for a client who needs to generate customer service emails in multiple languages. The client has provided a dataset of historical customer service emails, and they want to ensure that their generative model consistently produces accurate, contextually appropriate responses across different languages. The client also has concerns about the latency of the model&#x27;s responses. Based on these requirements, you are tasked with planning the deployment of the generative AI solution. Which deployment strategy would be most appropriate for this client&#x27;s needs, considering latency, language handling, and response quality?</p>
   <ul class="checkpoint-opts">
-    <li>A. Save it to a notebook and share the .ipynb</li>
-    <li>B. Export weights to S3</li>
-    <li class="correct">C. Promote the asset to a <em>Deployment Space</em> and create an Online Deployment</li>
-    <li>D. Run inference locally and expose via SSH tunnel</li>
+    <li><strong>A.</strong> Use a fine-tuned model per language, with nucleus sampling and run them on a single GPU instance to reduce the infrastructure cost.</li>
+    <li><strong>B.</strong> Deploy a single multilingual model using beam search decoding, and run the model on a single GPU cluster to ensure consistent responses.</li>
+    <li class="correct"><strong>C.</strong> Deploy a single multilingual model with tuned prompts for each language, using top-k sampling and leveraging a multi-GPU distributed environment to balance response time and quality.</li>
+    <li><strong>D.</strong> Deploy a tuned prompt for each language on separate models, using greedy decoding to minimize latency, and scale across multiple GPUs for each language.</li>
   </ul>
+  <p class="xsmall" style="margin-top:10px; text-align:left;"><span class="hl3">Answer: C</span> &nbsp;·&nbsp; the correct option is highlighted in green. Real-style C1000-185 question.</p>
+  <aside class="slide-footer">ruslanmv.com · C1000-185 · 06 / Deployment · Q1</aside>
+</section>
+<section>
+  <span class="checkpoint-label">✅ Module 6 Quiz · Q2 / 5</span>
+  <p class="checkpoint-q">You are using IBM&#x27;s Tuning Studio to fine-tune a large-scale foundation model for a customer service chatbot. The goal is to optimize the model for performance in handling a wide variety of customer queries while minimizing computational costs. Before making any changes, you want to understand how Tuning Studio can help achieve your optimization goals. Which of the following is the most significant benefit provided by Tuning Studio when optimizing a generative AI model?</p>
+  <ul class="checkpoint-opts">
+    <li class="correct"><strong>A.</strong> Tuning Studio provides real-time monitoring of model performance metrics during the fine-tuning process, allowing you to adjust hyperparameters effectively.</li>
+    <li><strong>B.</strong> Tuning Studio automatically deploys the fine-tuned model to production environments without requiring further testing.</li>
+    <li><strong>C.</strong> Tuning Studio reduces the dataset size needed for training by implementing automated data augmentation strategies.</li>
+    <li><strong>D.</strong> Tuning Studio allows the user to implement custom model architectures from scratch to meet specific task requirements.</li>
+  </ul>
+  <p class="xsmall" style="margin-top:10px; text-align:left;"><span class="hl3">Answer: A</span> &nbsp;·&nbsp; the correct option is highlighted in green. Real-style C1000-185 question.</p>
+  <aside class="slide-footer">ruslanmv.com · C1000-185 · 06 / Deployment · Q2</aside>
+</section>
+<section>
+  <span class="checkpoint-label">✅ Module 6 Quiz · Q3 / 5</span>
+  <p class="checkpoint-q">During the deployment of a generative AI model using IBM Watsonx, you are responsible for ensuring that the model does not generate content containing hate speech, abusive language, or profanity. However, in some scenarios, the model might bypass basic filtering mechanisms and produce subtle or context-specific harmful language. Which of the following best addresses edge cases where hate speech or abuse may slip through more basic filtering mechanisms?</p>
+  <ul class="checkpoint-opts">
+    <li><strong>A.</strong> Use sentiment analysis to detect and block negative content that may indicate hate speech or abuse.</li>
+    <li><strong>B.</strong> Implement regular expression-based filters that cover a wide range of variations in harmful language.</li>
+    <li class="correct"><strong>C.</strong> Use IBM Watsonx&#x27;s HAP (Hate, Abuse, and Profanity) filter, which is designed to handle context-specific and subtle forms of harmful language.</li>
+    <li><strong>D.</strong> Continuously monitor and retrain the model on datasets containing edge cases of hate speech, abuse, and profanity.</li>
+  </ul>
+  <p class="xsmall" style="margin-top:10px; text-align:left;"><span class="hl3">Answer: C</span> &nbsp;·&nbsp; the correct option is highlighted in green. Real-style C1000-185 question.</p>
+  <aside class="slide-footer">ruslanmv.com · C1000-185 · 06 / Deployment · Q3</aside>
+</section>
+<section>
+  <span class="checkpoint-label">✅ Module 6 Quiz · Q4 / 5</span>
+  <p class="checkpoint-q">You are tasked with deploying a custom prompt template in an enterprise environment. What is the most critical first step in defining the deployment lifecycle to meet client needs?</p>
+  <ul class="checkpoint-opts">
+    <li class="correct"><strong>A.</strong> Identify the operational requirements and business constraints</li>
+    <li><strong>B.</strong> Establish a model selection strategy for each prompt template</li>
+    <li><strong>C.</strong> Deploy the prompt template directly to production to get rapid feedback</li>
+    <li><strong>D.</strong> Define the monitoring and feedback mechanisms for the prompt&#x27;s performance</li>
+  </ul>
+  <p class="xsmall" style="margin-top:10px; text-align:left;"><span class="hl3">Answer: A</span> &nbsp;·&nbsp; the correct option is highlighted in green. Real-style C1000-185 question.</p>
+  <aside class="slide-footer">ruslanmv.com · C1000-185 · 06 / Deployment · Q4</aside>
+</section>
+<section>
+  <span class="checkpoint-label">✅ Module 6 Quiz · Q5 / 5</span>
+  <p class="checkpoint-q">You are working with IBM Watsonx and have developed a custom machine learning model using Watson Studio. Now, you need to deploy the model so that it can be accessed via an application. Which step is NOT required when deploying the custom model for application access?</p>
+  <ul class="checkpoint-opts">
+    <li><strong>A.</strong> Defining a scoring endpoint for the model in Watson Machine Learning</li>
+    <li><strong>B.</strong> Assigning appropriate IAM roles for users who need access to the model</li>
+    <li class="correct"><strong>C.</strong> Verifying model accuracy before deployment.</li>
+    <li><strong>D.</strong> Registering the model in Watson Machine Learning (WML)</li>
+  </ul>
+  <p class="xsmall" style="margin-top:10px; text-align:left;"><span class="hl3">Answer: C</span> &nbsp;·&nbsp; the correct option is highlighted in green. Real-style C1000-185 question.</p>
+  <aside class="slide-footer">ruslanmv.com · C1000-185 · 06 / Deployment · Q5</aside>
 </section>
 <aside class="slide-footer">ruslanmv.com · C1000-185 · 06 / Deploy &amp; Integrate</aside>
 </section>
@@ -967,6 +1267,67 @@ print(model.generate_text("Summarize:\n" + article))
     <div class="card"><h4 class="hl2">📨 After</h4><p>Score is immediate. Pass → digital badge in 24h. Fail → 24h cooldown before retake.</p></div>
   </div>
 </section>
+<section>
+  <span class="checkpoint-label">✅ Module 7 Quiz · Q1 / 5</span>
+  <p class="checkpoint-q">You are developing a document understanding system that integrates IBM watsonx.ai and Watson Discovery to extract insights from large sets of documents. The system needs to leverage watsonx.ai&#x27;s large language model to summarize documents and Watson Discovery to search and extract relevant data from those documents. What is the best approach to achieve this integration?</p>
+  <ul class="checkpoint-opts">
+    <li class="correct"><strong>A.</strong> Use Watson Discovery to index and search documents, and then send the retrieved documents to watsonx.ai&#x27;s LLM for summarization through API calls.</li>
+    <li><strong>B.</strong> Use watsonx.ai&#x27;s LLM to create a summary for each document in advance, and Watson Discovery only for searching pre-generated summaries.</li>
+    <li><strong>C.</strong> Use Watson Discovery for summarizing documents and watsonx.ai&#x27;s LLM for only retrieving relevant content from the documents.</li>
+    <li><strong>D.</strong> Use watsonx.ai&#x27;s LLM to both retrieve and summarize the documents, bypassing Watson Discovery.</li>
+  </ul>
+  <p class="xsmall" style="margin-top:10px; text-align:left;"><span class="hl3">Answer: A</span> &nbsp;·&nbsp; the correct option is highlighted in green. Real-style C1000-185 question.</p>
+  <aside class="slide-footer">ruslanmv.com · C1000-185 · 07 / Exam Strategy · Q1</aside>
+</section>
+<section>
+  <span class="checkpoint-label">✅ Module 7 Quiz · Q2 / 5</span>
+  <p class="checkpoint-q">A financial institution is deploying a generative AI model to generate loan approval recommendations based on applicant profiles, including factors like income, credit score, and employment history. The organization is concerned about ensuring that the model does not introduce bias in its recommendations, particularly related to gender and race. You have been asked to design a process to evaluate the model&#x27;s inferences during deployment and mitigate any potential bias. Which method would be most effective for evaluating the model&#x27;s inferences for bias in this deployment scenario?</p>
+  <ul class="checkpoint-opts">
+    <li class="correct"><strong>A.</strong> Implement a fairness audit, where a sample of the model&#x27;s inferences is checked for disparate impact across protected groups such as gender and race.</li>
+    <li><strong>B.</strong> Periodically retrain the model with updated datasets that exclude sensitive attributes such as gender and race.</li>
+    <li><strong>C.</strong> Use greedy decoding in the inference phase to ensure deterministic outputs, avoiding potential bias from probabilistic sampling methods.</li>
+    <li><strong>D.</strong> Manually review all loan decisions generated by the model for signs of bias before releasing them to customers.</li>
+  </ul>
+  <p class="xsmall" style="margin-top:10px; text-align:left;"><span class="hl3">Answer: A</span> &nbsp;·&nbsp; the correct option is highlighted in green. Real-style C1000-185 question.</p>
+  <aside class="slide-footer">ruslanmv.com · C1000-185 · 07 / Exam Strategy · Q2</aside>
+</section>
+<section>
+  <span class="checkpoint-label">✅ Module 7 Quiz · Q3 / 5</span>
+  <p class="checkpoint-q">What is a key advantage of using prompt variables in IBM Watsonx for a chatbot application that needs to handle multiple user intents?</p>
+  <ul class="checkpoint-opts">
+    <li><strong>A.</strong> Using prompt variables ensures that the model will always select the most relevant response based on past conversations.</li>
+    <li><strong>B.</strong> Prompt variables allow the model to automatically detect the user&#x27;s intent, ensuring accurate responses.</li>
+    <li class="correct"><strong>C.</strong> Prompt variables allow for the dynamic injection of user-specific details into the response, improving personalization.</li>
+    <li><strong>D.</strong> Prompt variables enable developers to predefine multiple static responses for each possible user input.</li>
+  </ul>
+  <p class="xsmall" style="margin-top:10px; text-align:left;"><span class="hl3">Answer: C</span> &nbsp;·&nbsp; the correct option is highlighted in green. Real-style C1000-185 question.</p>
+  <aside class="slide-footer">ruslanmv.com · C1000-185 · 07 / Exam Strategy · Q3</aside>
+</section>
+<section>
+  <span class="checkpoint-label">✅ Module 7 Quiz · Q4 / 5</span>
+  <p class="checkpoint-q">In the context of Tuning Studio in IBM watsonx, what is one of the key benefits of using Compute Unit Hours (CUHs) during the fine-tuning process?</p>
+  <ul class="checkpoint-opts">
+    <li class="correct"><strong>A.</strong> It allows for the precise allocation of computational resources to manage budget constraints.</li>
+    <li><strong>B.</strong> It reduces the time required to train models by lowering the accuracy threshold.</li>
+    <li><strong>C.</strong> It provides real-time feedback on model deployment success rates.</li>
+    <li><strong>D.</strong> It limits the number of model versions stored, improving system performance.</li>
+  </ul>
+  <p class="xsmall" style="margin-top:10px; text-align:left;"><span class="hl3">Answer: A</span> &nbsp;·&nbsp; the correct option is highlighted in green. Real-style C1000-185 question.</p>
+  <aside class="slide-footer">ruslanmv.com · C1000-185 · 07 / Exam Strategy · Q4</aside>
+</section>
+<section>
+  <span class="checkpoint-label">✅ Module 7 Quiz · Q5 / 5</span>
+  <p class="checkpoint-q">You are working on optimizing a generative AI model that will handle large-scale text generation tasks. The current model is slow during inference, and you need to improve its performance without increasing operational costs. You decide to use IBM Tuning Studio for optimization. Which of the following is the most significant benefit of using Tuning Studio in this scenario?</p>
+  <ul class="checkpoint-opts">
+    <li><strong>A.</strong> It pre-loads commonly used datasets, reducing the need for data handling during the training process.</li>
+    <li><strong>B.</strong> It provides guidance on reducing the number of parameters in the model to improve inference speed.</li>
+    <li><strong>C.</strong> It automatically scales the model up or down depending on the input data size.</li>
+    <li class="correct"><strong>D.</strong> It optimizes hyperparameters such as learning rate and batch size to reduce computational overhead during inference.</li>
+  </ul>
+  <p class="xsmall" style="margin-top:10px; text-align:left;"><span class="hl3">Answer: D</span> &nbsp;·&nbsp; the correct option is highlighted in green. Real-style C1000-185 question.</p>
+  <aside class="slide-footer">ruslanmv.com · C1000-185 · 07 / Exam Strategy · Q5</aside>
+</section>
+
 <aside class="slide-footer">ruslanmv.com · C1000-185 · 07 / Exam Strategy</aside>
 </section>
 

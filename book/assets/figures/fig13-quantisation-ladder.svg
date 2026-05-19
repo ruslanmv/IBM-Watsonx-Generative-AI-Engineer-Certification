@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 460" font-family="Helvetica, Arial, sans-serif">
+  <rect width="800" height="460" fill="#ffffff"/>
+  <text x="400" y="32" text-anchor="middle" font-size="20" font-weight="700" fill="#003865">Quantisation Ladder</text>
+  <text x="400" y="54" text-anchor="middle" font-size="12" fill="#525F6B">Smaller numbers per weight → less VRAM, faster, slight quality drop.</text>
+
+  <!-- Stairs (descending from left to right) -->
+  <g>
+    <!-- FP32 -->
+    <rect x="40"  y="100" width="180" height="160" fill="#003865"/>
+    <text x="130" y="92"  text-anchor="middle" font-size="14" font-weight="700" fill="#003865">FP32</text>
+    <text x="130" y="146" text-anchor="middle" font-size="22" font-weight="700" fill="#ffffff">32-bit</text>
+    <text x="130" y="170" text-anchor="middle" font-size="12" fill="#ffffff">4 bytes / weight</text>
+    <text x="130" y="200" text-anchor="middle" font-size="11" fill="#ffffff">8B model ≈ 32 GB</text>
+    <text x="130" y="220" text-anchor="middle" font-size="10" fill="#ffffff" opacity="0.8">training default</text>
+    <text x="130" y="248" text-anchor="middle" font-size="10" fill="#ffffff" opacity="0.7">quality: 100%</text>
+
+    <!-- FP16/BF16 -->
+    <rect x="220" y="140" width="180" height="120" fill="#0072C6"/>
+    <text x="310" y="132" text-anchor="middle" font-size="14" font-weight="700" fill="#003865">FP16 / BF16</text>
+    <text x="310" y="178" text-anchor="middle" font-size="22" font-weight="700" fill="#ffffff">16-bit</text>
+    <text x="310" y="202" text-anchor="middle" font-size="12" fill="#ffffff">2 bytes / weight</text>
+    <text x="310" y="222" text-anchor="middle" font-size="11" fill="#ffffff">8B ≈ 16 GB</text>
+    <text x="310" y="248" text-anchor="middle" font-size="10" fill="#ffffff" opacity="0.85">quality: ≈100%</text>
+
+    <!-- INT8 -->
+    <rect x="400" y="180" width="180" height="80" fill="#009E60"/>
+    <text x="490" y="172" text-anchor="middle" font-size="14" font-weight="700" fill="#003865">INT8</text>
+    <text x="490" y="214" text-anchor="middle" font-size="22" font-weight="700" fill="#ffffff">8-bit</text>
+    <text x="490" y="234" text-anchor="middle" font-size="11" fill="#ffffff">1 byte / weight · 8 GB</text>
+    <text x="490" y="252" text-anchor="middle" font-size="10" fill="#ffffff" opacity="0.85">quality: ≈98%</text>
+
+    <!-- INT4 -->
+    <rect x="580" y="210" width="180" height="50" fill="#8A3FFC"/>
+    <text x="670" y="202" text-anchor="middle" font-size="14" font-weight="700" fill="#003865">INT4</text>
+    <text x="670" y="234" text-anchor="middle" font-size="20" font-weight="700" fill="#ffffff">4-bit · 4 GB</text>
+    <text x="670" y="252" text-anchor="middle" font-size="10" fill="#ffffff" opacity="0.85">quality: ≈94–97%</text>
+  </g>
+
+  <!-- floor line -->
+  <line x1="40" y1="260" x2="760" y2="260" stroke="#525F6B" stroke-width="1.5"/>
+
+  <!-- Annotations below -->
+  <text x="400" y="296" text-anchor="middle" font-size="13" font-weight="700" fill="#003865">As you move right →</text>
+
+  <g font-size="11" fill="#003865">
+    <text x="56" y="330">✓ <tspan font-weight="700">Less VRAM</tspan> → fits cheaper / smaller hardware.</text>
+    <text x="56" y="350">✓ <tspan font-weight="700">Faster inference</tspan> (memory-bandwidth bound on most GPUs).</text>
+    <text x="56" y="370">✓ <tspan font-weight="700">Cheaper</tspan> per request on watsonx.</text>
+  </g>
+  <g font-size="11" fill="#003865">
+    <text x="430" y="330">✗ <tspan font-weight="700">Slight quality drop</tspan> (perplexity ↑).</text>
+    <text x="430" y="350">✗ <tspan font-weight="700">QAT</tspan> (quantisation-aware training) helps win it back.</text>
+    <text x="430" y="370">✗ Hardware support matters: INT4 needs recent GPUs.</text>
+  </g>
+
+  <!-- Exam tip -->
+  <rect x="120" y="394" width="560" height="44" rx="8" fill="#FFF7E6" stroke="#FFB71B" stroke-width="1.5"/>
+  <text x="400" y="412" text-anchor="middle" font-size="12" font-weight="700" fill="#7A4D00">QLoRA = 4-bit base + LoRA adapters in higher precision</text>
+  <text x="400" y="428" text-anchor="middle" font-size="11" fill="#7A4D00">Cheap fine-tuning on commodity hardware. A common exam answer.</text>
+</svg>

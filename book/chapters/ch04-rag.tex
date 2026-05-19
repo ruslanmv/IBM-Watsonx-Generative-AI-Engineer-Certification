@@ -1,9 +1,39 @@
 \chapter{Retrieval-Augmented Generation (RAG)}
 \label{ch:rag}
 
-This chapter covers \textbf{Section 4: Retrieval-Augmented Generation (17\% of the exam)}. RAG is the bread-and-butter pattern for enterprise GenAI: grounded answers from your own documents, no retraining, full citations.
+\epigraph{``If the facts change weekly, you need retrieval --- not retraining.''}{}
+
+This chapter covers \textbf{Section~4: Retrieval-Augmented Generation (17\% of the exam)}. RAG is the bread-and-butter pattern for enterprise GenAI: grounded answers from your own documents, no retraining, full citations. It pairs naturally with the model-selection rules from Chapter~\ref{ch:foundations} and the deployment-spaces material in Chapter~\ref{ch:deployment}.
+
+\begin{objectivesbox}
+By the end of this chapter you will be able to:
+\begin{itemize}[leftmargin=*,nosep]
+    \item Explain what an \textbf{embedding} is and why semantic search beats keyword search (Objective~4.1).
+    \item Compare \textbf{vector databases}: FAISS, Chroma, Milvus, Weaviate, watsonx Discovery (4.2).
+    \item Pick the right \textbf{retriever} for the task (4.3).
+    \item Use the \textbf{LangChain} and \textbf{LlamaIndex} patterns A--D shown in this chapter (4.4).
+    \item Apply \textbf{quality levers}: chunking, hybrid search, re-ranking (4.5).
+    \item Recognise \textbf{agentic RAG} and \textbf{AutoRAG} on the exam (4.6).
+\end{itemize}
+\end{objectivesbox}
 
 \section{What Are Embeddings? (Objective 4.1)}
+
+Before diving into the pipeline pieces, study the end-to-end picture (Figure~\ref{fig:rag-pipeline}). RAG has two phases: index your corpus once (top row), then serve every query (bottom row).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.98\textwidth]{assets/figures/fig15-rag-pipeline}
+\caption{The full RAG pipeline. Indexing happens offline; retrieval and generation happen online for every query.}
+\label{fig:rag-pipeline}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.92\textwidth]{assets/figures/fig16-embedding-space}
+\caption{Embeddings cluster semantically similar text. A query vector lands inside the cluster it is most about, regardless of exact-word overlap.}
+\label{fig:embedding-space}
+\end{figure}
 
 \subsection{Concept}
 
@@ -82,6 +112,13 @@ print(len(vectors), len(vectors[0]))   # 2 vectors, 768 dims each
 \end{examplebox}
 
 \subsection{Vector Database Choices and Capabilities}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.92\textwidth]{assets/figures/fig18-vector-db-comparison}
+\caption{Vector databases on two axes --- scale (x) and ease of use (y). Watsonx Discovery is the IBM-default for governed enterprise RAG.}
+\label{fig:vector-dbs}
+\end{figure}
 
 \begin{keybox}
 A \textbf{vector store} indexes embeddings so nearest-neighbour search runs in $O(\log N)$ instead of $O(N)$.
@@ -165,6 +202,13 @@ Read-mostly, low-update, low-cost & Static (frozen) index in object storage \\
 \]
 
 \subsection{Chunking / Text Splitting}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.95\textwidth]{assets/figures/fig17-chunking-strategies}
+\caption{Three common chunking strategies. Start with recursive; move to semantic only if retrieval quality is poor.}
+\label{fig:chunking}
+\end{figure}
 
 \begin{table}[h]
 \centering
@@ -288,6 +332,13 @@ A \textbf{cross-encoder re-ranker} takes the top-N candidates from the retriever
 watsonx.ai exposes a re-rank endpoint: \texttt{POST /ml/v1/text/rerank}. The default model in 2026 is \texttt{cross-encoder/ms-marco-minilm-l-12-v2} or an IBM-equivalent.
 
 \subsection{Agentic RAG}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.92\textwidth]{assets/figures/fig19-agentic-rag-loop}
+\caption{Agentic RAG: the agent decides whether one retrieval was enough or to refine the query and try again. Loops until confident, then answers.}
+\label{fig:agentic-rag}
+\end{figure}
 
 \begin{keybox}
 \textbf{Agentic RAG} treats retrieval as a \emph{tool} an agent may decide to use --- maybe more than once, with different queries, until the agent has enough evidence.

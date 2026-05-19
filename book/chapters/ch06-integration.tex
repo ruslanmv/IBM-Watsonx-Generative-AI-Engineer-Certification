@@ -1,7 +1,21 @@
-\chapter{watsonx -- Integration and Model Orchestration}
+\chapter{watsonx --- Integration and Model Orchestration}
 \label{ch:integration}
 
-This chapter covers \textbf{Section 6: watsonx -- Integration and Model Orchestration (8\% of the exam)}. It is the smallest section by weight but the topics show up across the rest of the exam (especially in scenario questions).
+\epigraph{``A model in isolation is a demo. A model wired into your business is a product.''}{}
+
+This chapter covers \textbf{Section~6: watsonx --- Integration and Model Orchestration (8\% of the exam)}. It is the smallest section by weight but the topics show up across the rest of the exam, especially in scenario questions. Many integration patterns assume the deployment objects from Chapter~\ref{ch:deployment} and the RAG components from Chapter~\ref{ch:rag}.
+
+\begin{objectivesbox}
+By the end of this chapter you will be able to:
+\begin{itemize}[leftmargin=*,nosep]
+    \item Integrate watsonx.ai with \textbf{Watson Assistant}, \textbf{Discovery}, and IBM Cloud services (Objective~6.1).
+    \item Call models through the \textbf{Python SDK} and the \textbf{REST API} with proper error handling (6.2).
+    \item Use \textbf{webhooks} for event-driven flows (6.3).
+    \item Build chains, tools, and agents with \textbf{LangChain} on watsonx (6.4).
+    \item Explain the \textbf{Model Context Protocol (MCP)} and when to choose it over bespoke tools (6.5).
+    \item Read a real-world \textbf{production architecture} that combines watsonx with Watson Assistant, Discovery, governance, and Guardian (6.6).
+\end{itemize}
+\end{objectivesbox}
 
 \section{Integrate watsonx.ai with Other Services (Objective 6.1)}
 
@@ -136,6 +150,13 @@ Section~4 covered the pattern; in the workflow context, Agentic RAG is one node 
 
 \section{Real-World Integration Scenarios (Objective 6.3)}
 
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.98\textwidth]{assets/figures/fig25-production-architecture}
+\caption{A typical enterprise watsonx architecture. The same pattern --- UI $\to$ Assistant $\to$ Orchestrator $\to$ (RAG + MCP) $\to$ LLM + Guardian $\to$ governance --- recurs in most production deployments.}
+\label{fig:prod-architecture}
+\end{figure}
+
 \subsection{Given a Business Case, Design the Solution}
 \begin{enumerate}[leftmargin=*]
     \item Identify input channels (web chat, mobile app, email, internal app).
@@ -186,6 +207,13 @@ Section~4 covered the pattern; in the workflow context, Agentic RAG is one node 
 
 \subsection{Model Context Protocol (MCP)}
 
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.98\textwidth]{assets/figures/fig24-mcp-architecture}
+\caption{Left: an MCP-enabled agent speaks one protocol (JSON-RPC) to many servers (Postgres, CRM, Slack). Right: without MCP, every integration is custom code in the agent.}
+\label{fig:mcp}
+\end{figure}
+
 \begin{keybox}
 \textbf{Model Context Protocol (MCP)} is an open protocol for connecting LLM applications to external tools and data sources in a standard way. An \emph{MCP server} exposes resources (data) and tools (functions); an \emph{MCP client} (the LLM app, agent, or IDE) discovers and uses them through a common JSON-RPC interface.
 \end{keybox}
@@ -230,6 +258,13 @@ Why the exam cares: MCP is the IBM-preferred direction for plugging external sys
 \end{itemize}
 
 \subsection{Create a Simple Chain}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.98\textwidth]{assets/figures/fig23-langchain-chain}
+\caption{Top: a deterministic LangChain pipeline (prompt $\to$ LLM $\to$ parser). Bottom: an agent that loops with tools and memory until it has enough evidence to answer.}
+\label{fig:langchain}
+\end{figure}
 
 \begin{examplebox}[title=\textbf{LLMChain --- Prompt + watsonx LLM + parser}]
 \begin{lstlisting}[style=pythonstyle]

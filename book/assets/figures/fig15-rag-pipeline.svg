@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520" font-family="Helvetica, Arial, sans-serif">
+  <rect width="800" height="520" fill="#ffffff"/>
+  <text x="400" y="32" text-anchor="middle" font-size="20" font-weight="700" fill="#003865">RAG — End-to-End Pipeline</text>
+  <text x="400" y="54" text-anchor="middle" font-size="12" fill="#525F6B">Top row: index your corpus once. Bottom row: serve every user query.</text>
+
+  <defs>
+    <marker id="aR" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#0072C6"/>
+    </marker>
+  </defs>
+
+  <!-- Indexing row -->
+  <text x="40" y="90" font-size="12" font-weight="700" fill="#525F6B">INDEX (offline, periodic)</text>
+
+  <g font-size="11" fill="#003865">
+    <rect x="40"  y="100" width="120" height="60" rx="8" fill="#F0F4FA" stroke="#0072C6"/>
+    <text x="100" y="124" text-anchor="middle" font-weight="700">Documents</text>
+    <text x="100" y="142" text-anchor="middle" font-size="10" fill="#525F6B">PDFs · HTML · DBs</text>
+
+    <line x1="160" y1="130" x2="180" y2="130" stroke="#0072C6" stroke-width="2" marker-end="url(#aR)"/>
+
+    <rect x="180" y="100" width="120" height="60" rx="8" fill="#F0F4FA" stroke="#0072C6"/>
+    <text x="240" y="124" text-anchor="middle" font-weight="700">Chunker</text>
+    <text x="240" y="142" text-anchor="middle" font-size="10" fill="#525F6B">recursive · 512 tok</text>
+
+    <line x1="300" y1="130" x2="320" y2="130" stroke="#0072C6" stroke-width="2" marker-end="url(#aR)"/>
+
+    <rect x="320" y="100" width="160" height="60" rx="8" fill="#F0F4FA" stroke="#0072C6"/>
+    <text x="400" y="124" text-anchor="middle" font-weight="700">Embedder</text>
+    <text x="400" y="142" text-anchor="middle" font-size="10" fill="#525F6B">slate-125m / granite-emb</text>
+
+    <line x1="480" y1="130" x2="500" y2="130" stroke="#0072C6" stroke-width="2" marker-end="url(#aR)"/>
+
+    <rect x="500" y="100" width="160" height="60" rx="8" fill="#E8F5EC" stroke="#009E60" stroke-width="2"/>
+    <text x="580" y="124" text-anchor="middle" font-weight="700" fill="#005934">Vector store</text>
+    <text x="580" y="142" text-anchor="middle" font-size="10" fill="#525F6B">FAISS · Chroma · Discovery</text>
+  </g>
+
+  <!-- horizontal divider -->
+  <line x1="40" y1="200" x2="760" y2="200" stroke="#525F6B" stroke-width="1" stroke-dasharray="6,4"/>
+
+  <!-- Query row -->
+  <text x="40" y="232" font-size="12" font-weight="700" fill="#525F6B">QUERY (online, per request)</text>
+
+  <g font-size="11" fill="#003865">
+    <rect x="40"  y="244" width="120" height="60" rx="8" fill="#FFF7E6" stroke="#FFB71B" stroke-width="2"/>
+    <text x="100" y="268" text-anchor="middle" font-weight="700">User query</text>
+    <text x="100" y="286" text-anchor="middle" font-size="10" fill="#525F6B">"What's our SLA…?"</text>
+
+    <line x1="160" y1="274" x2="180" y2="274" stroke="#0072C6" stroke-width="2" marker-end="url(#aR)"/>
+
+    <rect x="180" y="244" width="120" height="60" rx="8" fill="#F0F4FA" stroke="#0072C6"/>
+    <text x="240" y="268" text-anchor="middle" font-weight="700">Embedder</text>
+    <text x="240" y="286" text-anchor="middle" font-size="10" fill="#525F6B">same model as index</text>
+
+    <line x1="300" y1="274" x2="320" y2="274" stroke="#0072C6" stroke-width="2" marker-end="url(#aR)"/>
+
+    <rect x="320" y="244" width="120" height="60" rx="8" fill="#E8F5EC" stroke="#009E60"/>
+    <text x="380" y="268" text-anchor="middle" font-weight="700" fill="#005934">Retriever</text>
+    <text x="380" y="286" text-anchor="middle" font-size="10" fill="#525F6B">top-k similar</text>
+
+    <line x1="440" y1="274" x2="460" y2="274" stroke="#0072C6" stroke-width="2" marker-end="url(#aR)"/>
+
+    <rect x="460" y="244" width="120" height="60" rx="8" fill="#F4E9FF" stroke="#8A3FFC"/>
+    <text x="520" y="268" text-anchor="middle" font-weight="700" fill="#5A189A">Re-ranker</text>
+    <text x="520" y="286" text-anchor="middle" font-size="10" fill="#525F6B">(optional, big quality win)</text>
+
+    <line x1="580" y1="274" x2="600" y2="274" stroke="#0072C6" stroke-width="2" marker-end="url(#aR)"/>
+
+    <rect x="600" y="244" width="160" height="60" rx="8" fill="#003865"/>
+    <text x="680" y="268" text-anchor="middle" font-weight="700" fill="#ffffff">LLM (Granite)</text>
+    <text x="680" y="286" text-anchor="middle" font-size="10" fill="#ffffff" opacity="0.85">prompt = ctx + question</text>
+  </g>
+
+  <!-- Output -->
+  <line x1="680" y1="304" x2="680" y2="340" stroke="#0072C6" stroke-width="2" marker-end="url(#aR)"/>
+  <rect x="540" y="344" width="280" height="60" rx="8" fill="#E8F5EC" stroke="#009E60" stroke-width="2"/>
+  <text x="680" y="368" text-anchor="middle" font-weight="700" fill="#005934" font-size="13">Answer + citations</text>
+  <text x="680" y="386" text-anchor="middle" font-size="10" fill="#525F6B">grounded, source IDs returned</text>
+
+  <!-- Connection from vector store to retriever -->
+  <path d="M 580 160 Q 580 200 380 240" stroke="#009E60" stroke-width="2" fill="none" stroke-dasharray="5,3" marker-end="url(#aR)"/>
+  <text x="490" y="216" font-size="10" font-style="italic" fill="#009E60">vectors at query time</text>
+
+  <!-- Bottom callout -->
+  <rect x="40" y="430" width="480" height="78" rx="10" fill="#F0F4FA" stroke="#0072C6" stroke-width="1"/>
+  <text x="56" y="454" font-size="12" font-weight="700" fill="#003865">Critical invariant</text>
+  <text x="56" y="476" font-size="11" fill="#525F6B">The <tspan font-weight="700" fill="#003865">indexing embedder</tspan> and the <tspan font-weight="700" fill="#003865">query embedder</tspan> must be the same model.</text>
+  <text x="56" y="492" font-size="11" fill="#525F6B">Switching embedders requires re-indexing the entire corpus.</text>
+</svg>

@@ -1,7 +1,21 @@
 \chapter{Deployment}
 \label{ch:deployment}
 
-This chapter covers \textbf{Section 5: Deployment (13\% of the exam)}. You will learn how to take a prompt template, a tuned model, or a custom AI service from a project to a production REST endpoint, and how to govern it from there.
+\epigraph{``Notebooks don't pay invoices --- endpoints do.''}{}
+
+This chapter covers \textbf{Section~5: Deployment (13\% of the exam)}. You will learn how to take a prompt template, a tuned model, or a custom AI service from a project to a production REST endpoint, and how to govern it from there. Where the deployed artefact is a tuned model, see Chapter~\ref{ch:fine-tuning}; where it serves a RAG corpus, see Chapter~\ref{ch:rag}.
+
+\begin{objectivesbox}
+By the end of this chapter you will be able to:
+\begin{itemize}[leftmargin=*,nosep]
+    \item Plan a deployment from a \textbf{client requirements} (Objective~5.1).
+    \item Promote prompts and models through \textbf{Project $\to$ Dev Space $\to$ Staging $\to$ Prod} (5.2).
+    \item Choose between \textbf{online inference} and \textbf{batch inference} (5.3).
+    \item Configure the \textbf{Model Gateway} for routing across providers (5.4).
+    \item Apply the \textbf{four monitoring pillars} --- latency, cost, quality, safety (5.5).
+    \item Distinguish \textbf{SaaS} from \textbf{Cloud Pak for Data} deployment topologies (5.6).
+\end{itemize}
+\end{objectivesbox}
 
 \section{Plan a Deployment Based on Client Needs (Objective 5.1)}
 
@@ -53,6 +67,13 @@ Before a watsonx deployment is considered production-ready, governance needs thr
 \examtip{If the exam mentions \emph{``explain outcomes''}, \emph{``audit-grade trail''}, or \emph{``factsheet''}, that is \textbf{watsonx.governance} on top of a deployment space.}
 
 \section{Deploy AI Assets (Objective 5.2)}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.98\textwidth]{assets/figures/fig20-deployment-promotion}
+\caption{The promotion flow: a prompt or model graduates from Project to Dev Space, Staging (where governance attaches the factsheet), and finally Production with a canary rollout. Any stage can roll back.}
+\label{fig:promotion-flow}
+\end{figure}
 
 \subsection{Benefits of Deployment Spaces}
 
@@ -137,6 +158,13 @@ If the schema changes, you should create a new deployment (e.g.\ \texttt{v2}) in
 \end{enumerate}
 
 \subsection{Model Gateway}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.95\textwidth]{assets/figures/fig22-model-gateway}
+\caption{One Model Gateway in front of multiple backing models. Authentication, rate-limiting, fallback, and observability live in the gateway rather than in every client.}
+\label{fig:model-gateway}
+\end{figure}
 
 \begin{keybox}
 The \textbf{Model Gateway} is a fronting service that lets multiple models, deployments, and providers sit behind a single API surface. Applications call the gateway; the gateway routes to the right backing model based on rules, headers, A/B configuration, or feature flags.
@@ -253,6 +281,13 @@ job = client.deployments.create_job(
 \end{examplebox}
 
 \section{Monitoring --- The Four Pillars}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.98\textwidth]{assets/figures/fig21-monitoring-pillars}
+\caption{The four monitoring pillars and the watsonx tool that owns each. Every ``monitoring'' exam question maps to one of these columns.}
+\label{fig:monitoring-pillars}
+\end{figure}
 \begin{itemize}[leftmargin=*]
     \item \textbf{Latency} --- p50 / p95 / p99 per endpoint.
     \item \textbf{Cost} --- tokens $\times$ rate per tenant.

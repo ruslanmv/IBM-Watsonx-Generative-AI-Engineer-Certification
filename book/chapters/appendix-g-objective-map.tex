@@ -1,0 +1,139 @@
+\chapter{Exam Objective Map}
+\label{app:objective-map}
+
+This appendix maps every C1000-185 official blueprint objective to the chapter and section in this book where it is covered. Use it during final-week review: scan the table, look up any objective you are shaky on, and re-read just that page range.
+
+\section*{Section 1 --- Analyze and Design a Generative AI Solution (15\%)}
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabularx}{\textwidth}{l X l}
+\toprule
+\textbf{Obj.} & \textbf{Topic} & \textbf{Where} \\
+\midrule
+1.1 & Five capabilities of LLMs                                & Ch.~\ref{ch:foundations}, \S 1 \\
+1.2 & GenAI patterns: Transformer, MoE, VAE, Reasoning models  & Ch.~\ref{ch:foundations}, \S 2 \\
+1.3 & Limitations of GenAI / LLMs and mitigations              & Ch.~\ref{ch:foundations}, \S 3 \\
+1.4 & Use-case identification and feasibility                  & Ch.~\ref{ch:foundations}, \S 4 \\
+1.5 & Choose the appropriate watsonx.ai model                  & Ch.~\ref{ch:foundations}, \S 5 \\
+1.6 & Optimal architecture (including agentic)                 & Ch.~\ref{ch:foundations}, \S 6 \\
+1.7 & Tools and techniques: RAG, LangChain, AI agents          & Ch.~\ref{ch:foundations}, \S 7; Ch.~\ref{ch:rag}; Ch.~\ref{ch:integration} \\
+1.8 & Security risks; Granite Guardian                         & Ch.~\ref{ch:foundations}, \S 8 \\
+\bottomrule
+\end{tabularx}
+\caption{Section 1 objective map.}
+\end{table}
+
+\section*{Section 2 --- Prompt Engineering (16\%)}
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabularx}{\textwidth}{l X l}
+\toprule
+\textbf{Obj.} & \textbf{Topic} & \textbf{Where} \\
+\midrule
+2.1 & Zero-shot vs few-shot prompting             & Ch.~\ref{ch:prompting}, \S 1 \\
+2.2 & Designing prompts based on use case         & Ch.~\ref{ch:prompting}, \S 2 \\
+2.3 & Match the prompt to the model               & Ch.~\ref{ch:prompting}, \S 3 \\
+2.4 & Decoding parameters (temperature, top-$p$, top-$k$, penalties, stop sequences) & Ch.~\ref{ch:prompting}, \S 4 \\
+2.5 & Prompt Lab templates and variables          & Ch.~\ref{ch:prompting}, \S 5 \\
+2.6 & Prompting frameworks (CRISPE, APE, CARE)    & Ch.~\ref{ch:prompting}, \S 6 \\
+2.7 & Prompt risks (injection, jailbreak, PII)    & Ch.~\ref{ch:prompting}, \S 7 \\
+2.8 & Mitigations (Guardian, guardrails)          & Ch.~\ref{ch:prompting}, \S 8 \\
+\bottomrule
+\end{tabularx}
+\caption{Section 2 objective map.}
+\end{table}
+
+\section*{Section 3 --- Fine-Tuning (31\%)}
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabularx}{\textwidth}{l X l}
+\toprule
+\textbf{Obj.} & \textbf{Topic} & \textbf{Where} \\
+\midrule
+3.1 & Hard prompts vs soft prompts                & Ch.~\ref{ch:fine-tuning}, \S 1 \\
+3.2 & Pick the cheapest customisation             & Ch.~\ref{ch:fine-tuning}, \S 2 \\
+3.3 & Dataset preparation (JSONL, splits)         & Ch.~\ref{ch:fine-tuning}, \S 3 \\
+3.4 & Quantisation (FP32, FP16, INT8, INT4)       & Ch.~\ref{ch:fine-tuning}, \S 4 \\
+3.5 & LoRA and QLoRA                              & Ch.~\ref{ch:fine-tuning}, \S 5 \\
+3.6 & InstructLab, taxonomy, LAB methodology      & Ch.~\ref{ch:fine-tuning}, \S 6 \\
+3.7 & Evaluation metrics (perplexity, BLEU, ROUGE, faithfulness, exact-match) & Ch.~\ref{ch:fine-tuning}, \S 7 \\
+3.8 & Cost optimisation on watsonx                & Ch.~\ref{ch:fine-tuning}, \S 8 \\
+\bottomrule
+\end{tabularx}
+\caption{Section 3 objective map.}
+\end{table}
+
+\section*{Section 4 --- Retrieval-Augmented Generation (17\%)}
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabularx}{\textwidth}{l X l}
+\toprule
+\textbf{Obj.} & \textbf{Topic} & \textbf{Where} \\
+\midrule
+4.1 & Embeddings and vector representations       & Ch.~\ref{ch:rag}, \S 1 \\
+4.2 & Vector databases (FAISS, Chroma, Milvus, Weaviate, watsonx Discovery) & Ch.~\ref{ch:rag}, \S 2 \\
+4.3 & Retrievers (similarity, MMR, hybrid, BM25)  & Ch.~\ref{ch:rag}, \S 3 \\
+4.4 & LangChain / LlamaIndex patterns A--D        & Ch.~\ref{ch:rag}, \S 4 \\
+4.5 & Quality levers (chunking, re-ranking)       & Ch.~\ref{ch:rag}, \S 5 \\
+4.6 & Agentic RAG and AutoRAG                     & Ch.~\ref{ch:rag}, \S 6 \\
+\bottomrule
+\end{tabularx}
+\caption{Section 4 objective map.}
+\end{table}
+
+\section*{Section 5 --- Deployment (13\%)}
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabularx}{\textwidth}{l X l}
+\toprule
+\textbf{Obj.} & \textbf{Topic} & \textbf{Where} \\
+\midrule
+5.1 & Plan a deployment from client needs                 & Ch.~\ref{ch:deployment}, \S 1 \\
+5.2 & Promote through Deployment Spaces                   & Ch.~\ref{ch:deployment}, \S 2 \\
+5.3 & Online vs batch deployment                          & Ch.~\ref{ch:deployment}, \S 3 \\
+5.4 & Model Gateway and multi-provider routing            & Ch.~\ref{ch:deployment}, \S 4 \\
+5.5 & Monitoring (latency, cost, quality, safety)         & Ch.~\ref{ch:deployment}, \S 5 \\
+5.6 & SaaS vs Cloud Pak for Data                          & Ch.~\ref{ch:deployment}, \S 6 \\
+\bottomrule
+\end{tabularx}
+\caption{Section 5 objective map.}
+\end{table}
+
+\section*{Section 6 --- Integration and Model Orchestration (8\%)}
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabularx}{\textwidth}{l X l}
+\toprule
+\textbf{Obj.} & \textbf{Topic} & \textbf{Where} \\
+\midrule
+6.1 & Integrate watsonx.ai with Watson Assistant, Discovery, Cloud services & Ch.~\ref{ch:integration}, \S 1 \\
+6.2 & Python SDK + REST API integration         & Ch.~\ref{ch:integration}, \S 2 \\
+6.3 & Webhooks and event-driven flows           & Ch.~\ref{ch:integration}, \S 3 \\
+6.4 & LangChain chains, tools, agents, memory   & Ch.~\ref{ch:integration}, \S 4 \\
+6.5 & Model Context Protocol (MCP)              & Ch.~\ref{ch:integration}, \S 5 \\
+6.6 & Production architecture patterns          & Ch.~\ref{ch:integration}, \S 6 \\
+\bottomrule
+\end{tabularx}
+\caption{Section 6 objective map.}
+\end{table}
+
+\section*{How to Use This Map}
+
+\begin{enumerate}[leftmargin=*]
+    \item After each mock exam (Appendices~\ref{app:mock} and \ref{app:practice-exam-2}), tally your wrong answers by objective.
+    \item Look up each weak objective above.
+    \item Re-read \emph{only} the referenced section, then redo the related practice questions in that chapter and the matching mock-exam questions.
+    \item Repeat the mock when you have closed all gaps with $\ge 70\%$ on every objective.
+\end{enumerate}

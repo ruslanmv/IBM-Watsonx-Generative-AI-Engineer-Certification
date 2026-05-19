@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520" font-family="Helvetica, Arial, sans-serif">
+  <rect width="800" height="520" fill="#ffffff"/>
+  <text x="400" y="32" text-anchor="middle" font-size="20" font-weight="700" fill="#003865">Anatomy of a Production Prompt</text>
+  <text x="400" y="54" text-anchor="middle" font-size="12" fill="#525F6B">Five regions: role/system, context, examples, task, output schema.</text>
+
+  <!-- prompt container -->
+  <rect x="120" y="80" width="430" height="400" rx="12" fill="#F0F4FA" stroke="#003865" stroke-width="2"/>
+
+  <!-- region 1: system -->
+  <rect x="135" y="92"  width="400" height="56" rx="6" fill="#FFF7E6" stroke="#FFB71B" stroke-width="1.5"/>
+  <text x="148" y="110" font-size="11" font-weight="700" fill="#7A4D00">1 · ROLE / SYSTEM</text>
+  <text x="148" y="128" font-size="11" font-family="JetBrains Mono, Courier New, monospace" fill="#003865">You are a senior compliance officer at a bank.</text>
+  <text x="148" y="142" font-size="11" font-family="JetBrains Mono, Courier New, monospace" fill="#003865">Answer only from the provided policy excerpts.</text>
+
+  <!-- region 2: context -->
+  <rect x="135" y="156" width="400" height="74" rx="6" fill="#E8F5EC" stroke="#009E60" stroke-width="1.5"/>
+  <text x="148" y="174" font-size="11" font-weight="700" fill="#005934">2 · CONTEXT</text>
+  <text x="148" y="192" font-size="11" font-family="JetBrains Mono, Courier New, monospace" fill="#003865">[Policy 4.2.1] Cross-border transfers above €10,000</text>
+  <text x="148" y="206" font-size="11" font-family="JetBrains Mono, Courier New, monospace" fill="#003865">require approval from the Group Compliance Officer.</text>
+  <text x="148" y="220" font-size="11" font-family="JetBrains Mono, Courier New, monospace" fill="#003865">[Policy 4.2.2] All transfers must be logged within 24h.</text>
+
+  <!-- region 3: examples -->
+  <rect x="135" y="238" width="400" height="92" rx="6" fill="#F4E9FF" stroke="#8A3FFC" stroke-width="1.5"/>
+  <text x="148" y="256" font-size="11" font-weight="700" fill="#5A189A">3 · EXAMPLES (few-shot)</text>
+  <text x="148" y="274" font-size="11" font-family="JetBrains Mono, Courier New, monospace" fill="#003865">Q: Is a €4,000 SEPA transfer in scope?</text>
+  <text x="148" y="288" font-size="11" font-family="JetBrains Mono, Courier New, monospace" fill="#003865">A: {"in_scope": false, "reason": "below €10k threshold"}</text>
+  <text x="148" y="306" font-size="11" font-family="JetBrains Mono, Courier New, monospace" fill="#003865">Q: Is a €25,000 wire to Singapore in scope?</text>
+  <text x="148" y="320" font-size="11" font-family="JetBrains Mono, Courier New, monospace" fill="#003865">A: {"in_scope": true,  "reason": "above threshold + cross-border"}</text>
+
+  <!-- region 4: task -->
+  <rect x="135" y="338" width="400" height="60" rx="6" fill="#FBEAEC" stroke="#DA1E28" stroke-width="1.5"/>
+  <text x="148" y="356" font-size="11" font-weight="700" fill="#8A0D14">4 · TASK</text>
+  <text x="148" y="374" font-size="11" font-family="JetBrains Mono, Courier New, monospace" fill="#003865">Q: Is a €12,500 wire to Brazil in scope and why?</text>
+  <text x="148" y="390" font-size="11" font-style="italic" fill="#525F6B">(the actual user question; clear, single-task)</text>
+
+  <!-- region 5: output schema -->
+  <rect x="135" y="406" width="400" height="60" rx="6" fill="#F0F4FA" stroke="#0072C6" stroke-width="1.5"/>
+  <text x="148" y="424" font-size="11" font-weight="700" fill="#003865">5 · OUTPUT SCHEMA</text>
+  <text x="148" y="442" font-size="11" font-family="JetBrains Mono, Courier New, monospace" fill="#003865">Respond ONLY with JSON matching:</text>
+  <text x="148" y="456" font-size="11" font-family="JetBrains Mono, Courier New, monospace" fill="#003865">{"in_scope": bool, "reason": str, "policy": str}</text>
+
+  <!-- Right-side callouts -->
+  <g font-size="11" fill="#003865">
+    <rect x="580" y="92" width="200" height="56" rx="6" fill="#ffffff" stroke="#FFB71B" stroke-width="1.5"/>
+    <text x="590" y="110" font-weight="700" fill="#7A4D00">Set persona, scope, refusal rule.</text>
+    <text x="590" y="128" font-size="10" fill="#525F6B">Granite chat models honour</text>
+    <text x="590" y="140" font-size="10" fill="#525F6B">the system role separately.</text>
+
+    <rect x="580" y="156" width="200" height="74" rx="6" fill="#ffffff" stroke="#009E60" stroke-width="1.5"/>
+    <text x="590" y="174" font-weight="700" fill="#005934">Ground the model.</text>
+    <text x="590" y="192" font-size="10" fill="#525F6B">For RAG, this comes from the</text>
+    <text x="590" y="204" font-size="10" fill="#525F6B">retriever. Cite chunks with IDs</text>
+    <text x="590" y="216" font-size="10" fill="#525F6B">so the output can attribute.</text>
+
+    <rect x="580" y="238" width="200" height="92" rx="6" fill="#ffffff" stroke="#8A3FFC" stroke-width="1.5"/>
+    <text x="590" y="256" font-weight="700" fill="#5A189A">Teach the format.</text>
+    <text x="590" y="274" font-size="10" fill="#525F6B">Two consistent few-shot</text>
+    <text x="590" y="286" font-size="10" fill="#525F6B">examples beat ten noisy ones.</text>
+    <text x="590" y="304" font-size="10" fill="#525F6B">Order them simple → complex.</text>
+
+    <rect x="580" y="338" width="200" height="60" rx="6" fill="#ffffff" stroke="#DA1E28" stroke-width="1.5"/>
+    <text x="590" y="356" font-weight="700" fill="#8A0D14">One ask per prompt.</text>
+    <text x="590" y="374" font-size="10" fill="#525F6B">If you find yourself writing</text>
+    <text x="590" y="386" font-size="10" fill="#525F6B">"and also…" split the prompt.</text>
+
+    <rect x="580" y="406" width="200" height="60" rx="6" fill="#ffffff" stroke="#0072C6" stroke-width="1.5"/>
+    <text x="590" y="424" font-weight="700">Lock the response shape.</text>
+    <text x="590" y="442" font-size="10" fill="#525F6B">JSON schema + a stop sequence</text>
+    <text x="590" y="454" font-size="10" fill="#525F6B">make downstream parsing safe.</text>
+  </g>
+</svg>

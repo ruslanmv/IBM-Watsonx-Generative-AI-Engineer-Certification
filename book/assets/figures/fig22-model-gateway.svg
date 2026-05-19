@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 460" font-family="Helvetica, Arial, sans-serif">
+  <rect width="800" height="460" fill="#ffffff"/>
+  <text x="400" y="32" text-anchor="middle" font-size="20" font-weight="700" fill="#003865">watsonx.ai Model Gateway</text>
+  <text x="400" y="52" text-anchor="middle" font-size="12" fill="#525F6B">One URL, many models. Auth, routing, rate-limiting, fallback — all in one place.</text>
+
+  <defs>
+    <marker id="aG2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#0072C6"/>
+    </marker>
+  </defs>
+
+  <!-- Client -->
+  <rect x="40" y="200" width="160" height="60" rx="8" fill="#F0F4FA" stroke="#0072C6" stroke-width="2"/>
+  <text x="120" y="226" text-anchor="middle" font-weight="700" font-size="13" fill="#003865">Application</text>
+  <text x="120" y="244" text-anchor="middle" font-size="10" fill="#525F6B">single endpoint URL + key</text>
+
+  <line x1="200" y1="230" x2="260" y2="230" stroke="#0072C6" stroke-width="2" marker-end="url(#aG2)"/>
+
+  <!-- Gateway box -->
+  <rect x="260" y="160" width="280" height="140" rx="14" fill="#003865"/>
+  <text x="400" y="190" text-anchor="middle" font-weight="700" font-size="16" fill="#ffffff">Model Gateway</text>
+  <g font-size="11" fill="#ffffff">
+    <text x="276" y="216">• Auth (API key, IAM)</text>
+    <text x="276" y="234">• Routing rules (model_id → backend)</text>
+    <text x="276" y="252">• Rate limit / quota / circuit breaker</text>
+    <text x="276" y="270">• Fallback chain (Granite → Llama → cached)</text>
+    <text x="276" y="288">• One observability stream for billing &amp; logs</text>
+  </g>
+
+  <!-- Outbound to 4 backends -->
+  <line x1="540" y1="180" x2="620" y2="100" stroke="#0072C6" stroke-width="2" marker-end="url(#aG2)"/>
+  <line x1="540" y1="210" x2="620" y2="190" stroke="#0072C6" stroke-width="2" marker-end="url(#aG2)"/>
+  <line x1="540" y1="250" x2="620" y2="280" stroke="#0072C6" stroke-width="2" marker-end="url(#aG2)"/>
+  <line x1="540" y1="280" x2="620" y2="370" stroke="#0072C6" stroke-width="2" marker-end="url(#aG2)"/>
+
+  <g font-size="11" fill="#003865">
+    <rect x="620" y="74"  width="150" height="48" rx="8" fill="#F0F4FA" stroke="#0072C6"/>
+    <text x="695" y="94"  text-anchor="middle" font-weight="700">Granite</text>
+    <text x="695" y="110" text-anchor="middle" font-size="10" fill="#525F6B">watsonx-hosted (IBM)</text>
+
+    <rect x="620" y="166" width="150" height="48" rx="8" fill="#F0F4FA" stroke="#0072C6"/>
+    <text x="695" y="186" text-anchor="middle" font-weight="700">Llama-3.3</text>
+    <text x="695" y="202" text-anchor="middle" font-size="10" fill="#525F6B">watsonx-hosted (Meta)</text>
+
+    <rect x="620" y="256" width="150" height="48" rx="8" fill="#F0F4FA" stroke="#0072C6"/>
+    <text x="695" y="276" text-anchor="middle" font-weight="700">Mistral Large</text>
+    <text x="695" y="292" text-anchor="middle" font-size="10" fill="#525F6B">watsonx-hosted</text>
+
+    <rect x="620" y="346" width="150" height="48" rx="8" fill="#FBEAEC" stroke="#DA1E28"/>
+    <text x="695" y="366" text-anchor="middle" font-weight="700" fill="#8A0D14">Partner SaaS</text>
+    <text x="695" y="382" text-anchor="middle" font-size="10" fill="#525F6B">e.g., 3rd-party LLM</text>
+  </g>
+
+  <!-- Without gateway comparison -->
+  <rect x="40" y="320" width="200" height="100" rx="10" fill="#FBEAEC" stroke="#DA1E28" stroke-width="1.5"/>
+  <text x="140" y="340" text-anchor="middle" font-size="12" font-weight="700" fill="#8A0D14">Without a Gateway</text>
+  <g font-size="10" fill="#525F6B">
+    <text x="56" y="362">• N URLs, N keys, N SDKs</text>
+    <text x="56" y="378">• Each app re-implements retry,</text>
+    <text x="56" y="392">  rate-limit, fallback</text>
+    <text x="56" y="408">• Audit logs spread across 4 sinks</text>
+  </g>
+</svg>

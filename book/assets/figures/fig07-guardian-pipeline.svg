@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 420" font-family="Helvetica, Arial, sans-serif">
+  <rect width="800" height="420" fill="#ffffff"/>
+  <text x="400" y="30" text-anchor="middle" font-size="20" font-weight="700" fill="#003865">Granite Guardian — Input and Output Filters</text>
+  <text x="400" y="52" text-anchor="middle" font-size="12" fill="#525F6B">Every production watsonx app wraps the LLM with a Guardian on each side.</text>
+
+  <defs>
+    <marker id="aG" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#0072C6"/>
+    </marker>
+  </defs>
+
+  <!-- pipeline boxes y=140 -->
+  <g font-size="12" fill="#003865">
+    <rect x="20"  y="140" width="120" height="60" rx="8" fill="#F0F4FA" stroke="#525F6B" stroke-width="2"/>
+    <text x="80" y="166" text-anchor="middle" font-weight="700">User input</text>
+    <text x="80" y="184" text-anchor="middle" font-size="10" fill="#525F6B">prompt / question</text>
+
+    <line x1="140" y1="170" x2="170" y2="170" stroke="#0072C6" stroke-width="2" marker-end="url(#aG)"/>
+
+    <rect x="170" y="130" width="170" height="80" rx="8" fill="#FBEAEC" stroke="#DA1E28" stroke-width="2"/>
+    <text x="255" y="156" text-anchor="middle" font-weight="700" fill="#8A0D14">Guardian — Input</text>
+    <text x="255" y="174" text-anchor="middle" font-size="10" fill="#525F6B">HAP · PII · prompt injection</text>
+    <text x="255" y="190" text-anchor="middle" font-size="10" fill="#525F6B">jailbreak attempt detection</text>
+
+    <line x1="340" y1="170" x2="370" y2="170" stroke="#0072C6" stroke-width="2" marker-end="url(#aG)"/>
+
+    <rect x="370" y="130" width="170" height="80" rx="8" fill="#F0F4FA" stroke="#0072C6" stroke-width="2.5"/>
+    <text x="455" y="156" text-anchor="middle" font-weight="700">LLM</text>
+    <text x="455" y="176" text-anchor="middle" font-size="11" fill="#525F6B">granite-3-2-8b-instruct</text>
+    <text x="455" y="194" text-anchor="middle" font-size="10" fill="#525F6B">(or llama-3 / mistral)</text>
+
+    <line x1="540" y1="170" x2="570" y2="170" stroke="#0072C6" stroke-width="2" marker-end="url(#aG)"/>
+
+    <rect x="570" y="130" width="170" height="80" rx="8" fill="#FBEAEC" stroke="#DA1E28" stroke-width="2"/>
+    <text x="655" y="156" text-anchor="middle" font-weight="700" fill="#8A0D14">Guardian — Output</text>
+    <text x="655" y="174" text-anchor="middle" font-size="10" fill="#525F6B">HAP · groundedness</text>
+    <text x="655" y="190" text-anchor="middle" font-size="10" fill="#525F6B">leaked PII · hallucination</text>
+  </g>
+
+  <!-- User return -->
+  <path d="M 730 210 Q 740 280 80 280 Q 30 280 30 210" fill="none" stroke="#009E60" stroke-width="2" marker-end="url(#aG)"/>
+  <rect x="320" y="262" width="160" height="32" rx="6" fill="#E8F5EC" stroke="#009E60" stroke-width="1.5"/>
+  <text x="400" y="284" text-anchor="middle" font-size="12" font-weight="700" fill="#005934">Safe response → User</text>
+
+  <!-- Failure paths -->
+  <path d="M 255 210 Q 255 332 175 332" fill="none" stroke="#DA1E28" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#aG)"/>
+  <path d="M 655 210 Q 655 360 280 360" fill="none" stroke="#DA1E28" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#aG)"/>
+  <rect x="40" y="316" width="140" height="32" rx="6" fill="#FBEAEC" stroke="#DA1E28" stroke-width="1.5"/>
+  <text x="110" y="338" text-anchor="middle" font-size="11" font-weight="700" fill="#8A0D14">Block + log</text>
+  <rect x="135" y="348" width="160" height="32" rx="6" fill="#FBEAEC" stroke="#DA1E28" stroke-width="1.5"/>
+  <text x="215" y="370" text-anchor="middle" font-size="11" font-weight="700" fill="#8A0D14">Regenerate or redact</text>
+
+  <text x="400" y="404" text-anchor="middle" font-size="11" fill="#525F6B" font-style="italic">Guardian decisions are logged to watsonx.governance for the audit trail.</text>
+</svg>

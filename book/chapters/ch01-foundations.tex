@@ -1,23 +1,34 @@
 \chapter{Analyze and Design a Generative AI Solution}
 \label{ch:foundations}
 
-This chapter covers \textbf{Section 1: Analyze and Design a Generative AI Solution (15\% of the exam)}. It is the foundation for every other chapter: if you can map a business problem to the right capability, pattern, and model, the rest of the exam becomes much easier.
+\epigraph{``Before you write a prompt, decide whether prompting is the right tool.''}{}
 
-\section*{What you will learn}
-\begin{itemize}[leftmargin=*]
-    \item The five GenAI capabilities the exam tests (1.1)
-    \item GenAI architecture patterns: MoE, VAE, Transformer, Reasoning models (1.2)
-    \item Limitations of GenAI/LLMs and how to mitigate them (1.3)
-    \item How to identify use cases and feasibility (1.4)
-    \item How to choose the appropriate watsonx.ai model: parameter size, chat vs instruct, Granite family, billing classes (1.5)
-    \item Optimal model architecture, including agentic architectures (1.6)
-    \item Tools and techniques: RAG, LangChain, AI agents (1.7)
-    \item Security risks: input, output, foundation-model risks, Granite Guardian (1.8)
+This chapter covers \textbf{Section~1: Analyze and Design a Generative AI Solution (15\% of the exam)}. It is the foundation for every other chapter: if you can map a business problem to the right capability, pattern, and model, the rest of the exam becomes much easier.
+
+\begin{objectivesbox}
+By the end of this chapter you will be able to:
+\begin{itemize}[leftmargin=*,nosep]
+    \item Name and recognise the \textbf{five GenAI capabilities} the exam tests (Objective~1.1).
+    \item Distinguish four \textbf{GenAI architecture patterns} --- Transformer, MoE, VAE, Reasoning model (1.2).
+    \item Explain the \textbf{limitations} of LLMs (hallucination, knowledge cutoff, bias, context limits) and how to mitigate each (1.3).
+    \item Walk through a \textbf{use-case feasibility} assessment (1.4).
+    \item Choose an appropriate \textbf{watsonx.ai model}: parameter size, \texttt{instruct} vs \texttt{chat}, Granite family, billing class (1.5).
+    \item Pick an \textbf{optimal architecture}, including agentic patterns (1.6).
+    \item Compare \textbf{tools and techniques}: RAG, LangChain, AI agents (1.7).
+    \item Identify the \textbf{security risks} of GenAI and how Granite Guardian addresses them (1.8).
 \end{itemize}
+\end{objectivesbox}
 
 \section{The Five Capabilities of LLMs (Objective 1.1)}
 
 The official C1000-185 study guide lists \textbf{five capabilities} of generative AI / LLMs. Memorise these in this exact order --- the exam asks you to map a use case to one of them.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.95\textwidth]{assets/figures/fig03-five-capabilities}
+\caption{The five capabilities, with a typical use case and the default watsonx model for each.}
+\label{fig:five-capabilities}
+\end{figure}
 
 \begin{keybox}
 \textbf{The Five Capabilities:}
@@ -99,6 +110,13 @@ The exam expects you to recognise four architectural \emph{patterns} that show u
 The \textbf{Transformer} is the architecture behind virtually every modern LLM (Granite, Llama, Mistral, GPT, Claude, Gemini). Two key inventions: \textbf{self-attention} (every token can attend to every other token) and \textbf{positional encoding} (so the model knows token order).
 \end{keybox}
 
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.85\textwidth]{assets/figures/fig05-transformer-block}
+\caption{A single Transformer block. Modern LLMs stack tens to hundreds of these.}
+\label{fig:transformer-block}
+\end{figure}
+
 \textbf{Components:}
 \begin{itemize}[leftmargin=*]
     \item \textbf{Tokenizer} --- splits text into sub-word tokens (BPE / SentencePiece).
@@ -112,6 +130,13 @@ The \textbf{Transformer} is the architecture behind virtually every modern LLM (
 
 \subsection{Mixture of Experts (MoE)}
 MoE models contain many ``expert'' sub-networks but only \emph{route} each token to a small number of them.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.92\textwidth]{assets/figures/fig06-moe-routing}
+\caption{Mixture-of-Experts routing: a learned gate picks $k$ of $N$ experts per token. Total parameters are huge; active parameters per token are small.}
+\label{fig:moe-routing}
+\end{figure}
 
 \begin{itemize}[leftmargin=*]
     \item \textbf{Parameters vs active parameters}: a Mixtral 8$\times$7B model has $\sim$47B parameters but only $\sim$13B are active per token. Cheaper inference for a given quality.
@@ -300,6 +325,13 @@ for spec in client.foundation_models.get_model_specs()["resources"]:
 
 You will be asked to match an architecture to a use case. Memorise these four families.
 
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.95\textwidth]{assets/figures/fig04-architecture-decision-tree}
+\caption{The architecture decision tree. Read every exam scenario against it before picking an answer.}
+\label{fig:decision-tree}
+\end{figure}
+
 \subsection{Architecture 1 -- Prompt-Only}
 LLM call with a well-engineered prompt. Cheapest, fastest. Best when the model already knows the answer.
 
@@ -418,6 +450,13 @@ The exam dedicates real estate to security. Memorise the categories from the off
 At the platform level: model provenance, training-data lineage, IP indemnification, supply-chain attestation. IBM Granite ships with documented training data and indemnification, which is one of the reasons it is the default ``governance-friendly'' answer on this exam.
 
 \subsection{Granite Guardian --- IBM's Safety Filter}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.95\textwidth]{assets/figures/fig07-guardian-pipeline}
+\caption{Granite Guardian sits on both sides of the model: it inspects user input for injections and jailbreaks, and inspects model output for HAP, PII, and groundedness.}
+\label{fig:guardian-pipeline}
+\end{figure}
 
 \begin{keybox}
 \textbf{Granite Guardian} is a family of small classifier models trained to detect unsafe content in both the user input and the model output. You wrap your inference call with a Guardian check on each side.

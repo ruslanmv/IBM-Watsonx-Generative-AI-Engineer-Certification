@@ -12,6 +12,18 @@ This Udemy course provides an in-depth, hands-on learning experience for the IBM
 - **Downloadable resources** (templates, code samples, cheat sheets)
 - **Practice exams** (3 full mock exams with explanations)
 - **Community forum access**
+- **End-of-section quizzes**: 5 exam-style questions with answers at the end of every section (9 sections × 5 = 45 self-test questions)
+
+### End-of-Section Quiz Design
+
+Every section closes with a **5-question self-test** sourced from the official C1000-185 question bank (`f78d8baa-C1000185v1.json`). Each quiz slide shows:
+
+1. A real-style scenario question
+2. Four answer options (A–D)
+3. The correct option highlighted in green
+4. A short rationale line
+
+This means a student who finishes the lectures in a section should be able to answer all five questions on the same screen — no extra notebook or PDF required. Topics are aligned to the section: prompt-engineering quizzes follow Section 3, fine-tuning quizzes follow Section 4, RAG quizzes follow Section 5, and so on.
 
 ## Course Structure
 

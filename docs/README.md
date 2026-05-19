@@ -53,6 +53,17 @@ Each video follows this structure:
 - **Summary** (1-2 minutes): Key takeaways
 - **Next Steps** (30 seconds): What's coming next
 
+## End-of-Module Quizzes
+
+Every one of the 7 modules ends with a **5-question self-test** drawn from the official C1000-185 question bank (`f78d8baa-C1000185v1.json`). After finishing the last video in a module, the deck steps the viewer through five exam-realistic multiple-choice questions — the correct option is highlighted in green on the same slide so learners can self-grade immediately.
+
+- 7 modules × 5 questions = **35 quiz items** total
+- Topics align with the module's content (setup, fundamentals, prompts, fine-tuning, RAG, deployment, exam strategy)
+- Single-answer, four-option format — same shape as the real exam
+- Answer highlight + a one-line rationale on each slide
+
+Goal: when a learner finishes a session, they can answer all five questions without leaving the slide deck. If they miss one, the question itself is the cue to rewatch the relevant lesson.
+
 ## Slide Design Guidelines
 
 - **Simple and Clean**: One concept per slide
