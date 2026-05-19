@@ -1,32 +1,15 @@
 \chapter*{Conclusion}
 \addcontentsline{toc}{chapter}{Conclusion}
 
-Congratulations on completing this study guide for the \textbf{IBM Watsonx Generative AI Engineer Associate (C1000-185)} certification.
+The Acme Assistant shipped on a Tuesday. By month four it was handling about twelve hundred questions a day across the bank's eight hundred customer-support agents, with the model answering roughly ninety-six percent of them inside the agent console and escalating the remaining four percent to a human. That ratio --- model handles most of the volume, human handles the residual --- is, in the end, what this whole book has been about. Generative AI is not a replacement for the engineer or for the support agent. It is a layer that takes the obvious work off both of their desks.
 
-If you have worked through every chapter, every practice question, and the mock exam in Appendix~\ref{app:mock}, you are ready to sit the exam.
+If you have worked through every chapter and the practice questions, and you have taken at least one mock exam under timed conditions, you are ready to sit C1000-185. The pieces you should be able to name without thinking by now: the five capabilities and which watsonx model carries each; the four architecture patterns and the decision tree that separates them; the four limits of an LLM and the four-layer mitigation stack; the difference between hard prompts, soft prompts, LoRA, QLoRA, full fine-tuning, and InstructLab, and when each is the right answer; the RAG pipeline end to end, with chunking and re-ranking as the two biggest quality levers; deployment spaces and the promotion path through dev, staging, and production; the four monitoring pillars and the watsonx tool that owns each; and the integration architecture --- Watson Assistant, Model Gateway, LangChain or LangGraph orchestration, MCP for tools, Granite Guardian on both sides, watsonx.governance for the audit. Every one of those is a question pattern on the exam.
 
-\section*{What you have learned}
+\section*{The path from this page to exam day}
 
-\begin{itemize}[leftmargin=*]
-    \item \textbf{Chapter~\ref{ch:foundations}} — the five capabilities, GenAI patterns (Transformer, MoE, VAE, reasoning), watsonx model catalogue, billing classes, Granite Guardian.
-    \item \textbf{Chapter~\ref{ch:prompting}} — zero/few-shot, chain-of-thought, decoding methods, parameter control, prompt templates, prompt risks.
-    \item \textbf{Chapter~\ref{ch:fine-tuning}} — the biggest section: hard vs soft prompts, LoRA / QLoRA, quantisation, InstructLab + LAB method, synthetic-data generator (Kolmogorov–Smirnov, Anderson–Darling, differential privacy).
-    \item \textbf{Chapter~\ref{ch:rag}} — embeddings, vector stores, retrievers, LangChain + LlamaIndex patterns, agentic RAG, AutoRAG.
-    \item \textbf{Chapter~\ref{ch:deployment}} — Deployment Spaces, online vs batch, Model Gateway, governance, SaaS vs Cloud Pak.
-    \item \textbf{Chapter~\ref{ch:integration}} — SDK + REST integration, LangChain agents, Model Context Protocol, real-world architectures.
-\end{itemize}
+A small handful of steps closes the loop. Take the mock exams in Appendices~B and~E under timed conditions --- phone in another room, no tabs open. Score yourself with Appendices~C and~F, and use the objective map in Appendix~G to walk back into the chapters that scored below seventy percent. Run the labs in the companion repository; the muscle memory of writing a working call against the watsonx SDK is worth more than re-reading any chapter. Schedule the exam when your timed mock scores cross seventy-five percent two times in a row.
 
-\section*{Next steps}
-
-\begin{enumerate}[leftmargin=*]
-    \item \textbf{Take the mock exam} — Appendix~\ref{app:mock}. Score yourself with Appendix~\ref{app:answers}.
-    \item \textbf{Hands-on practice} — run every script in \texttt{labs/lab-01} through \texttt{labs/lab-06} in your own watsonx.ai project.
-    \item \textbf{Review weak areas} — spend more time on Chapter~\ref{ch:fine-tuning}; it is 31\% of the exam.
-    \item \textbf{Schedule the exam} when you score 75\%+ on the mock under timed conditions.
-    \item \textbf{Stay current} — the watsonx model catalogue changes every quarter; follow IBM watsonx release notes and \href{https://ruslanmv.com}{ruslanmv.com} for updates to this book.
-\end{enumerate}
-
-\section*{Exam-day tips}
+Two habits matter on exam day itself. Read each question for the qualifier --- MOST, BEST, LEAST, NOT --- before you read the answer choices, because the qualifier changes which correct-sounding option is actually correct. Eliminate two obviously wrong options before reasoning between the last two, then commit. Watch the clock at thirty, sixty, and seventy-five minutes; you have roughly eighty-seven seconds per question on average, and the failure mode is burning five minutes on one stubborn question while three easy questions go unanswered. There is no penalty for guessing; never leave a question blank.
 
 \begin{figure}[h]
 \centering
@@ -35,24 +18,11 @@ If you have worked through every chapter, every practice question, and the mock 
 \label{fig:exam-day}
 \end{figure}
 
-\begin{itemize}[leftmargin=*]
-    \item Read carefully — watch for \emph{MOST}, \emph{BEST}, \emph{LEAST}, \emph{NOT}.
-    \item Eliminate two obviously-wrong options before reasoning between the last two.
-    \item Flag and move — never burn five minutes on one question.
-    \item Budget: $\sim$87 s per question. Set mental checkpoints at 30, 60, and 75 minutes.
-    \item Trust your preparation. First instinct beats second-guessing.
-    \item Never leave a question blank — there is no penalty for wrong answers.
-\end{itemize}
+\section*{What comes next}
 
-\section*{After you certify}
+Generative AI moves fast enough that this edition will show its age by the time the next watsonx catalogue turnover lands. Two habits keep the gap manageable. The first is staying current with the source --- the IBM watsonx release notes, the publicly published model cards, the watsonx.ai documentation, and the InstructLab and LangChain release feeds. The second is shipping something. The companion labs are a starting point; the destination is your own project, with your own corpus, your own users, and your own audit trail. The certification proves you understand the layer. Production work is how you stay in it.
 
-\begin{itemize}[leftmargin=*]
-    \item Add the badge to LinkedIn and your résumé — IBM issues a Credly badge automatically.
-    \item Share what worked. A short blog post or LinkedIn write-up helps the next batch of candidates.
-    \item Build something real on watsonx.ai — the labs in this repository are a starting point, not the destination.
-    \item Look at the next tier: the \emph{IBM watsonx AI Engineer (Professional)} certification covers production governance, multi-agent systems, and enterprise integration in depth.
-    \item Continue the series: \href{https://github.com/ruslanmv/agentic-ai-tutorial}{Agentic AI from Scratch} and the \href{https://github.com/ruslanmv/watsonx-workshop}{watsonx Workshop}.
-\end{itemize}
+After the associate certification, the path that most engineers take is to specialise. Multi-agent orchestration is a deep field of its own; production governance becomes a discipline at scale; the safety and evaluation layers we wrapped around the model in this book are growing into their own specialist roles. The companion tutorials --- \emph{Agentic AI from Scratch} (LangChain, LangGraph, CrewAI) and the open-source \emph{watsonx Workshop} --- are reasonable next stops, as is the next-tier IBM watsonx AI Engineer Professional certification when it lands.
 
 \cleardoublepage
 
@@ -63,24 +33,7 @@ If you have worked through every chapter, every practice question, and the mock 
 \chapter*{About the Author}
 \addcontentsline{toc}{chapter}{About the Author}
 
-\noindent\textbf{Ruslan Idelfonso Magana Vsevolodovna} is a senior AI engineer and IBM watsonx practitioner. He has spent more than a decade building production AI for enterprises in finance, telecoms, and the public sector, and now teaches what he learns on YouTube, Udemy, and his blog at \href{https://ruslanmv.com}{ruslanmv.com}.
-
-\medskip
-
-His tutorial series includes:
-
-\begin{itemize}[leftmargin=*]
-    \item \textbf{Agentic AI from Scratch} — building production agents in LangChain, LangGraph, and CrewAI. \\
-          \href{https://github.com/ruslanmv/agentic-ai-tutorial}{github.com/ruslanmv/agentic-ai-tutorial}
-    \item \textbf{watsonx Workshop} — end-to-end RAG application on watsonx with accelerator notebooks. \\
-          \href{https://github.com/ruslanmv/watsonx-workshop}{github.com/ruslanmv/watsonx-workshop}
-    \item \textbf{watsonx Generative AI Engineer Cert Prep} — this book and its companion YouTube and Udemy editions. \\
-          \href{https://github.com/ruslanmv/IBM-Watsonx-Generative-AI-Engineer-Certification}{github.com/ruslanmv/IBM-Watsonx-Generative-AI-Engineer-Certification}
-\end{itemize}
-
-\medskip
-
-\noindent\textit{“Build it on the platform, prove it with metrics, then explain it like a teacher.”}
+\noindent\textbf{Ruslan Idelfonso Magana Vsevolodovna} is an independent AI engineer and educator whose technical writing covers generative AI on enterprise platforms. He is the author of the companion YouTube and Udemy courses for this certification, and of the open-source tutorial series listed below.
 
 \medskip
 
@@ -89,9 +42,13 @@ His tutorial series includes:
 \href{https://www.linkedin.com/in/ruslanmv/}{LinkedIn} \textbullet\
 \href{https://github.com/ruslanmv}{GitHub}
 
-\vspace{1cm}
+\medskip
 
-\noindent\textit{If this book helped you pass, star the GitHub repository and tell a colleague. Word of mouth is how this series grows.}
+\noindent\textbf{Note on affiliation.}\ The author has no commercial relationship with IBM. This book is an independent study guide based on the publicly published C1000-185 certification objectives and the publicly available watsonx.ai documentation. IBM, watsonx, watsonx.ai, watsonx.data, watsonx.governance, Granite, Slate, and InstructLab are trademarks of IBM Corporation.
+
+\medskip
+
+\noindent\textit{If this book helped you pass, star the repository and tell a colleague. Word of mouth is how community resources grow.}
 
 \cleardoublepage
 
@@ -103,9 +60,13 @@ His tutorial series includes:
 \addcontentsline{toc}{chapter}{Also by the Same Author}
 
 \begin{itemize}[leftmargin=*]
-    \item \textbf{Agentic AI from Scratch — LangChain, LangGraph, CrewAI} (open-source course \& slide decks)
-    \item \textbf{watsonx Workshop — End-to-End RAG on IBM watsonx} (open-source course)
-    \item Articles and tutorials at \href{https://ruslanmv.com}{ruslanmv.com}
+    \item \textbf{Agentic AI from Scratch --- LangChain, LangGraph, CrewAI.}\ Open-source course and slide decks for building production agents.\\
+          \href{https://github.com/ruslanmv/agentic-ai-tutorial}{github.com/ruslanmv/agentic-ai-tutorial}
+    \item \textbf{watsonx Workshop --- End-to-End RAG on watsonx.}\ Open-source hands-on workshop on building governed RAG applications.\\
+          \href{https://github.com/ruslanmv/watsonx-workshop}{github.com/ruslanmv/watsonx-workshop}
+    \item \textbf{watsonx Generative AI Engineer Cert Prep.}\ This book and its companion YouTube and Udemy editions.\\
+          \href{https://github.com/ruslanmv/IBM-Watsonx-Generative-AI-Engineer-Certification}{github.com/ruslanmv/IBM-Watsonx-Generative-AI-Engineer-Certification}
+    \item Articles and tutorials at \href{https://ruslanmv.com}{ruslanmv.com}.
 \end{itemize}
 
 \vspace{1cm}

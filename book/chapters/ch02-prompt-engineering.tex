@@ -3,35 +3,24 @@
 
 \epigraph{``Most production AI is prompt engineering. The rest is plumbing.''}{}
 
-This chapter covers \textbf{Section~2: Prompt Engineering (16\% of the exam)}. The exam expects you to write prompts, choose parameters, manage templates, and understand the risks. Every sub-section below maps to an official objective (2.1--2.8). If you have not yet read Chapter~\ref{ch:foundations}, do so first --- model selection (Section~1.5) drives the prompt choices in this chapter.
+The first version of the Acme Assistant was a single sentence: \emph{``You are a helpful banking assistant. Answer the user.''} On the third test query, it confidently invented an interest rate that no Acme product actually offered. On the fifth, it answered a question about VAT rules using a German tax code that may or may not exist. By the end of the morning, the AI engineer at Acme had three pages of notes, all of them variations of the same theme: the prompt was the problem.
 
-\begin{objectivesbox}
-By the end of this chapter you will be able to:
-\begin{itemize}[leftmargin=*,nosep]
-    \item Distinguish \textbf{zero-shot}, \textbf{few-shot}, and \textbf{chain-of-thought} prompting (Objective~2.1).
-    \item Design prompts that match the model and the use case (2.2--2.3).
-    \item Tune decoding parameters --- temperature, top-$p$, top-$k$, repetition penalty, stop sequences (2.4).
-    \item Use \textbf{Prompt Lab} templates and variables effectively (2.5).
-    \item Apply prompting frameworks: CRISPE, APE, CARE (2.6).
-    \item Recognise and mitigate \textbf{prompt risks}: injection, jailbreaks, PII leakage (2.7--2.8).
-\end{itemize}
-\end{objectivesbox}
+That morning's notes are this chapter. Section~2 of the exam is prompt engineering, sixteen percent of the test. It assumes you have already read Chapter~\ref{ch:foundations}, because model selection (Section~1.5) drives almost every prompt-engineering choice that follows. What this chapter adds is the craft on top: how to structure a prompt, how to tune the parameters that decode it, how to package it as a versioned asset, and how to wrap it against the four risk families that any consumer-facing prompt has to survive.
 
-\section{Zero-Shot vs Few-Shot Prompting (Objective 2.1)}
-
-Before introducing the three styles, study Figure~\ref{fig:cot-vs-direct} side-by-side. Asking the model to ``think step-by-step'' --- the simplest form of chain-of-thought --- dramatically reduces errors on multi-step problems.
+\section{Zero-shot, few-shot, and asking the model to think}
 
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.95\textwidth]{assets/figures/fig10-cot-vs-direct}
-\caption{Direct prompting (left) jumps to a confident wrong answer. Chain-of-Thought (right) surfaces verifiable intermediate steps.}
+\caption{Direct prompting (left) jumps to a confident wrong answer. Chain-of-thought (right) surfaces verifiable intermediate steps.}
 \label{fig:cot-vs-direct}
 \end{figure}
 
-\subsection{Zero-Shot Prompting}
-You describe the task and give no examples. The model has to figure it out from its training.
+\subsection{Zero-shot}
 
-\begin{examplebox}[title=\textbf{Zero-shot}]
+The cheapest prompt is the one with no examples. You describe the task and the model figures it out from its training. The Acme intent classifier started this way --- one sentence describing the task, one ticket, one label out. For a task the model has seen a thousand times in its training data (sentiment, simple summarisation, common-language translation), zero-shot is enough and you should not pay the context-window cost of examples.
+
+\begin{examplebox}[title=\textbf{Zero-shot classification}]
 \begin{lstlisting}[style=pythonstyle]
 prompt = "Classify the sentiment of the review as POSITIVE, NEGATIVE, or NEUTRAL.\n"\
          "Review: 'Battery died after 30 minutes.'\n"\
@@ -39,12 +28,11 @@ prompt = "Classify the sentiment of the review as POSITIVE, NEGATIVE, or NEUTRAL
 \end{lstlisting}
 \end{examplebox}
 
-\textbf{When to use:} simple, well-known tasks (sentiment, easy summarisation, simple translation). Cheapest --- no examples bloat the context.
+\subsection{Few-shot}
 
-\subsection{Few-Shot Prompting}
-You include 2--5 worked examples \emph{before} the new input. The model imitates the format and style.
+The moment zero-shot output starts drifting --- in tone, in label vocabulary, in JSON formatting --- the cheapest fix is two to five worked examples placed before the new input. The model imitates the format of what it just saw. Two consistent examples beat ten noisy ones; order them simple-to-complex.
 
-\begin{examplebox}[title=\textbf{Few-shot}]
+\begin{examplebox}[title=\textbf{Few-shot classification with explicit labels}]
 \begin{lstlisting}[style=pythonstyle]
 prompt = """Classify each review as POSITIVE, NEGATIVE, or NEUTRAL.
 
@@ -62,11 +50,13 @@ Sentiment:"""
 \end{lstlisting}
 \end{examplebox}
 
-\textbf{When to use:} when zero-shot output drifts in tone, format, or label vocabulary; for unusual output schemas (custom JSON); for edge-case handling.
+\subsection{Chain-of-thought}
 
-\examtip{If an exam scenario shows \emph{2--5 input/output pairs in the prompt}, it is few-shot. If it shows only the task description, it is zero-shot. The exam often asks ``which is the cheapest correct approach?'' --- the answer is zero-shot if the model is large/capable enough.}
+The last lever in this section is the simplest and the most under-used. Adding the phrase \emph{``Think step-by-step''} before the answer prompt forces the model to write out its reasoning before its conclusion. On multi-step problems --- contract penalty calculations at Acme, multi-policy reasoning, anything with arithmetic --- accuracy jumps and errors become inspectable. The cost is more tokens out. The catch is that a regulator may not want the reasoning trace surfaced to end users, which is why a chain-of-thought system prompt is usually paired with a parser that returns only the final answer to the application.
 
-\section{Designing Prompts Based on Use Case (Objective 2.2)}
+\examtip{If a scenario shows two to five input-output pairs in the prompt, it is few-shot. If it shows only the task description, it is zero-shot. If it shows \emph{``let's think step by step''} or a numbered reasoning trace, it is chain-of-thought. When the exam phrasing is \emph{``cheapest correct approach''} for a task the model already knows well, the answer is zero-shot.}
+
+\section{Designing a prompt that survives production}
 
 \begin{figure}[h]
 \centering
@@ -75,12 +65,11 @@ Sentiment:"""
 \label{fig:prompt-anatomy}
 \end{figure}
 
-\subsection{Match the Model to the Use Case}
-You already saw the rules in Chapter~1.5. For chatty multi-turn use cases, pick an \emph{instruct} or \emph{chat} variant. For one-shot transforms, an instruct model is enough. For coding, prefer \texttt{ibm/granite-code-3-8b-instruct}.
+A production prompt has five regions, in this order: a \emph{role/system} block that establishes the persona and refusal rules; a \emph{context} block that grounds the model (in RAG, this is where the retrieved chunks land); an \emph{examples} block when you want few-shot; a \emph{task} block with the actual question; and an \emph{output-schema} block that locks the response format. Treat them as separate concerns. When the Acme Assistant misbehaves, ninety percent of the time it's because two of these regions were collapsed into one and the model got confused about what was instruction and what was content.
 
-\subsection{Conversational (Chat) Pattern}
+Chat-style and freeform prompts are not the same shape on the wire. A chat-capable model takes a structured list of \texttt{(role, content)} messages and honours the \texttt{system} role separately from user input --- that separation is itself a defence against prompt injection. A freeform call sends one big string. Use the chat shape for anything customer-facing.
 
-\begin{examplebox}[title=\textbf{Chat-style prompt with system / user roles}]
+\begin{examplebox}[title=\textbf{Chat-style call with system / user roles}]
 \begin{lstlisting}[style=pythonstyle]
 from ibm_watsonx_ai.foundation_models import ModelInference
 
@@ -100,9 +89,9 @@ print(model.chat(messages=messages))
 \end{lstlisting}
 \end{examplebox}
 
-\subsection{Translation Pattern}
+For translation, two extra habits matter. State both the source and target language explicitly --- never assume the model will detect them correctly. Tell the model to preserve formatting (Markdown, JSON keys, line breaks) if your downstream pipeline needs it. For long content, chunk by paragraph, translate each, and re-join; that avoids silent context-window truncation when the source document is a few thousand tokens long.
 
-\begin{examplebox}[title=\textbf{Translation prompt}]
+\begin{examplebox}[title=\textbf{Translation prompt with formatting rules}]
 \begin{lstlisting}[style=pythonstyle]
 prompt = """Translate the English text into French.
 Preserve technical terms and keep the same paragraph structure.
@@ -112,27 +101,19 @@ French:"""
 \end{lstlisting}
 \end{examplebox}
 
-\textbf{Tips:}
-\begin{itemize}[leftmargin=*]
-    \item Explicitly state source and target languages.
-    \item Add formatting rules (preserve markdown, JSON keys, line breaks).
-    \item For long content, chunk by paragraph then re-join --- avoids context-window truncation.
-\end{itemize}
+\subsection{Three frameworks, one habit}
 
-\section{Prompt Templates (Objective 2.3)}
+The exam mentions three prompt-design frameworks --- \textbf{CRISPE}, \textbf{APE}, \textbf{CARE} --- and you should be able to name them. CRISPE prompts you to write a \emph{Capacity, Role, Insight, Statement, Personality, Experiment} block; APE structures \emph{Action, Purpose, Expectation}; CARE asks for \emph{Context, Action, Result, Example}. In practice every team I have worked with picks one and uses it as a checklist. They are all variations on the same idea: explicit role, explicit task, explicit output. Read the prompt anatomy figure once; you have absorbed the substance of all three.
 
-\begin{keybox}
-A \textbf{prompt template} is a versioned, named artefact in watsonx.ai with input variables, model binding, parameters, and (optionally) few-shot examples. Treat it like source code: store, version, deploy, monitor.
-\end{keybox}
+\section{Prompt templates: code, not strings}
 
-\subsection{Creating a Prompt Template Programmatically}
+A prompt that lives as a Python f-string in your microservice is technical debt. The watsonx \term{prompt template} is a named, versioned, governed asset with input variables, a model binding, parameters, and (optionally) few-shot examples. You promote it through deployment spaces the same way you promote a model. You attach evaluation results to it. You can swap the underlying model without touching application code. Treat it like source code, because it is.
 
-\begin{examplebox}[title=\textbf{Create + store a Prompt Template}]
+\begin{examplebox}[title=\textbf{Create and store a prompt template}]
 \begin{lstlisting}[style=pythonstyle]
 from ibm_watsonx_ai.foundation_models.prompts import (
     PromptTemplate, PromptTemplateManager
 )
-from ibm_watsonx_ai.foundation_models.utils.enums import PromptTemplateFormats
 
 ptm = PromptTemplateManager(credentials=creds, project_id=PROJECT_ID)
 
@@ -156,24 +137,13 @@ print("Asset ID:", stored.prompt_id)
 \end{lstlisting}
 \end{examplebox}
 
-\subsection{Evaluating a Prompt Template}
-Before promotion you should evaluate against a held-out set.
+\subsection{Evaluating a template before you promote it}
 
-\begin{itemize}[leftmargin=*]
-    \item \textbf{Metrics:} accuracy / F1 (classification), ROUGE / BLEU (summarisation, translation), exact-match (extraction).
-    \item \textbf{LLM-as-judge:} a stronger model grades open-ended outputs with a rubric.
-    \item \textbf{Track in governance:} attach the evaluation results to the prompt asset.
-\end{itemize}
+Before a template moves out of the project, evaluate it. For classification, use accuracy or F1 against a labelled held-out set; for summarisation or translation, use ROUGE or BLEU; for extraction, use exact-match on the field values. For anything open-ended where deterministic scoring is hard, use an LLM-as-judge with a written rubric --- a stronger model grades the outputs and produces a score. The evaluation results attach to the prompt asset itself in watsonx.governance, which is what makes the audit trail real.
 
-\subsection{Environment, Deployment, and Tracking}
+The promotion path is the same one Chapter~\ref{ch:deployment} covers in depth: Project (where you build) $\rightarrow$ Dev Space (end-to-end test) $\rightarrow$ Staging (governance factsheet attaches here) $\rightarrow$ Production (canary, then ramp).
 
-\textbf{Environment templates} are the variations you create for dev / staging / production --- usually the same prompt text with stricter parameters or a different model. The promotion path is:
-
-\[
-\boxed{\text{Project (build)}} \;\rightarrow\; \boxed{\text{Space: Dev}} \;\rightarrow\; \boxed{\text{Space: Staging}} \;\rightarrow\; \boxed{\text{Space: Prod}}
-\]
-
-\begin{examplebox}[title=\textbf{Deploying a prompt template}]
+\begin{examplebox}[title=\textbf{Promote and deploy the template}]
 \begin{lstlisting}[style=pythonstyle]
 # Promote the asset into a deployment space
 new_asset = client.repository.promote_asset(asset_id=stored.prompt_id,
@@ -191,11 +161,9 @@ print(client.deployments.get_id(deployment))
 \end{lstlisting}
 \end{examplebox}
 
-\textbf{Tracking}: watsonx.governance automatically lineages the prompt template, its training/evaluation data, the model, the deployment, and the runtime metrics. This is your audit trail for regulated industries.
+\examtip{When an exam question describes \emph{a versioned, governed, audit-friendly prompt}, the answer is a prompt template in a deployment space, not a free-form prompt in an SDK call.}
 
-\examtip{Exam phrase to recognise: \emph{``versioned, governed, audit-friendly prompt''} $\rightarrow$ prompt \emph{template} in a deployment space, \emph{not} a free-text prompt in the SDK call.}
-
-\section{Best Model Parameters (Objective 2.4)}
+\section{Decoding parameters: how the next token is picked}
 
 \begin{figure}[h]
 \centering
@@ -204,38 +172,19 @@ print(client.deployments.get_id(deployment))
 \label{fig:decoding-parameters}
 \end{figure}
 
-\subsection{Decoding Methods}
+After the model produces a probability distribution over its vocabulary, something has to actually pick the next token. That choice is decoding, and watsonx splits it into two top-level methods. \emph{Greedy} always picks the highest-probability token --- deterministic, the right choice for factual extraction, classification, anything where you want the same output for the same input. \emph{Sampling} picks from the distribution, optionally shaped by temperature, top-$k$, and top-$p$ --- the right choice for creative or diverse output.
 
-\begin{keybox}
-\textbf{Decoding} = how the next token is chosen from the model's output distribution.
-\begin{itemize}
-    \item \textbf{Greedy decoding} --- always pick the highest-probability token. Deterministic. Best for factual / extractive tasks.
-    \item \textbf{Sampling decoding} --- sample from the distribution, optionally shaped by temperature / top-k / top-p. Use for creative / diverse output.
-\end{itemize}
-\end{keybox}
+\emph{Temperature} reshapes the distribution before sampling. Higher temperature flattens it (more diverse, more creative, more drift); lower temperature peaks it (more deterministic, more conservative). At the extreme, temperature approaching zero is equivalent to greedy. Sensible range: zero to one for production prompts, up to two for brainstorming, never above.
 
-In the watsonx API this is the \texttt{decoding\_method} parameter: \texttt{"greedy"} or \texttt{"sample"}.
+\emph{Top-$k$} and \emph{top-$p$} prune the distribution before sampling. Top-$k$ keeps only the $k$ highest-probability tokens; small $k$ (10--40) restricts wild outputs, large $k$ lets rare-but-still-likely tokens through. Top-$p$ (nucleus sampling) keeps the smallest set of tokens whose cumulative probability exceeds $p$; $p = 0.9$ is the popular default. Top-$p$ is more adaptive: in confident contexts the nucleus is tiny, in ambiguous contexts it widens. Most teams I've worked with use top-$p$ alone or both together, and almost nobody uses top-$k$ on its own anymore.
 
-\subsection{Random Seed}
-When sampling, the \texttt{random\_seed} parameter makes the otherwise-random pick reproducible. Same prompt + same seed + same parameters $\Rightarrow$ same output. Useful for tests and demos.
+\emph{Repetition penalty} (typical range 1.0 to 1.2) lowers the probability of tokens that have already appeared in the output --- the fix when the model produces \emph{``thank you thank you thank you''}. Push it above 1.5 and the model starts paraphrasing itself or going off-topic.
 
-\subsection{Repetition Penalty}
-\texttt{repetition\_penalty} ($\geq 1.0$) lowers the probability of tokens that already appeared in the output. Helps prevent loops like ``thank you thank you thank you''. Typical: $1.0$--$1.2$. Above $1.5$ the model starts paraphrasing or going off-topic.
+\emph{Random seed} matters only when sampling. Same prompt, same seed, same parameters $\Rightarrow$ same output. Useful for reproducible tests and demos; not relevant for greedy decoding.
 
-\subsection{Stopping Criteria}
-The model keeps generating until one of these triggers:
-\begin{itemize}[leftmargin=*]
-    \item \textbf{max\_new\_tokens} --- hard ceiling on output length.
-    \item \textbf{min\_new\_tokens} --- forces at least N tokens before any stop logic fires.
-    \item \textbf{stop\_sequences} --- list of strings; emit one and generation stops.
-    \item \textbf{time\_limit} --- maximum milliseconds of generation time per call.
-    \item End-of-sequence token reached (the model's own \texttt{</s>}, \texttt{<|endoftext|>}, etc.).
-\end{itemize}
+\emph{Stopping criteria} answer the question \emph{when does the model stop generating?} The generation halts as soon as any of these triggers: \texttt{max\_new\_tokens} (a hard ceiling on output length), \texttt{stop\_sequences} (a list of strings the model is told to stop on), \texttt{time\_limit} (milliseconds per call --- the SLA enforcer), the model's own end-of-sequence token (\texttt{</s>}, \texttt{<|endoftext|>}, depending on family). \texttt{min\_new\_tokens} works the other way --- it forces the model past a minimum length before any stop logic fires, which prevents pathological one-word answers like \emph{``OK''} on summarisation tasks.
 
-\subsection{Min and Max Tokens}
-\texttt{min\_new\_tokens} prevents pathological one-word answers (e.g.\ ``OK''). \texttt{max\_new\_tokens} caps cost and latency.
-
-\begin{examplebox}[title=\textbf{Full parameter dictionary for the watsonx Text Generation API}]
+\begin{examplebox}[title=\textbf{A complete parameter dictionary}]
 \begin{lstlisting}[style=pythonstyle]
 params = {
     "decoding_method":      "sample",   # or "greedy"
@@ -252,67 +201,7 @@ params = {
 \end{lstlisting}
 \end{examplebox}
 
-\section{Benefits of Prompt Variables (Objective 2.5)}
-
-A prompt \textbf{variable} is a placeholder in the template (\texttt{\{ticket\_text\}}, \texttt{\{language\}}, \texttt{\{tone\}}) that the application fills at call time.
-
-\textbf{Why bother:}
-\begin{itemize}[leftmargin=*]
-    \item \textbf{Reusability} --- one template, many calls.
-    \item \textbf{Safety} --- variables are escaped / quoted by the SDK, not concatenated by your app code. Reduces prompt-injection surface.
-    \item \textbf{Governance} --- the template is a single asset to audit, instead of N free-form strings.
-    \item \textbf{A/B testing} --- swap parameters or model behind the same variable contract.
-\end{itemize}
-
-\textbf{What to turn into variables:} anything that changes per request (user input, retrieved chunks, locale). Anything that stays the same (role, format rules) stays as static prompt text.
-
-\section{Benefits of Prompt Lab (Objective 2.6)}
-
-Prompt Lab is the no-code prompt builder inside watsonx.ai. The exam expects you to know its three editing modes:
-
-\begin{table}[h]
-\centering
-\begin{tabularx}{\textwidth}{l X X}
-\toprule
-\textbf{Mode} & \textbf{Editor} & \textbf{Best for} \\
-\midrule
-\textbf{Chat}       & System + multi-turn conversation pane            & Multi-turn chat use cases \\
-\textbf{Structured} & Separate fields for instruction, examples, input & Few-shot tasks, easy variable management \\
-\textbf{Freeform}   & One big text box                                 & Power users, custom prompt formats \\
-\bottomrule
-\end{tabularx}
-\caption{Prompt Lab editing modes.}
-\end{table}
-
-\textbf{Other benefits to remember:}
-\begin{itemize}[leftmargin=*]
-    \item Side-by-side model comparison.
-    \item Live parameter sliders (temperature, top-p, max tokens).
-    \item Save the prompt as a versioned template asset.
-    \item One-click promotion to a deployment space.
-    \item Code export (Python, curl, JS) so you can lift-and-shift into your app.
-\end{itemize}
-
-\section{Controlling Model Parameters (Objective 2.7)}
-
-This objective overlaps with 2.4 but goes a bit deeper into \emph{shaping} the sampling distribution.
-
-\subsection{Temperature}
-Scales the logits before softmax. Higher $\Rightarrow$ flatter distribution $\Rightarrow$ more diverse / creative. Lower $\Rightarrow$ peakier $\Rightarrow$ more deterministic. Range: $0$--$2$. Greedy is equivalent to temperature $\to 0$.
-
-\subsection{Top-K Sampling}
-After computing probabilities, keep only the $k$ highest-probability tokens; renormalise; sample. Small $k$ (10--40) restricts wild outputs; large $k$ lets the rare-but-still-likely tokens through.
-
-\subsection{Top-P Sampling (Nucleus)}
-Keep the smallest set of tokens whose cumulative probability exceeds $p$; sample from that nucleus. $p=0.9$ is a popular default. More \emph{adaptive} than top-k: in confident contexts the nucleus is tiny, in ambiguous contexts it is wide.
-
-\subsection{Random Seed and Repetition Penalty}
-Already covered in 2.4. Re-flag here because the exam will recombine them.
-
-\subsection{Stop Sequences and Token Limits}
-Already covered. The official guide also explicitly mentions \emph{model generation time limit} --- the \texttt{time\_limit} parameter (milliseconds). Use it to enforce per-call SLAs.
-
-\begin{examplebox}[title=\textbf{Symptom $\rightarrow$ parameter cheat sheet}]
+\begin{examplebox}[title=\textbf{Symptom-to-parameter cheat sheet}]
 \begin{lstlisting}[style=pythonstyle]
 # Output is too random / off-topic
 params["temperature"]  = 0.2; params["top_p"] = 0.5; params["decoding_method"] = "greedy"
@@ -332,59 +221,53 @@ params["decoding_method"] = "sample"; params["random_seed"] = 42
 \end{lstlisting}
 \end{examplebox}
 
-\section{Model Risks (Objective 2.8)}
+\section{Prompt variables and Prompt Lab}
 
-\subsection{Hallucinations}
-\textbf{Underlying causes:} the model is a probabilistic next-token predictor; missing or contradictory training data; out-of-distribution prompts; high temperature.
+A prompt \emph{variable} is a placeholder in the template (\texttt{\{ticket\_text\}}, \texttt{\{language\}}, \texttt{\{tone\}}) that the application fills at call time. Variables are not cosmetic. They give you reusability (one template, many calls), safety (the SDK escapes and quotes them rather than your app concatenating strings, which shrinks the prompt-injection surface), governance (a single asset to audit instead of $N$ free-form strings), and the ability to A/B test by swapping the model behind the same variable contract. The rule is simple: anything that changes per request is a variable; anything that stays the same is static prompt text.
 
-\textbf{Techniques to avoid:}
-\begin{enumerate}[leftmargin=*]
-    \item Ground with \textbf{RAG} (Chapter~\ref{ch:rag}).
-    \item Lower temperature, use greedy decoding for facts.
-    \item Add an explicit ``I do not know'' escape hatch.
-    \item Validate with a second model (LLM-as-judge) or a deterministic checker.
-    \item Use Granite Guardian's groundedness check for RAG.
-\end{enumerate}
+\subsection{Prompt Lab, in three modes}
 
-\subsection{Personal Information (PII)}
+Prompt Lab is the no-code prompt builder inside watsonx.ai, and the exam expects you to recognise its three editing modes by what they are best at. \emph{Chat} mode gives you a system block and a multi-turn conversation pane --- the right mode for chatbots. \emph{Structured} mode separates instruction, examples, and input into fields --- the right mode for few-shot tasks with managed variables. \emph{Freeform} mode is one big text box with no UI guardrails --- the right mode for power users with custom prompt formats.
 
-\textbf{Identifying PII:} names, emails, phone numbers, government IDs, account numbers, addresses, IP addresses, dates of birth.
+\begin{table}[h]
+\centering
+\small
+\begin{tabularx}{\textwidth}{l X X}
+\toprule
+\textbf{Mode} & \textbf{Editor} & \textbf{Best for} \\
+\midrule
+\textbf{Chat}       & System + multi-turn conversation pane            & Multi-turn chat use cases \\
+\textbf{Structured} & Separate fields for instruction, examples, input & Few-shot tasks, variable management \\
+\textbf{Freeform}   & One big text box                                 & Power users, custom prompt formats \\
+\bottomrule
+\end{tabularx}
+\caption{Prompt Lab editing modes.}
+\label{tab:prompt-lab-modes}
+\end{table}
 
-\textbf{Techniques for excluding PII:}
-\begin{itemize}[leftmargin=*]
-    \item \textbf{PII filter} on input: regex / NER pre-mask before the call. Replace the masked tokens after generation.
-    \item \textbf{Granite Guardian} on output to refuse PII leakage.
-    \item Do not log raw prompts; redact at the logging layer.
-    \item Use a data-residency-appropriate watsonx region.
-\end{itemize}
+Beyond the editor itself, Prompt Lab gives you side-by-side model comparison, live parameter sliders, one-click save as a versioned template asset, one-click promotion to a deployment space, and code export for Python, curl, or JavaScript so you can lift the working prompt straight into your application.
 
-\subsection{Hate, Abuse, and Profanity (HAP)}
+\section{The four risk families every prompt has to survive}
 
-\textbf{HAP filter:} watsonx exposes a HAP classifier (today rolled into the Granite Guardian family) that scores text on hate / abuse / profanity. Apply on both input and output.
+The same four risk families appear in Chapter~\ref{ch:foundations} under the security section. Here they show up again because the prompt is where most of them are mitigated. The Acme Assistant's prompt evolved through all four.
 
-\subsection{Bias}
-\textbf{Cause}: imbalanced training data, biased annotators, biased proxy features.
+\emph{Hallucination} is the model producing a confident, plausible answer that is factually wrong. Underlying causes: it is a probabilistic next-token predictor; the training data was missing or contradictory; the prompt is out-of-distribution; the temperature was too high. The mitigation stack is layered: ground the model with RAG (Chapter~\ref{ch:rag}) so it has source text to lean on, lower the temperature, use greedy decoding for factual tasks, add an explicit refusal instruction (\emph{``If the answer is not in the context, say `I do not know'.''}), and for high-stakes outputs add a verification step --- a second LLM call as a fact-checker, or Granite Guardian's groundedness check on the output.
 
-\textbf{Techniques to reduce:}
-\begin{itemize}[leftmargin=*]
-    \item Run demographic parity / equalised-odds tests in watsonx.governance.
-    \item Add neutralising instructions in the system prompt.
-    \item Use a balanced few-shot set.
-    \item Document residual bias in the model card / factsheet.
-\end{itemize}
+\emph{Personally identifiable information} (PII) is names, emails, phone numbers, government IDs, account numbers, addresses, IP addresses, dates of birth --- anything that identifies a person. Mitigation runs at three layers: a PII filter on the input (regex or NER pre-mask, replace masked tokens after generation), Granite Guardian on the output to refuse leaks, and never logging raw prompts (redact at the logging layer). Data residency matters here too --- pick a watsonx region that matches the regulatory regime of your data.
 
-\subsection{Data Bias and Poisoning}
-\textbf{Data bias:} skewed training distribution leading to skewed outputs. Mitigation: curation, balanced sampling, post-hoc fairness adjustments.
+\emph{Hate, abuse, profanity} (HAP) is its own category because regulators treat it that way. The watsonx HAP classifier (now folded into the Granite Guardian family) scores text on hate, abuse, and profanity and is applied on both input and output. There is no clever prompt-level fix here; you wrap the call with Guardian and trust the classifier.
 
-\textbf{Data poisoning:} adversary injects malicious training examples. Mitigation: source provenance, signed datasets, anomaly detection on training loss, IBM Granite's documented training data and IP indemnification.
+\emph{Bias} comes from imbalanced training data, biased annotators, or biased proxy features in the input. The mitigation runs at three levels too: neutralising instructions in the system prompt; a balanced few-shot set if you are using one; and demographic-parity / equalised-odds tests in watsonx.governance, with the residual bias documented in the model card. Bias is never fully solved, and the exam may test that you know this --- the right answer is usually \emph{``mitigate at multiple layers and document''}, not \emph{``solve at one layer.''}
 
-\examtip{Memorise the four risk filter families: \textbf{PII}, \textbf{HAP}, \textbf{Bias}, \textbf{Hallucination/Groundedness}. They map directly to Guardian categories and to watsonx.governance evaluators.}
+\examtip{Memorise the four risk filter families --- PII, HAP, bias, and hallucination/groundedness. They map directly to Granite Guardian categories and to watsonx.governance evaluators. The exam loves questions that pair a symptom (\emph{``the model invented a citation''}, \emph{``the model produced a slur''}) to one of these four.}
 
-\section{Putting It Together --- A Production Prompt}
+\subsection{A reference production prompt}
+
+The Acme Assistant's first production prompt, after the morning that opens this chapter, ended up looking like this. Notice the five regions from Figure~\ref{fig:prompt-anatomy} all present and labelled, the explicit refusal instruction, and the locked output schema.
 
 \begin{examplebox}[title=\textbf{Reference production prompt skeleton}]
 \begin{lstlisting}[style=pythonstyle]
-SYSTEM = """You are a senior support agent at ACME Bank.
+SYSTEM = """You are a senior support agent at Acme Bank.
 Answer ONLY from the policy excerpts in <context>.
 If the answer is not in the context, reply:
   'I do not know -- please contact a human agent.'
@@ -409,18 +292,11 @@ params = {
 \end{lstlisting}
 \end{examplebox}
 
-\section{Key Takeaways}
+\begin{takeawaybox}
+Prompt engineering on the exam has three layers and you should be able to move between them in any question. The \emph{structural} layer asks whether the right thing is in the right region of the prompt --- role, context, examples, task, schema. The \emph{decoding} layer asks how the next token is chosen --- greedy for facts, sampling with temperature plus top-$p$ for creativity, and the right stopping criteria so the call has a finite cost. The \emph{operational} layer asks how the prompt is shipped --- a versioned prompt template promoted through deployment spaces, evaluated against a held-out set, attached to a governance factsheet, and wrapped with Granite Guardian on input and output for the four risk families.
+\end{takeawaybox}
 
-\begin{itemize}[leftmargin=*]
-    \item \textbf{Zero-shot} = no examples; \textbf{few-shot} = 2--5 examples for tone, format, or vocabulary control.
-    \item Prompt \textbf{templates} are versioned, governed, promote-able assets --- prefer them over free-text prompts in app code.
-    \item Two decoding methods: \textbf{greedy} (deterministic) and \textbf{sampling} (with temperature, top-k, top-p, random\_seed).
-    \item Stopping criteria: \texttt{max\_new\_tokens}, \texttt{min\_new\_tokens}, \texttt{stop\_sequences}, \texttt{time\_limit}, EOS token.
-    \item Prompt Lab modes: \textbf{Chat}, \textbf{Structured}, \textbf{Freeform}.
-    \item Four risk families: hallucination, PII, HAP, bias --- all mitigated via Granite Guardian + governance + good prompting.
-\end{itemize}
-
-\section{Practice Questions}
+\section{Practice questions}
 
 \begin{practicebox}[title=\textbf{Q2.1 --- Decoding}]
 You need consistent, factual, reproducible output for an extraction task. Best decoding method?

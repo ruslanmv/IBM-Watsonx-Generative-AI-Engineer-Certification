@@ -3,24 +3,11 @@
 
 \epigraph{``Fine-tune the behaviour, not the knowledge. For knowledge, use RAG.''}{}
 
-\textbf{Section~3 is 31\% of the exam --- the largest single section.} Master this chapter and you have one third of the points already.
+By week three of the Acme Assistant project, the AI engineer at Acme had a working RAG prototype answering policy questions from the bank's corpus. The compliance team approved the answers' content and rejected the answers' \emph{form}. Every reply, they said, had to be phrased in the bank's house style --- specific sign-offs, specific hedging language, specific refusal phrases when an answer was not safe to give. No combination of system prompts produced the style consistently. After two days of prompt rewrites that almost-worked but never quite did, the engineer accepted what every senior practitioner eventually accepts: the model has to be tuned.
 
-This chapter covers all eight sub-objectives 3.1--3.8: hard vs soft prompts, prompt cost optimisation, data preparation, quantisation, LoRA, InstructLab, and the synthetic-data generator (with Kolmogorov--Smirnov, Anderson--Darling, and differential privacy). Where this chapter touches retrieval, see Chapter~\ref{ch:rag}; where it touches deployment of tuned assets, see Chapter~\ref{ch:deployment}.
+This is the moment Chapter~3 begins, and it is the chapter that earns the largest share of your exam grade. Section~3 is thirty-one percent of C1000-185 --- almost a third of the test --- because IBM treats fine-tuning competence as the dividing line between an LLM user and an LLM engineer. The objectives map cleanly across eight topics: hard versus soft prompts, the economics of prompt tokens, dataset preparation, quantisation, LoRA, InstructLab, evaluation, and watsonx cost optimisation. They land in this chapter in that order. If you take one rule out of this chapter, take this one: tune behaviour, not knowledge. The Acme Assistant tunes the style, the refusal habits, and the schema discipline; it never tunes the actual policy content, which lives in the RAG corpus.
 
-\begin{objectivesbox}
-By the end of this chapter you will be able to:
-\begin{itemize}[leftmargin=*,nosep]
-    \item Compare \textbf{hard prompts} and \textbf{soft prompts (prompt tuning)} (Objective~3.1).
-    \item Pick the cheapest customisation that meets a requirement: prompting vs PEFT vs full fine-tune (3.2).
-    \item Prepare a \textbf{high-quality fine-tuning dataset}: size, format (JSONL), quality, splits (3.3).
-    \item Reason about \textbf{quantisation} --- FP32 $\to$ FP16/BF16 $\to$ INT8 $\to$ INT4 trade-offs (3.4).
-    \item Explain \textbf{LoRA} and \textbf{QLoRA} at the math level (low-rank $A \cdot B$ update, 4-bit base) (3.5).
-    \item Use \textbf{IBM InstructLab} --- taxonomy, synthetic data generation, the LAB methodology (3.6).
-    \item Evaluate a tuned model with the right metrics (3.7) and optimise cost on watsonx (3.8).
-\end{itemize}
-\end{objectivesbox}
-
-\section{Hard vs Soft Prompts (Objective 3.1)}
+\section{Hard prompts and soft prompts (Objective 3.1)}
 
 \begin{figure}[h]
 \centering
@@ -29,103 +16,61 @@ By the end of this chapter you will be able to:
 \label{fig:hard-vs-soft}
 \end{figure}
 
-\subsection{Definitions}
+A \term{hard prompt} is human-readable text you wrote --- \emph{``Summarise the following article in three bullets''} --- and the whole prompt-engineering chapter we just finished was about getting hard prompts right. A \term{soft prompt} is something different: a short sequence of \emph{continuous embedding vectors} that the model learns through gradient descent and that gets prepended to the input at inference. Soft prompts are not text. A soft prompt is a tensor of floats, around twenty to a hundred vectors long, and you cannot read it. You can only test what it does.
 
-\begin{keybox}
-A \textbf{hard prompt} is human-readable text tokens you write (``Summarise the following article in three bullets.''). A \textbf{soft prompt} is a learned sequence of \emph{continuous embedding vectors} prepended to the input. Soft prompts are not human-readable but can be more expressive token-for-token.
-\end{keybox}
+The trade-off matters in practice and on the exam. Hard prompts give you readability and explainability --- an auditor can read your prompt and approve it. Soft prompts are denser per token and often beat hard prompts on niche tasks where you have labelled data, but they are opaque, and you have to train them. The table is the side-by-side worth memorising.
 
 \begin{table}[h]
 \centering
+\small
 \begin{tabularx}{\textwidth}{l X X}
 \toprule
-& \textbf{Hard prompt} & \textbf{Soft prompt} \\
+                  & \textbf{Hard prompt} & \textbf{Soft prompt} \\
 \midrule
-Designed by      & Humans (and helper LLMs)       & AI optimiser (gradient descent) \\
-Readable?        & Yes                            & No --- raw float vectors \\
-Explainable?     & High                           & Low --- behaves like a black box \\
-Token cost       & Every word is a token          & Fixed (e.g.\ 20--100 virtual tokens) \\
-Performance      & Good for known tasks           & Often beats hard prompts on niche tasks \\
-Tuning time      & None                           & Short (minutes -- hours, GPU) \\
-Storage          & A string in a YAML / DB        & A small tensor (KB), one per task \\
+Designed by       & Humans (and helper LLMs)         & AI optimiser (gradient descent) \\
+Readable?         & Yes                              & No --- raw float vectors \\
+Explainable?      & High                             & Low --- behaves like a black box \\
+Token cost        & Every word is a token            & Fixed (e.g.\ 20--100 virtual tokens) \\
+Performance       & Good for known tasks             & Often beats hard prompts on niche tasks \\
+Tuning time       & None                             & Short (minutes--hours on GPU) \\
+Storage           & A string in YAML or a DB         & A small tensor (KB), one per task \\
 \bottomrule
 \end{tabularx}
-\caption{Hard vs soft prompts.}
+\caption{Hard versus soft prompts at a glance.}
+\label{tab:hard-vs-soft}
 \end{table}
 
-\subsection{How Soft Prompts Are Generated}
-Freeze the base model. Add $n$ trainable embedding vectors at the input. Run gradient descent on a dataset of input/output pairs, updating \emph{only} those vectors. The result is a small file (often $<$1 MB) that, when prepended to any input, steers the model toward the trained behaviour.
+How a soft prompt actually gets made is straightforward. Freeze the base model. Add $n$ trainable embedding vectors at the input layer. Run gradient descent on a dataset of input-output pairs, updating \emph{only} those new vectors --- never the base. The result is a small file (typically under a megabyte) that, when prepended to any input, steers the model toward the trained behaviour. Hot-swap it per task; multiple soft prompts can share one base model in memory.
 
-\subsection{Benefits and Drawbacks of Soft Prompts}
+I have not yet shipped a soft prompt at Acme. The engineer ran two pilots, one to enforce the bank's reply schema and one to enforce its refusal language, and both produced a soft prompt that performed slightly better than the equivalent few-shot block at a fraction of the inference cost. They went into staging. Compliance pushed back on the explainability --- they could not read the prompt --- and the team paired each soft prompt with a written behavioural specification in the model card. It worked.
 
-\textbf{Benefits:} small artefact, fast to swap per task, often higher accuracy than zero/few-shot, base model never changes (no catastrophic forgetting).
+\examtip{Two cues to learn. \emph{Readability and explainability} point at hard prompts. \emph{Learned tensors, gradient descent, prompt tuning} point at soft prompts. The watsonx Tuning Studio names this technique \emph{prompt tuning}.}
 
-\textbf{Drawbacks:} not human-readable / interpretable, hard to debug, requires labelled training data, slightly opaque to governance reviewers.
+\section{Cutting the prompt bill (Objective 3.2)}
 
-\examtip{If the exam contrasts \emph{readability / explainability} ($\to$ hard prompt) with \emph{learned tensors / data-driven} ($\to$ soft prompt), pick accordingly. \textbf{Prompt tuning} on watsonx is the canonical soft-prompt technique.}
+watsonx.ai charges per million tokens, input and output combined. Cutting tokens cuts the bill on a one-to-one basis. The savings show up in three places: shorter prompts, smaller models for the same task, and bounded outputs.
 
-\section{Reconstructing Prompts to Reduce Cost (Objective 3.2)}
+Token measurement is the place to start. Use the SDK's \texttt{ModelInference.tokenize} during development to count tokens for every candidate prompt and every plausible input. The Acme engineer found that the bank's refusal-language block alone added 180 tokens to every reply --- five hundred replies a day, several million tokens a month, all spent saying the same thing. Pulling that block into the soft prompt above bought roughly a third of the original token cost back.
 
-watsonx.ai bills per million tokens (input + output). Cutting tokens cuts the bill directly.
+The other cost knobs sit at the parameter level. Use \texttt{stop\_sequences} so the model halts the moment your schema is complete --- I have watched teams pay for two hundred tokens of trailing whitespace because nobody set them. Use \texttt{max\_new\_tokens} as the hard ceiling on cost per call. Use \texttt{min\_new\_tokens} sparingly --- it can \emph{increase} cost; only set it to prevent useless one-word answers on summarisation. Use \texttt{time\_limit} (milliseconds) to bound latency, not cost. And switch to greedy decoding wherever determinism is acceptable, because sampling with a low temperature still costs more than greedy in the rare case the user re-tries and you pay twice.
 
-\subsection{Manage Token Usage Per Template / Model}
-\begin{itemize}[leftmargin=*]
-    \item Use the tokenizer endpoint (or \texttt{ModelInference.tokenize}) during development to count tokens for each candidate prompt.
-    \item Pick the smallest model that meets the quality bar (Granite 2B can replace 8B for many extraction tasks).
-    \item Aggregate small calls into a batch endpoint when latency permits.
-\end{itemize}
+The prompt itself usually has obvious fat. Few-shot blocks longer than three examples are almost always overkill; five is the practical ceiling. System-prompt rules that never fire (\emph{``If the user asks about cryptocurrency, refuse''} for a banking assistant that never sees that question) take tokens every call for nothing. Re-included context across multi-turn dialogues compounds quickly --- only carry forward what the current turn actually needs. The cheapest correct prompt is the one with no decoration the task does not strictly need.
 
-\subsection{Detect Inefficient Prompt Techniques}
-\begin{itemize}[leftmargin=*]
-    \item \textbf{Over-long few-shot blocks.} Three examples are usually enough; five is the practical ceiling.
-    \item \textbf{Verbose system prompts.} If a rule never fires, delete it.
-    \item \textbf{Redundant context.} Re-include only what is needed for the current turn.
-    \item \textbf{Open-ended outputs.} Always cap with \texttt{max\_new\_tokens}.
-    \item \textbf{Missing stop sequences.} Without them the model rambles.
-\end{itemize}
+\examtip{Cost-optimisation questions on this exam rotate around the same answer: \textbf{smaller model + tighter prompt + greedy decoding + \texttt{stop\_sequences} + capped \texttt{max\_new\_tokens}}. If three of those four show up in an answer choice, that's almost always the right one.}
 
-\subsection{Design Cost-Effective Prompt Templates}
-\begin{enumerate}[leftmargin=*]
-    \item Short, declarative system prompt.
-    \item Tight output schema (``Return JSON \texttt{\{"label": "BILLING"|"TECH"|"OTHER"\}}'').
-    \item Few-shot only where it materially helps.
-    \item Stop sequences matching your schema delimiter.
-    \item Greedy decoding for any deterministic task (kills retries).
-\end{enumerate}
+\section{Planning the dataset (Objective 3.3)}
 
-\subsection{Generation Cost Knobs}
-\begin{itemize}[leftmargin=*]
-    \item \texttt{stop\_sequences} --- end the generation the moment you have what you need.
-    \item \texttt{max\_new\_tokens} --- the hard cost ceiling per call.
-    \item \texttt{min\_new\_tokens} --- can \emph{increase} cost; only use it to prevent useless one-word answers.
-    \item \texttt{time\_limit} --- guards latency, not directly cost.
-\end{itemize}
+Before any tuning runs, the data has to be in shape. The shortest version of \emph{in shape} on watsonx is: stored in a project asset, in JSONL, profiled, cleaned, and split.
 
-\examtip{Cost optimisation questions almost always rotate around the same answer: \textbf{smaller model + tighter prompt + greedy decoding + \texttt{stop\_sequences} + capped \texttt{max\_new\_tokens}}.}
+Storage. You upload CSV, JSONL or Parquet to project storage (Cloud Object Storage backs it), or connect to a governed source in watsonx.data. Register the dataset as a project asset with a name, description, and lineage tags --- that lineage is what makes the audit trail real when the model ships. Tuning Studio expects JSONL: one record per line, either \verb|{"input": ..., "output": ...}| pairs for instruction-style tuning, or \verb|{"messages": [...]}| chat-style records for multi-turn.
 
-\section{Planning Data Elements (Objective 3.3)}
+Inspection and cleanup happens in \product{Data Refinery}, the visual data-prep tool inside watsonx.ai. Refinery profiles each column --- type, nulls, distinct values, distribution --- and lets you apply transformations on a sample (filter rows, cast types, dedupe, mask PII, split fields, tokenise) before running them on the whole set. The transformations save as a \emph{flow} that you can rerun every time the source updates. The Acme engineer ran the Assistant's email-style corpus through Refinery twice: the first pass found a thousand duplicate replies and three customer phone numbers in the training set; the second pass produced the clean asset that actually went to Tuning Studio.
 
-Before fine-tuning, you have to get your data into the right shape in watsonx.
+The split discipline matters more than the exact ratios. Reserve seventy to eighty percent for training, ten to fifteen percent for validation (for early-stopping and hyperparameter selection), and ten to fifteen percent for a final, untouched test split. Never evaluate on training data, and never let your validation split leak into your test split. The exam likes to test this --- look for answer choices that imply training-set evaluation, and reject them.
 
-\subsection{Adding Data to a watsonx.ai Project}
-\begin{itemize}[leftmargin=*]
-    \item Upload CSV / JSONL / Parquet to project storage (Cloud Object Storage), or connect to a governed source in \texttt{watsonx.data}.
-    \item Register the dataset as a project asset with a name, description, and lineage tags.
-    \item For tuning, the expected format is JSONL with \texttt{\{"input": ..., "output": ...\}} or chat-style \texttt{\{"messages": [...]\}}.
-\end{itemize}
+\examtip{When a question mentions \emph{``profile a dataset and apply repeatable transformations before tuning''}, the IBM answer is Data Refinery. When it mentions \emph{``three splits, never evaluate on training data''}, the right answer is the discipline, not a watsonx feature.}
 
-\subsection{Inspecting and Validating with Data Refinery}
-\textbf{Data Refinery} is the visual data-prep tool inside Cloud Pak for Data / watsonx.ai. It lets you, on a sample of the dataset:
-\begin{itemize}[leftmargin=*]
-    \item Profile each column (type, nulls, distinct values, distribution).
-    \item Apply transformations (filter rows, cast types, dedupe, mask PII, split fields, tokenise).
-    \item Save the recipe as a \textbf{flow} so the same transformations rerun on new data.
-    \item Output a cleaned asset back into the project for tuning or RAG ingestion.
-\end{itemize}
-
-\examtip{If the exam mentions \emph{``profile a dataset and apply repeatable transformations before tuning''}, the IBM answer is \textbf{Data Refinery}.}
-
-\section{Model Quantisation (Objective 3.4)}
+\section{Quantisation (Objective 3.4)}
 
 \begin{figure}[h]
 \centering
@@ -134,68 +79,45 @@ Before fine-tuning, you have to get your data into the right shape in watsonx.
 \label{fig:quantisation-ladder}
 \end{figure}
 
-\begin{keybox}
-\textbf{Quantisation} represents model weights and/or activations with fewer bits (FP32 $\to$ FP16 / BF16 $\to$ INT8 $\to$ INT4). Smaller bits $\Rightarrow$ smaller VRAM, faster inference, lower cost --- with some loss of precision.
-\end{keybox}
+\term{Quantisation} is the practice of representing model weights (and sometimes activations) with fewer bits per number. FP32 (the training default) uses thirty-two bits per weight. FP16 and BF16 use sixteen. INT8 uses eight. INT4 uses four. Each step down halves the memory footprint and, on most GPUs, the memory-bandwidth bottleneck that actually limits inference speed. An 8B model that needs roughly thirty-two gigabytes of VRAM at FP32 fits in four at INT4. That gap is the difference between renting a flagship GPU and running on a workstation card.
 
-\subsection{Trade-offs}
-\begin{itemize}[leftmargin=*]
-    \item \textbf{Reduce precision} --- you lose a few decimal places of fidelity in each weight. Modern methods (GPTQ, AWQ, BitsAndBytes NF4) preserve almost all task quality at INT4.
-    \item \textbf{Reduce computational cost} --- smaller weights mean less memory bandwidth (the actual bottleneck on most GPUs). 4-bit is roughly $8\times$ smaller than FP32.
-\end{itemize}
-
-\subsection{Techniques}
+The trade-off is precision. You lose a few decimal places of fidelity in each weight, which on naive post-training quantisation costs a small but visible quality drop. Modern methods reclaim most of that drop. \emph{Post-training quantisation} (PTQ) rounds the trained weights after training --- simplest, mildest loss, fine at INT8 for most models. \emph{Quantisation-aware training} (QAT) simulates the rounding during training so the model learns weights that survive it --- best quality at INT4. \emph{GPTQ} is weight-only INT4 with a calibration set, the open-source LLM default. \emph{AWQ} (activation-aware weight quantisation) protects the most-used weights based on activation magnitudes, strong on small calibration sets. \emph{BitsAndBytes NF4} is the four-bit \emph{normal-float} encoding QLoRA uses (more on that in the next section). \emph{FP8} is native eight-bit floating point on Hopper-class and newer GPUs, used in both training and inference.
 
 \begin{table}[h]
 \centering
+\small
 \begin{tabularx}{\textwidth}{l X X}
 \toprule
-\textbf{Technique} & \textbf{Mechanism} & \textbf{When} \\
+\textbf{Technique} & \textbf{Mechanism} & \textbf{When to use} \\
 \midrule
-PTQ (Post-Training Quantisation) & Round weights after training & Simplest; mild quality loss at INT8 \\
-QAT (Quantisation-Aware Training) & Simulate quantisation during training & Best quality at INT4 \\
-GPTQ                              & Weight-only INT4 with calibration set & Open-source LLM default \\
-AWQ (Activation-aware Weight Quantisation) & Protect salient weights based on activations & Strong on small calibration sets \\
-BitsAndBytes NF4                  & 4-bit ``normal float'' encoding (used in QLoRA) & QLoRA fine-tuning \\
-FP8                               & Native 8-bit float on Hopper+ GPUs & Training and inference \\
+PTQ                              & Round weights after training                   & Simplest; mild quality loss at INT8 \\
+QAT                              & Simulate quantisation during training          & Best quality at INT4 \\
+GPTQ                             & Weight-only INT4 with calibration set          & Open-source LLM default \\
+AWQ                              & Protect salient weights based on activations   & Strong on small calibration sets \\
+BitsAndBytes NF4                 & 4-bit ``normal-float'' encoding (QLoRA's base) & QLoRA fine-tuning \\
+FP8                              & Native 8-bit float on Hopper+ GPUs             & Training and inference \\
 \bottomrule
 \end{tabularx}
-\caption{Quantisation techniques the exam expects you to recognise.}
+\caption{Quantisation techniques the exam expects you to recognise by name.}
+\label{tab:quantisation}
 \end{table}
 
-\section{LoRA (Objective 3.5)}
+I have one war story worth retelling. A team I worked with shipped INT4 to production on their first try and saw classification accuracy drop four points on contracts older than 2019. They diagnosed it (the older contracts had unusual capitalisation that the quantised weights rounded over), rolled back to INT8 for that single task, and kept INT4 everywhere else. \emph{Quantisation is per-task, not per-model.} Worth the extra cost on one path; pure win on the others.
+
+\section{LoRA --- the math, then the practice (Objective 3.5)}
 
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.95\textwidth]{assets/figures/fig12-lora-decomposition}
-\caption{LoRA freezes the big weight matrix $W$ and learns a low-rank update $\Delta W = A \cdot B$. Only $A$ and $B$ are trained — typically less than $0.1\%$ of the parameters of full fine-tuning.}
+\caption{LoRA freezes the big weight matrix $W$ and learns a low-rank update $\Delta W = A \cdot B$. Only $A$ and $B$ are trained --- typically less than $0.1\%$ of the parameters of full fine-tuning.}
 \label{fig:lora}
 \end{figure}
 
-\begin{keybox}
-\textbf{LoRA --- Low-Rank Adaptation} freezes the base model and trains two small matrices $A \in \mathbb{R}^{r \times d}$ and $B \in \mathbb{R}^{d \times r}$ alongside it. The effective weight update is $\Delta W = \frac{\alpha}{r} \cdot B A$, applied at inference time.
-\end{keybox}
+\term{LoRA} stands for Low-Rank Adaptation. The intuition is the most important thing in this chapter, so I will state it twice. \emph{When you fine-tune a model, ninety-nine percent of what you are teaching it is a small adjustment expressible as a low-rank update.} Tone, format, refusal language --- they all sit in a tiny number of independent directions in weight space. Constraining the update to that rank throws away nothing important and saves almost all the parameters.
 
-\subsection{Why It Works}
-For most fine-tuning tasks, the optimal $\Delta W$ has very low \emph{intrinsic rank} --- a tiny number of independent directions in weight space carries the new behaviour. Constraining $\Delta W$ to rank $r$ throws away nothing important and saves $99\%$ of the parameters.
+The math is one equation. The base model has a large weight matrix $W \in \mathbb{R}^{d \times d}$. LoRA freezes $W$ and learns two small matrices, $A \in \mathbb{R}^{r \times d}$ and $B \in \mathbb{R}^{d \times r}$, where $r$ is the \emph{rank} --- typically 4, 8, 16, or 32. The effective update at inference is $\Delta W = \frac{\alpha}{r} \cdot B A$, applied alongside $W$ at the layer where you injected LoRA. The hyperparameter $\alpha$ scales the update at inference; conventional setting is $\alpha = 2r$. \emph{Which} layers you inject LoRA into matters --- the minimum useful set is the attention projections \texttt{q\_proj} and \texttt{v\_proj}; adding \texttt{k\_proj}, \texttt{o\_proj}, and the MLP layers buys you quality at a cost. Dropout (typically 0.05--0.1) regularises and prevents the adapters from memorising the training set.
 
-\subsection{Key Hyperparameters}
-\begin{itemize}[leftmargin=*]
-    \item \texttt{r} (rank) --- typically 4, 8, 16, 32. Start at 8.
-    \item \texttt{alpha} ($\alpha$) --- scaling factor; usually $\alpha = 2r$.
-    \item \texttt{target\_modules} --- which projections to adapt. The minimum useful set is the attention \texttt{q\_proj} and \texttt{v\_proj}. Add \texttt{k\_proj}, \texttt{o\_proj}, and the MLP layers if you have a budget.
-    \item \texttt{dropout} --- regularisation, often $0.05$--$0.1$.
-\end{itemize}
-
-\subsection{QLoRA}
-QLoRA = base model quantised to 4-bit (NF4) + LoRA adapters trained in mixed precision. You can fine-tune a 13B model on a single 24 GB GPU. The exam phrases this as \emph{``4-bit quantised base with LoRA adapters''}.
-
-\subsection{Artefact and Inference}
-\begin{itemize}[leftmargin=*]
-    \item Output of training: a small \textbf{adapter} (tens of MB), not a full model.
-    \item Serving: merge the adapter back into the base, \emph{or} load base + adapter dynamically. watsonx Tuning Studio handles this for you.
-    \item Multiple adapters for multiple tasks can share a single base model in memory --- huge cost win.
-\end{itemize}
+The training output is a small \term{adapter} --- tens of megabytes, not the full model --- that you serve in one of two ways: merge it back into the base for a flat single artefact, or load base plus adapter dynamically and swap adapters per task. Tuning Studio handles both. The dynamic mode is the big operational win: one base model in VRAM, many small adapters on disk, one model gateway in front, every task pays only its own adapter cost.
 
 \begin{examplebox}[title=\textbf{Conceptual LoRA training loop (PEFT library)}]
 \begin{lstlisting}[style=pythonstyle]
@@ -213,14 +135,15 @@ model = get_peft_model(base_model, config)
 \end{lstlisting}
 \end{examplebox}
 
-\examtip{Spot the keywords. ``\emph{Add small trainable matrices to frozen weights}'' $\to$ LoRA. ``\emph{Same as above, with 4-bit quantised base}'' $\to$ QLoRA. ``\emph{Train only a soft prompt}'' $\to$ prompt tuning. ``\emph{Update all weights}'' $\to$ full fine-tuning.}
+\term{QLoRA} is the combination that put fine-tuning on commodity hardware: the base model quantised to four-bit (NF4) plus LoRA adapters trained in mixed precision. You can fine-tune a 13B model on a single 24~GB GPU. On the exam the phrase is \emph{``4-bit quantised base with LoRA adapters''}.
 
-\section{Dataset Preparation (Objective 3.6)}
+\examtip{Spot the keywords. \emph{Add small trainable matrices to frozen weights} is LoRA. The same plus \emph{4-bit quantised base} is QLoRA. \emph{Train only a soft prompt} is prompt tuning. \emph{Update all weights} is full fine-tuning. The exam likes to mix these in answer choices; read every option for the keyword.}
 
-\subsection{Format}
-JSON Lines (\texttt{.jsonl}) is the canonical watsonx Tuning Studio format:
+\section{Preparing data for tuning (Objective 3.6)}
 
-\begin{examplebox}[title=\textbf{JSONL examples}]
+The canonical Tuning Studio format is JSON Lines (\texttt{.jsonl}) --- one record per line, two shapes you can use. The instruction shape pairs each input with its expected output. The chat shape carries a whole conversation as a list of role-tagged messages.
+
+\begin{examplebox}[title=\textbf{The two JSONL shapes Tuning Studio accepts}]
 \begin{lstlisting}
 {"input": "Translate to French: 'Hello'", "output": "Bonjour"}
 {"input": "Translate to French: 'Goodbye'", "output": "Au revoir"}
@@ -232,36 +155,19 @@ JSON Lines (\texttt{.jsonl}) is the canonical watsonx Tuning Studio format:
 \end{lstlisting}
 \end{examplebox}
 
-\subsection{Splits}
-\begin{itemize}[leftmargin=*]
-    \item \textbf{Train} (70--80\%) --- gradient updates.
-    \item \textbf{Validation} (10--15\%) --- early-stop and hyperparameter selection.
-    \item \textbf{Test} (10--15\%) --- final, untouched metric.
-\end{itemize}
+Quality beats quantity until you run out of quality. Deduplicate exact and near-duplicates; the model will overfit on them. Balance classes for classification tasks --- a corpus that is ninety percent ``BILLING'' produces a classifier that thinks everything is billing. Strip PII from training data unless you control the entire downstream pipeline; tuning data tends to leak into model weights in ways post-hoc filtering cannot fully undo. And inspect samples by hand. The Acme engineer's training set started at twelve thousand records; after two passes of hand inspection it had four thousand high-quality records, and the tuned model was visibly better than the version trained on the noisy twelve thousand.
 
-Never evaluate on training data --- that is a guaranteed exam trap. The grader watches for \emph{data leakage}.
+\subsection{The taxonomy pattern --- and what it solves}
 
-\subsection{Quality Rules}
-\begin{itemize}[leftmargin=*]
-    \item Deduplicate exact and near-duplicates.
-    \item Balance classes for classification tasks.
-    \item Strip PII before tuning unless you control the entire downstream pipeline.
-    \item Inspect samples by hand --- 100 manually reviewed examples beats 10,000 noisy ones.
-\end{itemize}
+For a corpus that grows from many contributors, the InstructLab community settled on a \term{taxonomy tree}: a YAML hierarchy organised into a \emph{skills} branch (behaviour, style, format) and a \emph{knowledge} branch (facts the model should be able to recall). Each leaf holds a handful of human-written seed examples. The synthetic data generator then expands every leaf into thousands of training examples without anyone having to label them by hand.
 
-\subsection{Taxonomy-Tree-Based Curation}
+The taxonomy is not just neat filing. It makes contributions reviewable: a subject-matter expert can submit a pull request to one leaf without touching anything else. It lets you target only the leaves where the model is weak --- the rest of the model stays untouched. And it gives the multi-phase trainer a way to learn knowledge first, skills second, with no catastrophic forgetting in between.
 
-\begin{keybox}
-A \textbf{taxonomy tree} (the InstructLab pattern) is a YAML hierarchy of \emph{skills} and \emph{knowledge}. Each leaf contains a handful of human-written seed examples. The synthetic data generator then expands every leaf into thousands of training examples.
-\end{keybox}
+\subsection{The LAB method}
 
-The taxonomy organises curation, makes contributions reviewable, and lets you target only the leaves where the model is weak --- the rest of the model stays untouched.
+\term{LAB} stands for \emph{Large-scale Alignment for chatBots} (Sudalairaj et al., 2024). It is the methodology behind InstructLab: use a teacher model to generate diverse training examples from a few human-written seeds, filter them with a critic model, then train the student in phases. This is how IBM scales Granite tuning without needing millions of human labels --- and it is the reason InstructLab is on the exam at all.
 
-\subsection{Synthetic Data via InstructLab --- the LAB Method}
-
-\textbf{LAB} stands for \textbf{Large-scale Alignment for chatBots} (Sudalairaj et al., 2024). It uses a \emph{teacher} model to generate diverse training examples from seed prompts, filtered by a critic model. This is how IBM scales Granite tuning without needing millions of human labels.
-
-\section{Customising LLMs with InstructLab (Objective 3.7)}
+\section{InstructLab in practice (Objective 3.7)}
 
 \begin{figure}[h]
 \centering
@@ -270,87 +176,39 @@ The taxonomy organises curation, makes contributions reviewable, and lets you ta
 \label{fig:instructlab}
 \end{figure}
 
-\begin{keybox}
-\textbf{InstructLab} (\texttt{ilab}) is IBM's open-source toolkit for community model customisation. Components: taxonomy, synthetic data generation (SDG), and multi-phase alignment training.
-\end{keybox}
+\product{InstructLab} (the \texttt{ilab} CLI) is IBM's open-source toolkit for community model customisation. The exam expects you to recognise the three components and the rough workflow.
 
-\subsection{Components}
-\begin{enumerate}[leftmargin=*]
-    \item \textbf{Taxonomy-driven data curation} --- the YAML tree we covered in 3.6.
-    \item \textbf{Large-scale synthetic data generation} --- a teacher model amplifies seeds into thousands of diverse training samples; a critic model filters them.
-    \item \textbf{Iterative, large-scale alignment tuning} --- training proceeds in phases:
-    \begin{itemize}
-        \item \textbf{Knowledge tuning} --- inject facts (taxonomy ``knowledge'' branch).
-        \item \textbf{Skill tuning} --- shape behaviour, style, format (taxonomy ``skills'' branch).
-        \item Optional final \textbf{alignment} pass (DPO-style preference learning).
-    \end{itemize}
-\end{enumerate}
+The first component is the \emph{taxonomy-driven data curation} pattern we just covered: contributors add YAML leaves with seed examples to a structured tree. The second is \emph{large-scale synthetic data generation} (SDG): a teacher model amplifies each seed into thousands of diverse training samples, and a critic model filters out the weaker generations. The third is \emph{iterative, large-scale alignment tuning}, which proceeds in phases --- a \emph{knowledge} phase that injects facts (taxonomy ``knowledge'' branch), a \emph{skills} phase that shapes behaviour, style, and format (taxonomy ``skills'' branch), and an optional final \emph{alignment} pass using DPO-style preference learning.
 
-\subsection{Workflow}
-\begin{enumerate}[leftmargin=*]
-    \item \texttt{ilab init} --- bootstrap a workspace.
-    \item Edit / add YAML leaves in \texttt{taxonomy/} with seed examples.
-    \item \texttt{ilab data generate} --- run synthetic data generation against the taxonomy.
-    \item \texttt{ilab model train} --- knowledge phase, then skills phase.
-    \item \texttt{ilab model evaluate} --- score on the eval suite (MT-Bench, MMLU, custom).
-    \item \texttt{ilab model serve} --- run locally, or upload the model to watsonx.ai for deployment.
-\end{enumerate}
+The workflow on a laptop is six commands. \texttt{ilab init} bootstraps a workspace. You edit or add YAML leaves under \texttt{taxonomy/} with seed examples. \texttt{ilab data generate} runs SDG against the taxonomy. \texttt{ilab model train} performs the knowledge phase, then the skills phase. \texttt{ilab model evaluate} scores the result on a chosen eval suite (MT-Bench, MMLU, custom). \texttt{ilab model serve} runs the tuned model locally, or you upload it to watsonx.ai for deployment.
 
-\examtip{Spot the phrase. \emph{``Taxonomy + synthetic data + iterative phases''} $\to$ \textbf{InstructLab}. \emph{``Add small adapters''} $\to$ LoRA. \emph{``Learn a soft prompt''} $\to$ prompt tuning. \emph{``Update all weights''} $\to$ full fine-tuning.}
+\examtip{Three phrases route to InstructLab: \emph{``taxonomy + synthetic data + iterative phases''}, \emph{``community contribution of seeds via YAML''}, and \emph{``knowledge tuning then skills tuning''}. The same three phrases sometimes show up paired with watsonx Tuning Studio, which uses LoRA/QLoRA --- read carefully.}
 
-\section{Synthetic Data Generation via the UI (Objective 3.8)}
+\section{Synthetic data from the UI (Objective 3.8)}
 
-watsonx.ai also ships a Synthetic Data Generator (separate from InstructLab) for generating \emph{tabular} synthetic data, often for testing, scaling RAG corpora, or training downstream models without exposing real customers.
+Separate from InstructLab, watsonx.ai ships a UI-driven \term{Synthetic Data Generator} for \emph{tabular} synthetic data --- the kind you want when you need realistic-looking customer records for testing or for training downstream models without exposing real customers. Acme uses it to generate the synthetic claim threads its development team trains the Assistant's classifier on, because the real claim threads cannot leave production.
 
-\subsection{Two Supported Options}
+The tool supports two starting points. The first is to \emph{leverage existing data}: you upload a CSV of real records, and the generator learns the joint distribution of the columns and emits new rows that look statistically similar but contain no real individuals. The second is to \emph{create from a schema}: you define column names, types, ranges, and constraints, and the generator emits synthetic rows from scratch with no real seed data required. The first option gives more realistic output; the second works when there is no real data to start from at all.
 
-\begin{enumerate}[leftmargin=*]
-    \item \textbf{Leverage your existing data} --- upload a CSV of real records; the generator learns its joint distribution and emits new rows that look statistically similar but contain no real individuals.
-    \item \textbf{Create from your custom data schema} --- define column names, types, ranges, and constraints; the generator emits synthetic rows from scratch, no real seed data required.
-\end{enumerate}
+Source-file size and row count are bounded (the live product page has the current limits; commonly hundreds of megabytes and millions of rows). Free-text and unstructured columns are more error-prone than typed numeric or categorical ones --- the tool is at its best on what it was designed for: tabular records. Time-series and graph data may need specialised generators that ship outside the box.
 
-\subsection{Limitations}
-\begin{itemize}[leftmargin=*]
-    \item Maximum source file size and row count are bounded (check the live product page; commonly hundreds of MBs / millions of rows).
-    \item Free-text and unstructured fields are more error-prone than typed numeric / categorical columns.
-    \item Time-series and graph data may require specialised generators.
-\end{itemize}
+Anonymisation runs automatically before the generator fits its model. Direct identifiers get hashed, rare categories get generalised, and numeric outliers get perturbed so the output cannot be linked back to a specific input row.
 
-\subsection{Anonymisation of Imported Data}
-The tool applies anonymisation before fitting the model: hashing direct identifiers, generalising rare categories, perturbing numeric outliers. The output cannot be linked back to a specific input row.
+\subsection{Two statistical tests the exam names}
 
-\subsection{Mimicking Algorithms}
-The exam explicitly names two statistical tests for distribution similarity:
+To verify that the synthetic distribution actually matches the real one, the exam expects you to know two statistical tests by name. The \emph{Kolmogorov--Smirnov} (K--S) test compares two empirical cumulative distribution functions; a low K--S statistic means the synthetic distribution closely tracks the original. The \emph{Anderson--Darling} test is a variant of K--S that weights the tails more heavily --- the better test when you care whether the rare values came through, which you do whenever you are testing on a long-tailed real-world dataset.
 
-\begin{itemize}[leftmargin=*]
-    \item \textbf{Kolmogorov--Smirnov (K--S) test} --- compares two empirical cumulative distribution functions. A low K--S statistic $\Rightarrow$ the synthetic distribution closely mimics the original.
-    \item \textbf{Anderson--Darling test} --- variant of K--S that weights the tails more heavily. Better for catching mismatches in rare values.
-\end{itemize}
+\subsection{Differential privacy --- three parameters to remember}
 
-Both produce a goodness-of-fit metric you can use to validate the generator.
+\term{Differential privacy} (DP) adds calibrated noise to the generator's output so that the presence or absence of any single record in the input set cannot be inferred from the output. The strength of the guarantee is controlled by three configurable parameters. The \emph{privacy budget} ($\varepsilon$) is the total privacy loss you are willing to spend --- smaller $\varepsilon$ means stronger privacy, more noise, lower fidelity (typical range 0.1 to 5). The \emph{privacy leakage probability} ($\delta$) is the probability that the privacy guarantee fails; it should be much smaller than $1/N$ where $N$ is the number of records (a common value is $10^{-5}$). The \emph{random seed} makes the noise reproducible across runs, which the audit team will want when they ask you to demonstrate the generator.
 
-\subsection{Differential Privacy Settings}
+DP needs enough data to work with. For tight settings ($\varepsilon < 1$), you generally need thousands of records before the noise stops drowning the signal. More rows in the input give you better synthetic quality; higher column counts cost proportionally more memory and time to fit.
 
-\begin{keybox}
-\textbf{Differential privacy (DP)} adds calibrated noise so that the presence or absence of any single record in the input set cannot be inferred from the output. The strength is controlled by a few configurable parameters.
-\end{keybox}
+\examtip{Three named items from objective 3.8 are exam-grade memorisation. \textbf{Kolmogorov--Smirnov} for overall distribution fit, \textbf{Anderson--Darling} for tail fit, and the differential-privacy triple of \textbf{privacy budget}, \textbf{leakage probability}, and \textbf{random seed}.}
 
-\begin{itemize}[leftmargin=*]
-    \item \textbf{Privacy budget ($\varepsilon$)} --- the total ``privacy loss'' you are willing to spend. Smaller $\varepsilon$ $\Rightarrow$ stronger privacy, more noise, lower fidelity. Typical: $0.1$--$5$.
-    \item \textbf{Privacy leakage probability ($\delta$)} --- the probability that the privacy guarantee fails. Should be much smaller than $1/N$ (e.g.\ $10^{-5}$).
-    \item \textbf{Random seed} --- makes the noise reproducible across runs (for testing and audit).
-\end{itemize}
+\section{Putting it together --- a tuning run from the SDK}
 
-\subsection{Sizing Requirements}
-\begin{itemize}[leftmargin=*]
-    \item More rows in the input $\Rightarrow$ better synthetic quality (the model has more distribution to learn from).
-    \item Higher column count $\Rightarrow$ proportionally more memory and time.
-    \item For tight differential privacy ($\varepsilon < 1$), you generally need at least thousands of records --- otherwise the noise drowns the signal.
-\end{itemize}
-
-\examtip{Three named items to memorise from 3.8: \textbf{Kolmogorov--Smirnov} (overall fit), \textbf{Anderson--Darling} (tail fit), and the DP triple \textbf{privacy budget / leakage probability / random seed}.}
-
-\section{End-to-End Tuning Example on watsonx.ai}
+The end-to-end tuning call on watsonx looks like this. The Acme engineer ran a near-identical job to produce the soft prompt the email-drafting feature now uses in production.
 
 \begin{examplebox}[title=\textbf{Launch a LoRA fine-tune via the watsonx Tuning API}]
 \begin{lstlisting}[style=pythonstyle]
@@ -379,33 +237,26 @@ print("Tuning job ID:", job.id)
 \end{lstlisting}
 \end{examplebox}
 
-After the job finishes, run an evaluation suite on the held-out test split, attach the metrics to the model asset (governance), then promote into a Deployment Space (Chapter~\ref{ch:deployment}).
+When the job finishes you run an evaluation suite on the held-out test split, attach the metrics to the model asset (governance), then promote into a Deployment Space (Chapter~\ref{ch:deployment}). \emph{Never} promote a tuned model without an evaluation result attached --- it is the audit trail that turns a tuned model from a science experiment into a production asset.
 
-\section{Decision Tree --- Which Customisation Method?}
+\section{Which customisation method, decided in one breath}
+
+The decision tree below is the one I use in interviews when someone hands me a fresh project and asks where to start. Read top to bottom; the first match is the right answer.
 
 \begin{enumerate}[leftmargin=*]
-    \item \textbf{Facts change frequently?} $\to$ \textbf{RAG} (Chapter~\ref{ch:rag}). Do not tune.
-    \item \textbf{$<$ 100 examples, simple style change?} $\to$ \textbf{few-shot prompting}.
-    \item \textbf{100--500 examples, light steering?} $\to$ \textbf{prompt tuning} (soft prompt).
-    \item \textbf{500--10,000 examples, real behaviour change?} $\to$ \textbf{LoRA / QLoRA}.
-    \item \textbf{10k+ examples, new task entirely?} $\to$ \textbf{Full fine-tune} or \textbf{InstructLab} multi-phase.
-    \item \textbf{Need new knowledge \emph{and} new skills?} $\to$ \textbf{InstructLab} (taxonomy + SDG + multi-phase).
+    \item \emph{Facts change frequently?} Use RAG (Chapter~\ref{ch:rag}). Do not tune knowledge that moves.
+    \item \emph{Under a hundred examples, simple style change?} Use few-shot prompting.
+    \item \emph{One hundred to five hundred examples, light steering?} Use prompt tuning (soft prompt).
+    \item \emph{Five hundred to ten thousand examples, real behaviour change?} Use LoRA or QLoRA.
+    \item \emph{Ten thousand or more examples, a new task entirely?} Use full fine-tuning, or InstructLab's multi-phase method.
+    \item \emph{New knowledge \emph{and} new skills?} Use InstructLab (taxonomy plus SDG plus multi-phase).
 \end{enumerate}
 
-\section{Key Takeaways}
+\begin{takeawaybox}
+Fine-tuning is a stack, not a single technique, and Section~3 of the exam tests whether you can pick the right rung. At the top, hard prompts cost nothing to change and give you the most readability. One step down, prompt tuning (soft prompts) gives you per-task adaptation in a tiny artefact. LoRA, and its QLoRA variant on a quantised base, sit in the middle of the stack and cover most production fine-tuning. Full fine-tuning lives at the bottom, expensive and rarely necessary. InstructLab cuts across the stack by combining a taxonomy of seeds, synthetic data generation, and phased training, and is the right answer when you need both new knowledge and new behaviour. Around all of it, watsonx's UI synthetic-data generator handles tabular data, validated with Kolmogorov--Smirnov and Anderson--Darling and protected with the differential-privacy triple of budget, leakage, and seed. And whichever rung you pick: never evaluate on training data.
+\end{takeawaybox}
 
-\begin{itemize}[leftmargin=*]
-    \item Hard prompts = readable text; soft prompts = learned vectors via prompt tuning.
-    \item Cut cost with: smaller model, tighter system prompt, greedy decoding, \texttt{stop\_sequences}, \texttt{max\_new\_tokens}.
-    \item \textbf{Data Refinery} profiles and cleans your tuning data inside a watsonx project.
-    \item Quantisation ladder: FP32 $\to$ FP16/BF16 $\to$ INT8 $\to$ INT4. PTQ / QAT / GPTQ / AWQ / NF4.
-    \item \textbf{LoRA}: freeze base, train rank-$r$ adapters ($A,B$). \textbf{QLoRA}: same with 4-bit base.
-    \item \textbf{InstructLab}: taxonomy + SDG (LAB method) + multi-phase tuning (knowledge then skills).
-    \item Synthetic Data UI: two modes (existing data vs schema), validated with \textbf{Kolmogorov--Smirnov} and \textbf{Anderson--Darling}, privacy-protected with $\varepsilon$ / $\delta$ / random seed.
-    \item Always reserve a clean held-out test split. Never evaluate on training data.
-\end{itemize}
-
-\section{Practice Questions}
+\section{Practice questions}
 
 \begin{practicebox}[title=\textbf{Q3.1 --- Hard vs Soft}]
 Your auditor needs to read and approve the prompt before production. Which kind?
