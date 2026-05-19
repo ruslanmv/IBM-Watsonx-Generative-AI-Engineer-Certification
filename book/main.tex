@@ -232,19 +232,103 @@
 % DOCUMENT METADATA
 % ============================================================================
 
-\title{%
-    \vspace*{1cm}
-    {\color{ibmdarkblue}\rule{\linewidth}{1.2pt}}\\[0.6cm]
-    \sffamily\Huge\textbf{IBM watsonx\textsuperscript{\textregistered}}\\[0.3cm]
-    {\Large\sffamily Generative AI Engineer --- Associate}\\[0.4cm]
-    {\large\sffamily\color{ibmgray}Exam C1000-185}\\[0.5cm]
-    {\color{ibmblue}\rule{\linewidth}{0.4pt}}\\[0.8cm]
-    {\LARGE\sffamily Complete Study Guide \&\ Exam Workbook}\\[0.3cm]
-    {\large\itshape\color{ibmgray}First Edition}
-}
-\author{\Large Ruslan Idelfonso Magana Vsevolodovna\\[0.2cm]
-        \normalsize\itshape\color{ibmgray}Senior AI Engineer \textbullet\ IBM watsonx Practitioner}
+\title{IBM watsonx Generative AI Engineer Associate (C1000-185) Study Guide}
+\author{Ruslan Idelfonso Magana Vsevolodovna}
 \date{\the\year{}}
+
+% ============================================================================
+% COVER PAGE — full-bleed editorial cover with a subtle network motif
+% Invoked from chapters/00-frontmatter.tex in place of \maketitle.
+% ============================================================================
+
+\newcommand{\bookcover}{%
+  \begin{titlepage}
+    \thispagestyle{empty}
+    \newgeometry{margin=0pt}
+    \begin{tikzpicture}[remember picture, overlay]
+      % Full-bleed dark-blue background
+      \fill[ibmdarkblue]
+        (current page.south west) rectangle (current page.north east);
+
+      % Subtle network / embedding-space motif in the upper-right quadrant.
+      % The nodes sit on a deterministic grid so the cover renders identically
+      % on every build, but the edges are uneven so it doesn't read as a chart.
+      \begin{scope}[shift={(current page.north east)}, xshift=-1cm, yshift=-1cm]
+        \foreach \x/\y/\r in {%
+            0/0/0.10, -1.2/-0.4/0.06, -0.5/-1.4/0.08,
+            -2.1/-1.0/0.05, -1.5/-2.2/0.07, -0.2/-2.6/0.06,
+            -2.8/-2.4/0.08, -1.0/-3.4/0.05, -2.4/-3.6/0.07,
+            -3.4/-1.6/0.06, -3.8/-3.0/0.05, -3.0/-4.4/0.06,
+            -4.6/-2.2/0.05, -4.2/-4.0/0.07, -1.8/-4.6/0.05} {
+          \fill[ibmblue, opacity=0.55] (\x,\y) circle (\r);
+        }
+        \foreach \a/\b in {%
+            {(0,0)}/{(-1.2,-0.4)},     {(0,0)}/{(-0.5,-1.4)},
+            {(-1.2,-0.4)}/{(-2.1,-1.0)}, {(-0.5,-1.4)}/{(-1.5,-2.2)},
+            {(-0.5,-1.4)}/{(-0.2,-2.6)}, {(-1.5,-2.2)}/{(-2.8,-2.4)},
+            {(-0.2,-2.6)}/{(-1.0,-3.4)}, {(-1.0,-3.4)}/{(-2.4,-3.6)},
+            {(-2.1,-1.0)}/{(-3.4,-1.6)}, {(-3.4,-1.6)}/{(-3.8,-3.0)},
+            {(-2.4,-3.6)}/{(-3.0,-4.4)}, {(-3.8,-3.0)}/{(-4.6,-2.2)},
+            {(-3.0,-4.4)}/{(-4.2,-4.0)}, {(-1.0,-3.4)}/{(-1.8,-4.6)}} {
+          \draw[ibmblue, opacity=0.30, line width=0.4pt] \a -- \b;
+        }
+      \end{scope}
+
+      % A thin accent stripe at one-third down the page
+      \fill[ibmblue]
+        ($(current page.north west)+(0,-9cm)$)
+        rectangle ($(current page.north east)+(0,-9.15cm)$);
+
+      % Series mark — small, top-left
+      \node[anchor=north west, text=white, font=\sffamily\bfseries\footnotesize,
+            inner sep=0pt] at ($(current page.north west)+(2.5cm,-2.2cm)$)
+        {IBM CERTIFICATION SERIES};
+      \node[anchor=north west, text=ibmlightblue, font=\sffamily\scriptsize,
+            inner sep=0pt] at ($(current page.north west)+(2.5cm,-2.55cm)$)
+        {\textemdash\ Exam C1000-185};
+
+      % Main title block — left-aligned, generous leading
+      \node[anchor=north west, text=white, font=\sffamily\bfseries,
+            inner sep=0pt] at ($(current page.north west)+(2.5cm,-5cm)$)
+        {\fontsize{52}{56}\selectfont watsonx};
+      \node[anchor=north west, text=white, font=\sffamily\bfseries,
+            inner sep=0pt] at ($(current page.north west)+(2.5cm,-7cm)$)
+        {\fontsize{30}{34}\selectfont Generative AI Engineer};
+      \node[anchor=north west, text=ibmlightblue,
+            font=\sffamily\itshape, inner sep=0pt]
+        at ($(current page.north west)+(2.5cm,-7.9cm)$)
+        {\Large Associate};
+
+      % Subtitle below the stripe
+      \node[anchor=north west, text=white, font=\sffamily,
+            inner sep=0pt] at ($(current page.north west)+(2.5cm,-10cm)$)
+        {\LARGE Complete Study Guide \&\ Exam Workbook};
+      \node[anchor=north west, text=ibmlightblue, font=\sffamily\itshape,
+            inner sep=0pt] at ($(current page.north west)+(2.5cm,-10.9cm)$)
+        {Built around a running case study: Acme Bank's AI assistant.};
+
+      % Edition stripe near the bottom
+      \fill[ibmblue, opacity=0.85]
+        ($(current page.south west)+(0,4cm)$)
+        rectangle ($(current page.south east)+(0,4.7cm)$);
+      \node[anchor=west, text=white, font=\sffamily\bfseries]
+        at ($(current page.south west)+(2.5cm,4.35cm)$)
+        {FIRST EDITION \textbullet\ \the\year};
+
+      % Author block — bottom-left
+      \node[anchor=south west, text=white, font=\sffamily\bfseries\Large,
+            inner sep=0pt] at ($(current page.south west)+(2.5cm,2.1cm)$)
+        {Ruslan Idelfonso Magana Vsevolodovna};
+      \node[anchor=south west, text=ibmlightblue, font=\sffamily\itshape,
+            inner sep=0pt] at ($(current page.south west)+(2.5cm,1.55cm)$)
+        {Senior AI Engineer \textbullet\ IBM watsonx practitioner};
+      \node[anchor=south west, text=ibmlightblue, font=\sffamily,
+            inner sep=0pt] at ($(current page.south west)+(2.5cm,1.0cm)$)
+        {ruslanmv.com};
+    \end{tikzpicture}
+    \restoregeometry
+  \end{titlepage}
+}
 
 % ============================================================================
 % BEGIN DOCUMENT

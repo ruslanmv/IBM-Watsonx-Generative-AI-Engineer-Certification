@@ -3,50 +3,21 @@
 
 \epigraph{``A model in isolation is a demo. A model wired into your business is a product.''}{}
 
-This chapter covers \textbf{Section~6: watsonx --- Integration and Model Orchestration (8\% of the exam)}. It is the smallest section by weight but the topics show up across the rest of the exam, especially in scenario questions. Many integration patterns assume the deployment objects from Chapter~\ref{ch:deployment} and the RAG components from Chapter~\ref{ch:rag}.
+The Acme Assistant in production had to talk to three different systems on every interaction. The user came in through a Watson Assistant chat panel embedded in the support agents' console. The model lived in a watsonx deployment behind a Model Gateway. The bank's CRM held account state, the ticketing system held open cases, and the policy library lived in watsonx Discovery. Wiring those pieces together --- so the user sees one interface, the auditor sees one trail, and the operations team sees one set of dashboards --- is integration work, and it is what Chapter~6 is about.
 
-\begin{objectivesbox}
-By the end of this chapter you will be able to:
-\begin{itemize}[leftmargin=*,nosep]
-    \item Integrate watsonx.ai with \textbf{Watson Assistant}, \textbf{Discovery}, and IBM Cloud services (Objective~6.1).
-    \item Call models through the \textbf{Python SDK} and the \textbf{REST API} with proper error handling (6.2).
-    \item Use \textbf{webhooks} for event-driven flows (6.3).
-    \item Build chains, tools, and agents with \textbf{LangChain} on watsonx (6.4).
-    \item Explain the \textbf{Model Context Protocol (MCP)} and when to choose it over bespoke tools (6.5).
-    \item Read a real-world \textbf{production architecture} that combines watsonx with Watson Assistant, Discovery, governance, and Guardian (6.6).
-\end{itemize}
-\end{objectivesbox}
+Section~6 is eight percent of the exam --- the smallest section by weight. It is also the section whose topics show up scattered across every other section, because almost every realistic exam scenario implies an integration somewhere. The objectives walk a clean line: pair watsonx.ai with the rest of the IBM cloud (6.1), call models through the SDK and REST with proper error handling (6.2), use webhooks for event-driven flows (6.3), build chains, tools, and agents with LangChain on watsonx (6.4), and recognise the Model Context Protocol when it shows up (6.5). The chapter closes with the production architecture the Acme Assistant ended up running on, which is the architecture most enterprise watsonx deployments converge on.
 
-\section{Integrate watsonx.ai with Other Services (Objective 6.1)}
+\section{Pairing watsonx.ai with the rest of the stack (Objective 6.1)}
 
-\subsection{IBM Cloud Services That Pair with watsonx.ai}
-\begin{itemize}[leftmargin=*]
-    \item \textbf{Watson Assistant} --- conversational front-end (web / phone / Teams / WhatsApp). Plug watsonx.ai behind it for generative replies, hand off to live agents on escalation.
-    \item \textbf{Watson Discovery} (legacy) and \textbf{watsonx Discovery} (current) --- document understanding and hybrid retrieval; primary RAG retrievers.
-    \item \textbf{watsonx.data} --- governed lakehouse, source of structured data for prompts and tuning.
-    \item \textbf{watsonx.governance} --- factsheets, drift, fairness, model risk management.
-    \item \textbf{IBM Cloud Functions / Code Engine} --- serverless wrappers around the API.
-    \item \textbf{Event Streams (Kafka)} --- asynchronous workflows.
-\end{itemize}
+watsonx.ai rarely lives alone. The cluster of services it most often pairs with is small enough to list in one paragraph, and the exam will test whether you recognise the pairings on sight. \product{Watson Assistant} is the conversational front-end --- it lives on the web, the phone, Teams, or WhatsApp; you plug watsonx.ai behind it for generative replies and hand off to live agents on escalation. \product{Watson Discovery} (the legacy product) and \product{watsonx Discovery} (the current one) are the document-understanding and hybrid-retrieval services, the primary RAG retrievers for new builds. \product{watsonx.data} is the governed lakehouse, the source of structured data for prompts and tuning. \product{watsonx.governance} is the audit layer --- factsheets, drift, fairness, model risk management. IBM Cloud Functions and Code Engine are the serverless wrappers around the API. Event Streams (managed Kafka) handles the asynchronous workflows.
 
-\subsection{Integration Points}
-\begin{itemize}[leftmargin=*]
-    \item \textbf{REST APIs} --- everything in watsonx is reachable via HTTPS endpoints under \texttt{\{region\}.ml.cloud.ibm.com}.
-    \item \textbf{SDKs} --- official \texttt{ibm-watsonx-ai} (Python) and \texttt{@ibm-cloud/watsonx-ai} (JS/TS). LangChain bindings via \texttt{langchain-ibm}.
-    \item \textbf{Webhooks} --- Watson Assistant can call watsonx via webhook for dynamic responses.
-    \item \textbf{Connectors} --- watsonx.data and Cloud Pak for Data ship pre-built connectors for most enterprise data sources.
-\end{itemize}
+The integration points themselves are straightforward. Everything in watsonx is reachable via REST endpoints under \texttt{\{region\}.ml.cloud.ibm.com}; the official SDKs are \texttt{ibm-watsonx-ai} for Python and \texttt{@ibm-cloud/watsonx-ai} for JavaScript and TypeScript, with LangChain bindings shipping in \texttt{langchain-ibm}. Watson Assistant can call watsonx via webhook for dynamic responses, and watsonx.data and Cloud Pak for Data ship pre-built connectors for most enterprise data sources.
 
-\subsection{Configure the Integration --- UI or API}
-\begin{itemize}[leftmargin=*]
-    \item \textbf{UI path}: in the watsonx project, add the integration partner (e.g.\ Watson Assistant) via the ``Integrations'' tab; sign in; map credentials.
-    \item \textbf{API path}: store the partner's API key in a secret manager (IBM Cloud Secrets Manager / HashiCorp Vault), inject at runtime, configure the partner's webhook to call the watsonx deployment URL.
-\end{itemize}
+Configuration happens through either the UI or the API. The UI path is the friendly one: in the watsonx project, add the integration partner (Watson Assistant, for example) via the Integrations tab, sign in, and map credentials. The API path is the production one: store the partner's API key in a secrets manager (IBM Cloud Secrets Manager or HashiCorp Vault), inject it at runtime, configure the partner's webhook to call the watsonx deployment URL, and never write the key into application configuration. Either way, every deployment automatically registers with the governance catalogue, where you attach evaluators (drift, fairness, quality) and produce a factsheet per model version. The factsheet is the deliverable an auditor will ask for.
 
-\subsection{Integrate with watsonx.governance}
-Every deployment automatically registers with the governance catalogue; you then attach \emph{evaluators} (drift, fairness, quality) and produce a \textbf{factsheet} per model version. This is the audit deliverable.
+\subsection{The shape of an external call}
 
-\subsection{Calling watsonx from an External Application}
+The cleanest demonstration of the API surface is a raw curl, because it works in every language and exposes exactly what the SDK hides. The Acme Assistant's external integration test --- the one that the platform team ran every release to verify the deployment URL was reachable through the corporate proxy --- looks like the block below.
 
 \begin{examplebox}[title=\textbf{Authenticated REST call from any language (curl)}]
 \begin{lstlisting}
@@ -69,26 +40,13 @@ curl -X POST "https://us-south.ml.cloud.ibm.com/ml/v1/deployments/$DEPLOYMENT_ID
 \end{lstlisting}
 \end{examplebox}
 
-\subsection{Obtain and Manage API Keys}
-\begin{itemize}[leftmargin=*]
-    \item Create a \textbf{service ID} per application (not per developer).
-    \item Generate an API key scoped to that service ID with the minimum role (usually \emph{Reader} on the watsonx service, \emph{Writer} only if the app trains or deploys).
-    \item Store in IBM Cloud Secrets Manager; never commit to git.
-    \item Rotate on a schedule and on personnel changes.
-\end{itemize}
+\subsection{API keys are not optional infrastructure}
 
-\subsection{Error Handling}
-The SDK raises \texttt{WMLClientError} (or HTTP 4xx/5xx via REST). Recognise these on the exam:
+Key management is one of those topics where the exam answer is also the production answer. Create a service ID per application --- never per developer, never one shared across services. Generate an API key scoped to that service ID with the minimum role for the work (usually \emph{Reader} on the watsonx service, \emph{Writer} only if the application trains or deploys). Store the key in IBM Cloud Secrets Manager and inject at runtime; never commit a key to git, and reject any pull request that contains one. Rotate on a schedule and on personnel changes. None of this is surprising; the exam tests that you know it cold.
 
-\begin{itemize}[leftmargin=*]
-    \item \texttt{400} bad request --- malformed JSON, invalid \texttt{model\_id}.
-    \item \texttt{401} unauthorised --- token expired or wrong API key.
-    \item \texttt{403} forbidden --- insufficient role.
-    \item \texttt{404} not found --- wrong project / space / deployment ID.
-    \item \texttt{429} rate-limited --- back off with exponential jitter and retry.
-    \item \texttt{500/502/503} server / gateway --- transient; retry $\leq 3$ times.
-    \item \texttt{504} timeout --- response exceeded the time budget; trim the prompt or raise \texttt{time\_limit}.
-\end{itemize}
+\subsection{Errors the SDK will raise, and what to do about each}
+
+The Python SDK raises \texttt{WMLClientError} for failures; via raw REST you get HTTP 4xx or 5xx. Six status codes appear often enough to memorise. A \texttt{400} is a bad request --- malformed JSON, an invalid \texttt{model\_id}; fix the request, do not retry. A \texttt{401} is unauthorised --- the token expired or the API key is wrong; refresh and retry. A \texttt{403} is forbidden --- the service ID does not have the role for this operation; an IAM change is needed. A \texttt{404} is not found --- wrong project, space, or deployment ID. A \texttt{429} is rate-limited --- back off with exponential jitter and retry. The \texttt{500}, \texttt{502}, and \texttt{503} family are transient server or gateway errors; retry up to three times. A \texttt{504} is a timeout: the response exceeded the time budget, so either trim the prompt or raise the \texttt{time\_limit} parameter.
 
 \begin{examplebox}[title=\textbf{Retry-with-backoff helper}]
 \begin{lstlisting}[style=pythonstyle]
@@ -108,47 +66,19 @@ def call_with_retry(fn, *args, max_attempts=4, **kw):
 \end{lstlisting}
 \end{examplebox}
 
-\section{Orchestrate AI Workflows (Objective 6.2)}
+\section{Orchestrating workflows (Objective 6.2)}
 
-\subsection{Why Workflows}
-Most real GenAI use cases are not single calls. Example: ingest customer ticket $\to$ extract entities $\to$ classify intent $\to$ retrieve relevant policy $\to$ draft reply $\to$ check with Guardian $\to$ either send or escalate to a human.
+A single LLM call is almost never the answer in production. The Acme Assistant's reply-to-customer-email workflow had seven steps the first time it shipped: ingest the customer ticket, extract entities, classify the intent, retrieve the relevant policy chunks, draft a reply, check the reply with Granite Guardian, and either send it or escalate to a human. That sequence is typical, and it is what \emph{orchestration} means in watsonx.
 
-\subsection{Designing the Workflow}
-\begin{enumerate}[leftmargin=*]
-    \item Break the task into atomic steps. Each step takes a dictionary in, returns a dictionary out.
-    \item Identify which steps are LLM calls, which are tool calls (DB query, API), which are deterministic Python.
-    \item Decide which steps can run in parallel and which need ordering.
-    \item Define the failure / fallback behaviour for each step.
-\end{enumerate}
+Designing such a workflow follows four habits. Break the task into atomic steps, each one taking a dictionary in and returning a dictionary out. Identify which steps are LLM calls, which are tool calls (a database query, a third-party API), and which are deterministic Python (a regex, a formatter, a checksum). Decide which steps can run in parallel --- entity extraction and intent classification can usually run together --- and which need strict ordering. And define the failure or fallback behaviour for each step before you write the happy path, because the unhappy paths are where production breaks.
 
-\subsection{Workflow Tools}
-\begin{itemize}[leftmargin=*]
-    \item \textbf{LangChain Chains} --- linear or DAG-style flows; smallest learning curve.
-    \item \textbf{LangGraph} --- explicit state machines with conditional edges; great for production reproducibility.
-    \item \textbf{watsonx AI Pipelines} --- managed scheduler for data + AI jobs (Spark, notebooks, deployments).
-    \item \textbf{IBM Cloud Code Engine / Functions} --- serverless wrappers for event-driven steps.
-\end{itemize}
+The tools you orchestrate with sit at different levels of the stack. \product{LangChain Chains} cover linear or DAG-style flows with the smallest learning curve. \product{LangGraph} models explicit state machines with conditional edges and is the right tool when reproducibility matters and the flow has loops. \product{watsonx AI Pipelines} is the managed scheduler for data and AI jobs --- Spark, notebooks, deployments --- with cron triggers, event triggers, and dependency management. IBM Cloud Code Engine and Functions wrap event-driven steps in serverless. The exam will test that you recognise each by name and pick the right one for the scenario.
 
-\subsection{Automation Capabilities}
-\begin{itemize}[leftmargin=*]
-    \item \textbf{Scheduling} --- AI Pipelines cron triggers, Watson Assistant message triggers, Event Streams.
-    \item \textbf{Dependency management} --- DAG with explicit parents.
-    \item \textbf{Error handling} --- per-step on-failure policy: retry, branch, alert, dead-letter queue.
-    \item \textbf{Conditional logic} --- branch on classifier output, retrieved score, Guardian verdict.
-\end{itemize}
+Automation, observability, and the monitoring habits that come with workflows are the same ideas applied at the step level. Schedule with AI Pipelines cron, with Watson Assistant message triggers, or with Event Streams. Manage dependencies as a DAG with explicit parents. Set a per-step on-failure policy --- retry, branch, alert, dead-letter queue --- so partial failures do not corrupt downstream state. Branch conditionally on classifier output, retrieved score, or Guardian verdict. Log every step to a unified store (IBM Cloud Logs, CloudWatch, Splunk). Capture cost (tokens), latency, and quality (LLM-judge or human sample) per step. The bottleneck is almost always either re-ranking or the largest model in the chain; parallelise the independent calls, cache the deterministic steps, and downsize models where quality allows.
 
-\subsection{Monitoring and Troubleshooting}
-\begin{itemize}[leftmargin=*]
-    \item Each step logs to a unified store (CloudWatch / IBM Cloud Logs / Splunk).
-    \item Capture cost (tokens), latency, and quality (LLM-judge or human sample) per step.
-    \item Identify bottlenecks --- usually re-ranking or the largest model in the chain.
-    \item Optimise: parallelise independent calls, cache deterministic steps, downsize models where quality permits.
-\end{itemize}
+Agentic RAG, covered in Chapter~\ref{ch:rag}, is one node inside a larger orchestration. The agent itself decides whether and when to retrieve --- the workflow around it decides what to do with the result.
 
-\subsection{Agentic RAG (cross-reference)}
-Section~4 covered the pattern; in the workflow context, Agentic RAG is one node in a larger flow --- the agent itself decides whether/when to retrieve.
-
-\section{Real-World Integration Scenarios (Objective 6.3)}
+\section{The architecture that production converges on (Objective 6.3)}
 
 \begin{figure}[h]
 \centering
@@ -157,16 +87,9 @@ Section~4 covered the pattern; in the workflow context, Agentic RAG is one node 
 \label{fig:prod-architecture}
 \end{figure}
 
-\subsection{Given a Business Case, Design the Solution}
-\begin{enumerate}[leftmargin=*]
-    \item Identify input channels (web chat, mobile app, email, internal app).
-    \item Identify data sources (CRM, policy repo, billing DB, ticketing system).
-    \item Identify trust boundary --- where does data leave your network?
-    \item Identify watsonx components to bring in: \texttt{watsonx.ai} (generation), \texttt{watsonx Discovery} (retrieval), \texttt{watsonx.data} (corpus), \texttt{watsonx.governance} (audit).
-    \item Identify external services: Watson Assistant (front-end), IAM, secrets, monitoring, queues.
-\end{enumerate}
+Given any business case, the design walks five questions in order. What are the input channels (web chat, mobile app, email, an internal back-office app)? What are the data sources (CRM, policy repository, billing database, ticketing system)? Where is the trust boundary --- where does data leave your network, and where can it not? Which watsonx components do you bring in (\texttt{watsonx.ai} for generation, \texttt{watsonx Discovery} for retrieval, \texttt{watsonx.data} for the corpus, \texttt{watsonx.governance} for audit)? And which external services need to participate (Watson Assistant as the front-end, IAM, secrets, monitoring, queues)? Answer those five questions and the architecture diagram draws itself.
 
-\subsection{High-Level Architecture Diagram}
+The reference architecture below is the shape the Acme Assistant landed on after the rollout, and it is the shape most enterprise watsonx deployments converge on. A web or mobile UI feeds into Watson Assistant, which routes generative replies through a Model Gateway into watsonx.ai. Behind watsonx.ai sits a LangGraph workflow that retrieves from watsonx Discovery (which itself draws structured data from watsonx.data when needed) and runs Granite Guardian on both sides of the model. Lineage and metrics flow into watsonx.governance for the audit trail.
 
 \begin{figure}[h]
 \centering
@@ -195,17 +118,12 @@ Section~4 covered the pattern; in the workflow context, Agentic RAG is one node 
 \draw [a] (wai.south) -- (gov.east);
 \end{tikzpicture}
 \caption{Reference architecture: chat front-end + retrieval + generation + governance.}
+\label{fig:reference-architecture}
 \end{figure}
 
-\subsection{Implement, Test, and Validate}
-\begin{itemize}[leftmargin=*]
-    \item Local first --- run each component independently with mocked data.
-    \item Dev space --- end-to-end with a small subset.
-    \item Staging --- shadow traffic mirrored from production, no user impact.
-    \item Production --- canary, then ramp; watch the four monitoring pillars (Section 5).
-\end{itemize}
+Implementation runs in four progressive environments, the same pattern Chapter~\ref{ch:deployment} laid out. Local first --- run each component independently with mocked data and unit tests. Dev space --- end-to-end with a small data subset. Staging --- shadow traffic mirrored from production with no user impact. Production --- canary then ramp, watching the four monitoring pillars.
 
-\subsection{Model Context Protocol (MCP)}
+\subsection{Model Context Protocol (Objective 6.5)}
 
 \begin{figure}[h]
 \centering
@@ -214,50 +132,42 @@ Section~4 covered the pattern; in the workflow context, Agentic RAG is one node 
 \label{fig:mcp}
 \end{figure}
 
-\begin{keybox}
-\textbf{Model Context Protocol (MCP)} is an open protocol for connecting LLM applications to external tools and data sources in a standard way. An \emph{MCP server} exposes resources (data) and tools (functions); an \emph{MCP client} (the LLM app, agent, or IDE) discovers and uses them through a common JSON-RPC interface.
-\end{keybox}
+The \term{Model Context Protocol} (MCP) is an open protocol for connecting LLM applications to external tools and data sources in a standard way. An \emph{MCP server} exposes resources (data) and tools (functions); an \emph{MCP client} --- the LLM application, agent, or IDE --- discovers and uses them through a common JSON-RPC interface. The contrast with the older approach is the whole point: instead of writing a bespoke LangChain tool for every integration (one for Postgres, one for Slack, one for the internal CRM, one for the ticketing system), you stand up an MCP server per system once, and any MCP-capable agent can call any of them through the same protocol.
 
-Why the exam cares: MCP is the IBM-preferred direction for plugging external systems (databases, code repos, ticketing, custom internal APIs) into agentic watsonx workflows --- instead of bespoke LangChain tools per integration, you point your agent at the MCP server and it can call any of its exposed tools.
+Why the exam cares: MCP is the direction IBM is pushing for plugging external systems into agentic watsonx workflows. You point your agent at the MCP server and it can call any of the tools that server exposes, without per-integration Python code. The Acme Assistant's third release moved the CRM integration from a bespoke LangChain tool to an MCP server, and the diff was a removal of three hundred lines of glue code and the addition of one configuration block.
 
-\textbf{Properties to remember:}
-\begin{itemize}[leftmargin=*]
-    \item Standardised tool discovery and invocation (vendor-neutral).
-    \item Separates the LLM app from each integration's specifics.
-    \item Plays well with \texttt{tool\_calling} chat models (Granite 3.x, Llama-3.3, Mistral all support).
-\end{itemize}
+Three properties are worth remembering. MCP standardises tool discovery and invocation through a vendor-neutral JSON-RPC interface, which means the same agent code works against different servers. It separates the LLM application from each integration's specifics, which means the agent does not need to know whether it is talking to Postgres or Slack. And it plays well with native tool-calling chat models --- Granite 3.x, Llama-3.3, and Mistral all support tool calling, so an MCP-discovered tool can be called by any of them through the same code path.
 
-\section{Develop LLM Applications with LangChain (Objective 6.4)}
+\section{LangChain on watsonx (Objective 6.4)}
 
-\subsection{Core Concepts}
+\subsection{The vocabulary}
+
+LangChain is the framework that most teams build watsonx applications on. The exam expects you to recognise its core building blocks by name and use.
 
 \begin{table}[h]
 \centering
+\small
 \begin{tabularx}{\textwidth}{l X}
 \toprule
-\textbf{Concept} & \textbf{What it is} \\
+\textbf{Concept}        & \textbf{What it is} \\
 \midrule
-\textbf{LLM}            & A wrapper around a foundation model (\texttt{WatsonxLLM}) \\
-\textbf{Prompt Template}& A reusable prompt with input variables \\
-\textbf{Chain}          & Sequence of steps (Prompt $\to$ LLM $\to$ parser, etc.) \\
-\textbf{Tool}           & A Python function the agent can call (search, calc, DB) \\
+\textbf{LLM}            & A wrapper around a foundation model (\texttt{WatsonxLLM}, \texttt{ChatWatsonx}) \\
+\textbf{Prompt template}& A reusable prompt with input variables \\
+\textbf{Chain}          & A sequence of steps (prompt $\to$ LLM $\to$ parser, etc.) \\
+\textbf{Tool}           & A Python function the agent can call (search, calculator, DB) \\
 \textbf{Agent}          & LLM controller that picks the next tool based on the goal \\
 \textbf{Memory}         & Short-term (scratchpad) or long-term (vector store) state \\
-\textbf{Retriever}      & Wraps a vector store / search index for RAG \\
-\textbf{Output Parser}  & Coerces LLM text into structured Python / JSON \\
+\textbf{Retriever}      & Wraps a vector store or search index for RAG \\
+\textbf{Output parser}  & Coerces LLM text into structured Python or JSON \\
 \bottomrule
 \end{tabularx}
 \caption{LangChain core building blocks.}
+\label{tab:langchain-blocks}
 \end{table}
 
-\subsection{Benefits of LangChain}
-\begin{itemize}[leftmargin=*]
-    \item \textbf{Modularity} --- swap LLM, retriever, or memory without rewriting the pipeline.
-    \item \textbf{Reusability} --- chain and tool libraries shared across teams.
-    \item \textbf{Extensibility} --- custom tools, custom retrievers, custom output parsers.
-\end{itemize}
+The reasons LangChain has won by adoption are mundane. \emph{Modularity}: swap LLM, retriever, or memory without rewriting the pipeline. \emph{Reusability}: chain and tool libraries shared across teams. \emph{Extensibility}: custom tools, custom retrievers, custom output parsers. None of those is exciting; together they are why most watsonx production code in \the\year{} is LangChain on top.
 
-\subsection{Create a Simple Chain}
+\subsection{From a chain to an agent}
 
 \begin{figure}[h]
 \centering
@@ -266,7 +176,9 @@ Why the exam cares: MCP is the IBM-preferred direction for plugging external sys
 \label{fig:langchain}
 \end{figure}
 
-\begin{examplebox}[title=\textbf{LLMChain --- Prompt + watsonx LLM + parser}]
+The simplest useful LangChain pipeline is a deterministic chain --- prompt, LLM, parser, piped together with the \texttt{|} operator. That is what the Acme Assistant's intent classifier looked like in week one.
+
+\begin{examplebox}[title=\textbf{LLMChain --- prompt + watsonx LLM + parser}]
 \begin{lstlisting}[style=pythonstyle]
 from langchain_ibm import WatsonxLLM
 from langchain_core.prompts import ChatPromptTemplate
@@ -287,7 +199,7 @@ print(chain.invoke({"ticket_text": "My internet is down"}))
 \end{lstlisting}
 \end{examplebox}
 
-\subsection{Customise a Chain with an External API Tool}
+Where the workflow needs to call out to something else --- a database, an internal API, a third-party service --- a chain stops being enough and you reach for a tool. A LangChain tool is just a decorated Python function with a docstring the LLM reads to decide whether to call it.
 
 \begin{examplebox}[title=\textbf{Custom tool --- query an internal CRM}]
 \begin{lstlisting}[style=pythonstyle]
@@ -304,7 +216,7 @@ def lookup_account(account_id: str) -> dict:
 \end{lstlisting}
 \end{examplebox}
 
-\subsection{Design and Implement an Agent}
+Wire one or more tools to a chat model with native tool-calling support and you have an agent. Granite~3.x, Llama-3.3, and Mistral all support tool calling natively, which is the modern way to build agents and the one the exam tests.
 
 \begin{examplebox}[title=\textbf{Tool-calling agent on watsonx (Granite 3.x supports tool calls natively)}]
 \begin{lstlisting}[style=pythonstyle]
@@ -331,35 +243,17 @@ executor.invoke({"input":
 \end{lstlisting}
 \end{examplebox}
 
-\subsection{Memory}
-\begin{itemize}[leftmargin=*]
-    \item \textbf{ConversationBufferMemory} --- exact transcript (cheap but token-heavy).
-    \item \textbf{ConversationSummaryMemory} --- a running summary maintained by an LLM (cheaper at long horizons).
-    \item \textbf{VectorStoreRetrieverMemory} --- semantic recall from past turns.
-    \item \textbf{LangGraph checkpoints} --- persistent agent state across sessions.
-\end{itemize}
+Memory is the dimension that turns a stateless agent into a multi-turn assistant. \texttt{ConversationBufferMemory} holds the exact transcript and is cheap to implement but expensive in tokens at long horizons. \texttt{ConversationSummaryMemory} maintains a running summary in an LLM and is cheaper at long horizons but loses detail. \texttt{VectorStoreRetrieverMemory} gives semantic recall across past turns when the conversation is too long to fit in context. LangGraph checkpoints persist agent state across sessions, which is what production deployments use when conversations span days.
 
-\subsection{Putting It Together}
-Most production builds look like this:
-\begin{enumerate}[leftmargin=*]
-    \item Watson Assistant catches the user's intent and channel.
-    \item For generative replies it calls a watsonx Deployment via webhook.
-    \item Behind the deployment, a LangChain (or LangGraph) workflow does RAG over watsonx Discovery, possibly calls an MCP-exposed internal API, drafts the answer with Granite, and runs Granite Guardian over input + output.
-    \item Lineage and metrics land in watsonx.governance for audit.
-\end{enumerate}
+\subsection{The end-to-end Acme picture}
 
-\section{Key Takeaways}
+Most production builds, including the Acme Assistant, look like this end to end. Watson Assistant catches the user's intent and channel. For generative replies it calls a watsonx Deployment via webhook. Behind the deployment, a LangChain or LangGraph workflow does RAG over watsonx Discovery, possibly calls an MCP-exposed internal API, drafts the answer with Granite, and runs Granite Guardian over both input and output. Lineage and metrics land in watsonx.governance for the audit. Every chapter in this book has been a slice of this same architecture.
 
-\begin{itemize}[leftmargin=*]
-    \item Integrations live on the REST API; auth via IAM service IDs and API keys.
-    \item Always wrap external calls with retries, backoff, and category-specific error handling.
-    \item Orchestrate complex flows with LangChain Chains, LangGraph state machines, or watsonx AI Pipelines.
-    \item \textbf{Model Context Protocol (MCP)} is the open standard for plugging external tools and data into LLM apps and agents.
-    \item LangChain core blocks: \textbf{Chains}, \textbf{Agents}, \textbf{Tools}, \textbf{Memory} --- plus prompts, retrievers, output parsers.
-    \item Granite 3.x, Llama-3.3, and Mistral all support native \textbf{tool calling}, which is the modern way to build agents.
-\end{itemize}
+\begin{takeawaybox}
+Integration on watsonx is the discipline of wiring a model into the rest of an organisation's systems without losing the audit trail. Calls go through the REST API or the SDKs, authenticated by per-application service IDs and scoped API keys. External calls always wrap in retries, backoff, and category-specific error handling. Workflows orchestrate with LangChain Chains for simple flows, LangGraph for state-machine reproducibility, and watsonx AI Pipelines for scheduled data-plus-AI jobs. LangChain's core blocks --- chains, tools, agents, memory, retrievers --- cover the agent layer; the Model Context Protocol covers the tools layer when the same integrations are reused across applications. Granite~3.x, Llama-3.3, and Mistral all support native tool calling, which is the modern way to build agents on watsonx. And the production architecture that all of this converges on is the one in Figure~\ref{fig:reference-architecture}.
+\end{takeawaybox}
 
-\section{Practice Questions}
+\section{Practice questions}
 
 \begin{practicebox}[title=\textbf{Q6.1 --- Auth}]
 What is the safest way to call a watsonx deployment from a microservice?

@@ -2,8 +2,8 @@
 % FRONT MATTER
 % ============================================================================
 
-% Title page
-\maketitle
+% Title page — full-bleed cover defined in main.tex
+\bookcover
 
 \cleardoublepage
 
@@ -11,26 +11,26 @@
 \thispagestyle{empty}
 \vspace*{\fill}
 \begin{center}
-    \textbf{IBM Watsonx Generative AI Engineer Associate (C1000-185)}\\
+    \textbf{IBM watsonx Generative AI Engineer Associate (C1000-185)}\\
     Complete Study Guide \& Exam Workbook\\[1cm]
 
-    Copyright \textcopyright\ 2026 by Ruslan Idelfonso Magana Vsevolodovna\\[0.5cm]
+    Copyright \textcopyright\ \the\year\ by Ruslan Idelfonso Magana Vsevolodovna\\[0.5cm]
 
     Licensed under the \textbf{Apache License, Version 2.0} (the ``License''); you may not use this work except in compliance with the License. You may obtain a copy of the License at \\
     \url{http://www.apache.org/licenses/LICENSE-2.0}\\[0.5cm]
     Unless required by applicable law or agreed to in writing, this work is distributed on an ``\textsc{as is}'' \textsc{basis, without warranties or conditions of any kind}, either express or implied. See the License for the specific language governing permissions and limitations.\\[1cm]
 
-    \textbf{Disclaimer}\\
-    This study guide is an independent publication and has not been authorised, sponsored, or otherwise approved by IBM Corporation. IBM, watsonx, watsonx.ai, watsonx.data, watsonx.governance, Granite, Slate, and InstructLab are trademarks or registered trademarks of IBM Corporation.\\[0.5cm]
+    \textbf{Independent publication --- no affiliation}\\
+    This book is an independent study guide. It is \textbf{not} authored, sponsored, endorsed, or otherwise approved by IBM Corporation, and the author has no commercial relationship with IBM. References to IBM, watsonx, watsonx.ai, watsonx.data, watsonx.governance, Granite, Slate, and InstructLab are made only to describe and prepare candidates for the publicly published \mbox{C1000-185} certification objectives. All such names are trademarks or registered trademarks of IBM Corporation.\\[0.5cm]
 
-    The information provided in this book is for educational and exam-preparation purposes only. While every effort has been made to ensure accuracy against the C1000-185 official study guide and the current watsonx.ai API documentation, the author assumes no responsibility for errors or omissions.\\[1cm]
+    The information in this book is provided for educational and exam-preparation purposes only. Every effort has been made to align the content with the publicly available C1000-185 study guide and the current watsonx.ai API documentation. The author assumes no responsibility for errors or omissions, and recommends cross-checking the live IBM documentation before any production decision.\\[1cm]
 
     First Edition: \the\year\\
     Published independently --- \emph{ISBNs to be assigned on print release}.\\[1cm]
 
-    \textbf{Errata, source code, and updates:}\\
+    \textbf{Errata, source, and updates:}\\
     \url{https://github.com/ruslanmv/IBM-Watsonx-Generative-AI-Engineer-Certification}\\[0.2cm]
-    Issues and corrections welcome at:\\
+    Issues and corrections:\\
     \url{https://github.com/ruslanmv/IBM-Watsonx-Generative-AI-Engineer-Certification/issues}\\[0.4cm]
     \url{https://ruslanmv.com}
 \end{center}
@@ -53,72 +53,55 @@
 
 \cleardoublepage
 
-% Preface
+% ============================================================================
+% PREFACE
+% ============================================================================
 \chapter*{Preface}
 \addcontentsline{toc}{chapter}{Preface}
 
-\epigraph{``Build it on the platform, prove it with metrics, then explain it like a teacher.''}{---\ The author's working motto}
+\epigraph{``The half-life of a tool in this field has become shorter than the half-life of a project that uses it.''}{}
 
-\noindent The field of Generative AI is moving fast, and IBM's \textbf{watsonx} platform is where many enterprises will deploy it. This study guide is the companion text for the YouTube and Udemy series of the same name --- all three formats follow the official \textbf{IBM watsonx Generative AI Engineer v1 -- Associate (C1000-185)} exam blueprint.
+\noindent The last three years have rewritten the playbook for every IT organisation that ships software. What used to be a research field --- large language models, retrieval-augmented generation, agentic systems, vector databases, governed model serving --- is now production infrastructure, and the technologies underneath it are turning over every quarter. Model catalogues that were authoritative twelve months ago are now half-deprecated. Best practices for prompt design, fine-tuning, evaluation, and safety filtering are settling, but only just. Vendors are racing to publish updates that engineers have to digest at the same speed.
 
-This first edition was written for the 2026 watsonx.ai catalogue. Every code listing, every model identifier, and every API parameter you read here has been validated against the current \texttt{ibm-watsonx-ai} Python SDK and the public watsonx.ai REST API. Where IBM has retired or renamed a model, the deprecated identifier is called out so you recognise it on the exam without using it in new work.
+This book exists because the certification at its centre --- the \textbf{IBM watsonx Generative AI Engineer Associate}, exam code \textbf{C1000-185} --- happens to be one of the clearest, vendor-published checklists of what an engineer needs to know to keep pace with that pipeline. It does not capture everything, and no single certification can. But its six objectives --- analysis and design, prompt engineering, fine-tuning, retrieval-augmented generation, deployment, and integration --- map almost exactly onto the topics that a modern IT team needs to staff in \the\year{}. Preparing for the exam is, in practice, preparing yourself for the next twenty months of work.
 
-\section*{Purpose of This Book}
+\section*{Why this guide exists, and why now}
 
-This book is a structured, exam-oriented learning path covering Generative AI concepts, prompt engineering, fine-tuning, Retrieval-Augmented Generation (RAG), deployment, and orchestration on the IBM watsonx platform. Every chapter is mapped 1:1 to a section of the official exam objectives, and every code sample uses the \textbf{current watsonx.ai model catalogue and SDKs} (Granite 3.x, Llama 3.x, Mistral, Granite Guardian, Granite-Embedding, Slate v2, \texttt{ibm-watsonx-ai} Python SDK). Older identifiers such as \texttt{granite-13b-instruct-v2}, \texttt{llama-2-*}, and \texttt{flan-*} are flagged where they appear so you can recognise them on the exam without using them in new work.
+Three things have changed in a way that justifies a study guide rather than a blog post.
 
-\section*{Who This Book Is For}
+The first is the \emph{cadence of the model catalogue}. The watsonx.ai catalogue rotated several times in the eighteen months before this edition went to press. \texttt{granite-13b-instruct-v2}, \texttt{llama-2-70b-chat}, \texttt{flan-t5-xxl}, and the \texttt{mpt-*} family have all been deprecated. Granite~3.x, Llama~3.x, Mistral, Granite Guardian, Granite Embedding and Slate~v2 took their place. Every code listing, every model identifier, and every API parameter in this book has been validated against the current \texttt{ibm-watsonx-ai} Python SDK and the public watsonx.ai REST API. Where a deprecated identifier appears, it is flagged so candidates can recognise it on the exam without picking it in new work.
 
-\begin{itemize}[leftmargin=*]
-    \item \textbf{AI Engineers and Developers} validating their skills with IBM watsonx
-    \item \textbf{Data Scientists} expanding into generative AI implementation
-    \item \textbf{Solution Architects} designing AI-powered enterprise solutions
-    \item \textbf{Technical Professionals} seeking IBM certification credentials
-    \item \textbf{Self-Learners} building expertise in enterprise AI platforms
-\end{itemize}
+The second is the \emph{shape of the work itself}. Three years ago, an AI engineer's day was building models. Today it is selecting between off-the-shelf foundation models, designing the prompt and retrieval layers that make them useful, customising them with parameter-efficient methods such as LoRA and InstructLab, and shipping all of that into governed production systems. The exam reflects that shift: roughly one-third of the questions are about fine-tuning, and most of the rest are about the prompt, retrieval, deployment, and integration layers that wrap a foundation model. There is almost nothing in this book about training a transformer from scratch, because almost nobody on a production team does that.
 
-\section*{How to Use This Book}
+The third is the \emph{maturity of safety and governance}. Generative AI's first wave shipped without much of either. The second wave --- the one this book documents --- ships them by default. Granite Guardian, watsonx.governance factsheets, drift monitoring, demographic-parity tests, audit-grade logging --- they are no longer optional features. The certification tests them as core engineering skills, and so does this book.
 
-Each topic within a chapter follows a consistent format so you can study in short sessions and still retain the material:
+\section*{The AI boom, in three numbers}
 
-\begin{table}[h]
-\centering
-\begin{tabularx}{\textwidth}{>{\bfseries}l X}
-\toprule
-\normalfont\textbf{Element} & \textbf{Purpose} \\
-\midrule
-Concept Explanation & Clear, beginner-friendly definition of the core idea \\
-\addlinespace
-Why It Matters & Why this is on the exam and how it shows up in practice \\
-\addlinespace
-Real-World Scenarios & Concrete examples on the watsonx platform \\
-\addlinespace
-Architecture Diagrams & Visual aids for complex flows \\
-\addlinespace
-watsonx Examples & Current-API code snippets you can run \\
-\addlinespace
-Practice Questions & Exam-style questions to test recall \\
-\addlinespace
-Key Takeaways & Bullet-point chapter summary \\
-\bottomrule
-\end{tabularx}
-\caption{Book Structure Elements}
-\end{table}
+Three numbers carry the context. Spending on generative AI infrastructure has moved from a rounding error in 2022 to a major line in nearly every enterprise IT budget in \the\year{}. The number of public foundation models worth considering in production has gone from a handful to dozens, with model families turning over roughly every six to twelve months. And the volume of regulation around how those models can be deployed has moved from almost zero to a working framework in every major jurisdiction. An engineer who is current on the technology stack but absent on the governance layer is now half-trained; the same is true in the other direction. This book treats both as part of the same job.
 
-\subsection*{Workbook Components}
+\section*{The Acme case study --- one thread through every chapter}
 
-\begin{itemize}[leftmargin=*]
-    \item \textbf{Chapter-End Questions}: Exam-style MCQ and scenario questions at the end of every chapter.
-    \item \textbf{Mock Exams}: A 40-question mock (Appendix~B / answer key in Appendix~C) and a longer second practice exam (Appendix~E / answer key in Appendix~F).
-    \item \textbf{Glossary}: All the GenAI and watsonx terms used in the book, in Appendix~A.
-    \item \textbf{Cheat Sheet}: A one-page exam-day revision card in Appendix~D.
-    \item \textbf{Exam Objective Map}: Every blueprint objective (1.1 \dots\ 6.6) cross-referenced to its chapter and page in Appendix~G.
-    \item \textbf{Index}: All key terms, watsonx products, and model identifiers indexed at the back of the book.
-\end{itemize}
+To keep the material grounded, the book follows a single fictional engagement from beginning to end. \textbf{Acme Bank} --- the canonical placeholder for any large, regulated enterprise --- has asked its AI team to build the \textbf{Acme Assistant}, an internal tool for the bank's customer-support staff. The Assistant must answer policy questions, draft replies to customer emails, summarise long claim threads, and escalate cleanly when it should not answer at all. Cost matters. Compliance matters. Audit trails matter.
 
-\subsection*{Reading Roadmap}
+The AI engineer at Acme is, in the prose that follows, sometimes \emph{they}, sometimes \emph{you}, sometimes \emph{the team}. The case study is the thread that ties Chapter~1 (\emph{what is the Assistant actually supposed to do?}), Chapter~2 (\emph{the first prompt and what broke}), Chapter~3 (\emph{when prompting alone wasn't enough}), Chapter~4 (\emph{the policy documents change every Monday}), Chapter~5 (\emph{rolling it out to eight hundred agents}), and Chapter~6 (\emph{wiring it to Watson Assistant and the bank's CRM}). You can read each chapter on its own --- the book is also a reference --- but the Acme thread is what turns the abstract decisions into decisions you can argue with.
 
-This book can be read cover-to-cover, but most readers will benefit from a tailored path:
+\section*{Who this book is for}
+
+This is a book for the AI engineer, data scientist, or solution architect who needs to operate confidently on a watsonx platform and pass the C1000-185 exam on the way there. If you have shipped a Python service before, written a SQL query under deadline, and read a vendor whitepaper without losing your mind, you have everything you need. You do not need a deep-learning background, although a basic familiarity with machine-learning vocabulary will accelerate you through the first chapter. You do need patience for the moments when the book asks you to memorise something that looks arbitrary --- those are almost always the moments the exam tests.
+
+\section*{How this book is organised}
+
+The book has three layers. The \emph{chapters} explain --- one chapter per official exam section, weighted to match the blueprint. The \emph{appendices} are reference and practice --- a glossary, two full mock exams with answer keys, a one-page cheatsheet, and an objective-by-objective map back into the chapters. The \emph{index} at the back lets you find a single term, model identifier, or watsonx product without scanning the table of contents.
+
+Inside a chapter, the rhythm is intentionally varied. Some sections open with a problem from the Acme engagement and arrive at the concept through the problem. Some open with the concept and immediately put it to work. A short \emph{exam tip} appears where the certification has a recognisable question pattern; a \emph{warning} appears where a deprecation or a common pitfall could cost points. There is no fixed template. If you read the same kind of box on every page you would stop noticing them, and the book would stop working.
+
+\subsection*{Workbook components}
+
+The chapter-end practice questions are the first feedback loop --- short, scenario-based, with answer keys at the end of each chapter. The two mock exams (Appendices~B and~E, with answer keys in C and F) are the second loop: take them under timed conditions with a phone in another room. Appendix~A is the glossary. Appendix~D is the one-page cheatsheet candidates should be able to reproduce from memory by exam day. Appendix~G is the objective-to-page map --- after a mock, tally the objectives you missed and re-read just those pages.
+
+\subsection*{Reading roadmap}
+
+Cover-to-cover is fine. So is targeted. Figure~\ref{fig:roadmap} shows four common paths through the material; pick the closest profile and the chapter order follows.
 
 \begin{figure}[h]
 \centering
@@ -127,157 +110,80 @@ This book can be read cover-to-cover, but most readers will benefit from a tailo
 \label{fig:roadmap}
 \end{figure}
 
-\begin{table}[h]
-\centering
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries}l X}
-\toprule
-\normalfont\textbf{Reader Profile} & \textbf{Suggested Order} \\
-\midrule
-New to Generative AI            & 1 $\to$ 2 $\to$ 4 $\to$ 3 $\to$ 5 $\to$ 6, then Appendices D, A, B, E \\
-Experienced ML practitioner     & Skim 1, deep-dive 3 (largest exam weight), then 4, 5, 6, then Appendix D \\
-Already work on watsonx daily   & Read Appendix D, take Appendix B; revisit any chapter you scored $<$70\% on \\
-Two-week sprint                 & Week 1: ch.\ 1--3 + practice. Week 2: ch.\ 4--6 + Appendices B, E. \\
-\bottomrule
-\end{tabularx}
-\caption{Suggested reading paths by reader profile.}
-\end{table}
+If generative AI is new ground, follow the chapters in order, then read Appendix~D before the first mock. If you have shipped LLMs in production and are here mostly for the watsonx-specific material, skim Chapter~1, deep-read Chapter~3 (it is 31\% of the exam --- spend the time), then move through chapters~4--6 and head straight to the mocks. If you already work on watsonx daily, the cheatsheet plus a first mock will tell you where you actually stand; only re-read chapters where you scored below seventy percent on the mock. For a two-week sprint, take chapters~1--3 in the first week and chapters~4--6 plus both mocks in the second, reviewing only what the mocks flag.
 
-\section*{Exam Overview}
+\section*{The exam, in five numbers}
 
-The \textbf{IBM watsonx Generative AI Engineer v1 -- Associate} certification validates that you can design, build, and operate generative AI solutions on watsonx.ai.
+The certification is officially titled \emph{IBM Certified watsonx Generative AI Engineer --- Associate}, exam code \textbf{C1000-185}. It is delivered by Pearson VUE, either at a test centre or online with a proctor, and IBM expects roughly six to twelve months of hands-on watsonx.ai experience before a candidate sits it. The numbers worth memorising fit on one hand: \textbf{sixty-two questions}, \textbf{ninety minutes}, \textbf{forty-four to pass} (about seventy-one percent), \textbf{six sections}, and roughly \textbf{eighty-seven seconds per question} on average. Pacing matters more than raw recall.
 
-\begin{table}[h]
-\centering
-\begin{tabularx}{\textwidth}{>{\bfseries}l X}
-\toprule
-\normalfont\textbf{Exam Detail} & \textbf{Specification} \\
-\midrule
-Exam Code & C1000-185 \\
-Certification Title & IBM Certified watsonx Generative AI Engineer -- Associate \\
-Number of Questions & 62 \\
-Passing Score & 44 (approximately 71\%) \\
-Time Allowed & 90 minutes \\
-Delivery & Pearson VUE (online proctored or test center) \\
-Prerequisites & 6--12 months hands-on experience with watsonx.ai \\
-\bottomrule
-\end{tabularx}
-\caption{Exam Specifications}
-\end{table}
+\subsection*{Where the points live}
 
-\subsection*{Exam Sections and Weightings}
+The six exam sections are not equally weighted. Figure~\ref{fig:blueprint} shows them stacked by their share of the test, with the chapter in this book that covers each. Section~3 --- fine-tuning --- is thirty-one percent of the exam, almost a third. That is by design: parameter-efficient fine-tuning (PEFT), LoRA, quantisation, and IBM's InstructLab are the topics IBM most wants candidates to demonstrate, and the chapter ratio in this book is built around that reality.
 
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.95\textwidth]{assets/figures/fig01-exam-blueprint}
-\caption{The C1000-185 blueprint at a glance. Section~3 (Fine-Tuning) carries 31\% --- almost a third of the test. Spend study time in proportion.}
+\caption{The C1000-185 blueprint at a glance. Section~3 (Fine-Tuning) carries 31\% --- almost a third of the test. Allocate study time in proportion.}
 \label{fig:blueprint}
 \end{figure}
 
-\begin{table}[h]
-\centering
-\begin{tabularx}{\textwidth}{c l c}
-\toprule
-\textbf{Section} & \textbf{Topic} & \textbf{Weighting} \\
-\midrule
-1 & Analyze and Design a Generative AI Solution & 15\% \\
-2 & Prompt Engineering & 16\% \\
-3 & Fine-Tuning & 31\% \\
-4 & Retrieval-Augmented Generation (RAG) & 17\% \\
-5 & Deployment & 13\% \\
-6 & watsonx -- Integration and Model Orchestration & 8\% \\
-\midrule
-& \textbf{Total} & \textbf{100\%} \\
-\bottomrule
-\end{tabularx}
-\caption{Exam Section Weightings}
-\end{table}
+\examtip{If you take one rule from this preface into your study plan, take this one: \textbf{allocate study hours by section weight, not by comfort}. Fine-tuning is the largest single section, and the section most engineers find least familiar coming in. That gap is exactly where points are won and lost.}
 
-\examtip{\textbf{Fine-tuning is 31\%} of the test --- almost a third. Knowing PEFT, LoRA, prompt tuning, InstructLab, and the Tuning Studio cold is the single biggest score lever in the entire exam.}
+\section*{A thirty-day plan that works}
 
-\section*{Study Strategy and 30-Day Learning Plan}
+A month is the right amount of time. Less, and you cram; more, and the first chapters fade before exam day. The plan below front-loads fine-tuning (which earns its 31\% of the exam), uses the back half of week three for the integration material that engineers tend to under-study, and reserves the final week for timed mocks and the cheatsheet. The exact day-count is less important than the rhythm: every week ends with practice questions, not with new material.
 
 \begin{table}[h]
 \small
 \centering
 \begin{tabularx}{\textwidth}{l l X}
 \toprule
-\textbf{Week} & \textbf{Days} & \textbf{Focus \& Activities} \\
+\textbf{Week} & \textbf{Days} & \textbf{Focus and activities} \\
 \midrule
-\textbf{Week 1:} & Day 1--2 & \textbf{Foundations}: Chapter 1 (capabilities, patterns, model selection) \\
-\textbf{Foundations} & Day 3--5 & \textbf{Prompt Engineering}: Chapter 2 (zero/few-shot, parameters, Prompt Lab) \\
-& Day 6--7 & \textbf{Review}: practice questions from Chapters 1--2 \\
+\textbf{Week 1:} & Day 1--2 & \textbf{Foundations}: Chapter~1 (capabilities, patterns, model selection) \\
+\textbf{Foundations} & Day 3--5 & \textbf{Prompt engineering}: Chapter~2 (zero/few-shot, parameters, Prompt Lab) \\
+& Day 6--7 & \textbf{Review}: practice questions from Chapters~1--2 \\
 \midrule
-\textbf{Week 2:} & Day 8--12 & \textbf{Fine-Tuning}: Chapter 3 (LoRA, quantization, InstructLab, SDG) --- largest section \\
-\textbf{Deep Dive} & Day 13--14 & \textbf{Review}: Chapter 3 practice + a small Tuning Studio job \\
+\textbf{Week 2:} & Day 8--12 & \textbf{Fine-tuning}: Chapter~3 (LoRA, quantisation, InstructLab, SDG) --- largest section \\
+\textbf{Deep dive} & Day 13--14 & \textbf{Review}: Chapter~3 practice plus a small Tuning Studio job \\
 \midrule
-\textbf{Week 3:} & Day 15--18 & \textbf{RAG}: Chapter 4 (embeddings, vector DBs, LangChain, agentic RAG) \\
-\textbf{Application} & Day 19--21 & \textbf{Deployment}: Chapter 5 (spaces, versioning, gateway) \\
-& Day 22--23 & \textbf{Integration}: Chapter 6 (SDK, LangChain, MCP) \\
+\textbf{Week 3:} & Day 15--18 & \textbf{RAG}: Chapter~4 (embeddings, vector DBs, LangChain, agentic RAG) \\
+\textbf{Application} & Day 19--21 & \textbf{Deployment}: Chapter~5 (spaces, versioning, gateway) \\
+& Day 22--23 & \textbf{Integration}: Chapter~6 (SDK, LangChain, MCP) \\
 \midrule
-\textbf{Week 4:} & Day 24--26 & \textbf{Comprehensive Review}: re-read all Key Takeaways \\
-\textbf{Final Prep} & Day 27--28 & \textbf{Mock Test}: Appendix~B (40 Qs, 60 min) and Appendix~E (longer practice) under timed conditions \\
-& Day 29 & \textbf{Mock Test Review}: study weak areas using Appendices~C, F; redo failed questions \\
-& Day 30 & \textbf{Final Polish}: Cheat Sheet (Appendix~D) + Glossary (Appendix~A), then rest. \\
+\textbf{Week 4:} & Day 24--26 & \textbf{Comprehensive review}: re-read all Key Takeaways \\
+\textbf{Final prep} & Day 27--28 & \textbf{Mock test}: Appendix~B (40 Qs, 60 min) and Appendix~E (longer practice) under timed conditions \\
+& Day 29 & \textbf{Mock review}: study weak areas using Appendices~C, F; redo failed questions \\
+& Day 30 & \textbf{Final polish}: Cheat Sheet (Appendix~D) plus Glossary (Appendix~A), then rest. \\
 \bottomrule
 \end{tabularx}
-\caption{30-Day Study Plan}
+\caption{30-Day study plan.}
+\label{tab:study-plan}
 \end{table}
 
-\section*{Prerequisites}
+\section*{What you should bring to the first page}
 
-\begin{itemize}[leftmargin=*]
-    \item Basic understanding of machine learning concepts
-    \item Familiarity with Python programming
-    \item Experience with cloud platforms (preferably IBM Cloud)
-    \item Knowledge of REST APIs and web services
-    \item Access to IBM watsonx.ai (the free trial covers all the labs in this book)
-\end{itemize}
+This is not a beginner's introduction to machine learning. A working comfort with Python --- enough to read a script, run a notebook, and call a REST API --- is the floor. Some prior exposure to cloud platforms (preferably IBM Cloud, but any major cloud will do) makes the deployment chapter easier. A watsonx.ai account is required for the labs in the companion repository; the free trial covers everything used in this book.
 
-\section*{Conventions Used in This Book}
+If you have never seen a transformer block, never trained a model, and never written a prompt longer than two sentences, that is fine. The first chapter assumes none of that. What you cannot fake is the rhythm of working code. Read every code listing slowly the first time; the second time, copy it into a notebook and run it.
 
-The following typographic and visual conventions are used throughout:
+\section*{Conventions used in this book}
 
-\begin{itemize}[leftmargin=*]
-    \item \texttt{Constant-width text} is used for code, file paths, API parameters, and model identifiers (e.g., \texttt{ibm/granite-3-2-8b-instruct}).
-    \item \emph{Italic text} introduces a new term where it is defined.
-    \item \textbf{Bold text} marks emphasis and important concepts.
-    \item Coloured callouts highlight different kinds of information:
-\end{itemize}
+Three typographic rules run through every chapter. \texttt{Monospaced text} is code, file paths, API parameters, and model identifiers (\texttt{ibm/granite-3-2-8b-instruct} is one). \emph{Italics} introduce a new term where it is first defined, and occasionally mark an aside. \textbf{Bold} marks the few words a candidate should be able to recite back from memory.
 
-\begin{table}[h]
-\centering
-\small
-\begin{tabularx}{\textwidth}{l X}
-\toprule
-\textbf{Box} & \textbf{Meaning} \\
-\midrule
-\textcolor{ibmsuccess}{\textbf{Key Concept}} & A definition or rule worth memorising. \\
-\textcolor{ibmblue}{\textbf{Example}}         & A concrete real-world or watsonx example. \\
-\textcolor{ibmwarning}{\textbf{Important / Exam Tip}} & A point you should not miss --- usually a question pattern. \\
-\textcolor{ibmerror}{\textbf{Warning}}         & A pitfall, deprecation, or common mistake. \\
-\textcolor{ibmgray}{\textbf{Practice Question}} & A self-test with an answer key in Appendix~C or F. \\
-\textcolor{ibmpurple}{\textbf{Learning Objectives}} & A short list of what a chapter teaches you. \\
-\bottomrule
-\end{tabularx}
-\caption{Callout box conventions used in this book.}
-\end{table}
+Coloured boxes appear sparingly. A \textcolor{ibmsuccess}{\textbf{Key Concept}} states a rule worth memorising; an \textcolor{ibmblue}{\textbf{Example}} gives a concrete scenario, usually from the Acme engagement; an \textcolor{ibmwarning}{\textbf{Important}} or \textcolor{ibmwarning}{\textbf{Exam Tip}} flags a question pattern the certification uses; a \textcolor{ibmerror}{\textbf{Warning}} marks a pitfall or a deprecated identifier; a \textcolor{ibmgray}{\textbf{Practice Question}} is a self-test with an answer at the end of the chapter. If a chapter ever feels like every paragraph is in a box, that is a bug.
 
-\section*{Acknowledgments}
+\section*{Acknowledgements}
 
-Thanks to the IBM watsonx documentation team, the InstructLab maintainers, and the readers of the companion YouTube and Udemy courses whose feedback shaped this edition. Special thanks to the open-source authors of LangChain, LlamaIndex, FAISS, Chroma, and the InstructLab project --- this book stands on their shoulders.
-
-\section*{Your Journey Begins Here}
-
-Whether you are new to generative AI or a practitioner validating your skills, this guide will get you to a C1000-185 pass.
+This book stands on the shoulders of three open-source projects --- InstructLab, LangChain, and LlamaIndex --- whose authors and maintainers deserve more than a paragraph. The publicly available IBM watsonx.ai documentation, written and maintained by an IBM team the author has no commercial relationship with, has been the primary reference for every code listing and model identifier. The readers of the companion YouTube and Udemy courses shaped this edition through their questions; if a section here reads more clearly than the equivalent video, it is because somebody flagged what was muddled.
 
 \vspace{1cm}
 
-\noindent\textit{Good luck --- I will see you on the other side of the exam.}
+\noindent\textit{Good luck on exam day.}
 
 \vspace{0.5cm}
 
 \noindent\textbf{Ruslan Idelfonso Magana Vsevolodovna}\\
-\textit{Author --- ruslanmv.com}
+\textit{ruslanmv.com}
 
 \cleardoublepage
