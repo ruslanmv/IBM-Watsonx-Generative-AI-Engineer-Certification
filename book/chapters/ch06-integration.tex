@@ -3,9 +3,9 @@
 
 \epigraph{``A model in isolation is a demo. A model wired into your business is a product.''}{}
 
-The Acme Assistant in production had to talk to three different systems on every interaction. The user came in through a Watson Assistant chat panel embedded in the support agents' console. The model lived in a watsonx deployment behind a Model Gateway. The bank's CRM held account state, the ticketing system held open cases, and the policy library lived in watsonx Discovery. Wiring those pieces together --- so the user sees one interface, the auditor sees one trail, and the operations team sees one set of dashboards --- is integration work, and it is what Chapter~6 is about.
+The model is rarely the system. In production, the model is one component inside a larger workflow: user interface, identity, retrieval, tools, business systems, policy checks, logging, monitoring, and human escalation. A governed support assistant typically has to talk to three different systems on every interaction --- a chat panel embedded in the agent console, a CRM that holds account state, a ticketing system that holds open cases --- on top of the retrieval and generation layers the earlier chapters built. Integration is the work of making those parts behave as one product.
 
-Section~6 is eight percent of the exam --- the smallest section by weight. It is also the section whose topics show up scattered across every other section, because almost every realistic exam scenario implies an integration somewhere. The objectives walk a clean line: pair watsonx.ai with the rest of the IBM cloud (6.1), call models through the SDK and REST with proper error handling (6.2), use webhooks for event-driven flows (6.3), build chains, tools, and agents with LangChain on watsonx (6.4), and recognise the Model Context Protocol when it shows up (6.5). The chapter closes with the production architecture the Acme Assistant ended up running on, which is the architecture most enterprise watsonx deployments converge on.
+Section~6 is eight percent of the exam --- the smallest section by weight. It is also the section whose topics show up scattered across every other section, because almost every realistic exam scenario implies an integration somewhere. The objectives walk a clean line: pair watsonx.ai with the rest of the IBM cloud (6.1), call models through the SDK and REST with proper error handling (6.2), use webhooks for event-driven flows (6.3), build chains, tools, and agents with LangChain on watsonx (6.4), and recognise the Model Context Protocol when it shows up (6.5). The chapter closes with the production architecture most enterprise watsonx deployments converge on.
 
 \section{Pairing watsonx.ai with the rest of the stack (Objective 6.1)}
 
@@ -17,7 +17,7 @@ Configuration happens through either the UI or the API. The UI path is the frien
 
 \subsection{The shape of an external call}
 
-The cleanest demonstration of the API surface is a raw curl, because it works in every language and exposes exactly what the SDK hides. The Acme Assistant's external integration test --- the one that the platform team ran every release to verify the deployment URL was reachable through the corporate proxy --- looks like the block below.
+The cleanest demonstration of the API surface is a raw curl, because it works in every language and exposes exactly what the SDK hides. A typical external integration test --- the one a platform team runs every release to verify the deployment URL is reachable through the corporate proxy --- looks like the block below.
 
 \begin{examplebox}[title=\textbf{Authenticated REST call from any language (curl)}]
 \begin{lstlisting}
@@ -68,7 +68,7 @@ def call_with_retry(fn, *args, max_attempts=4, **kw):
 
 \section{Orchestrating workflows (Objective 6.2)}
 
-A single LLM call is almost never the answer in production. The Acme Assistant's reply-to-customer-email workflow had seven steps the first time it shipped: ingest the customer ticket, extract entities, classify the intent, retrieve the relevant policy chunks, draft a reply, check the reply with Granite Guardian, and either send it or escalate to a human. That sequence is typical, and it is what \emph{orchestration} means in watsonx.
+A single LLM call is almost never the answer in production. A typical reply-to-customer-email workflow has seven steps the first time it ships: ingest the customer ticket, extract entities, classify the intent, retrieve the relevant policy chunks, draft a reply, check the reply with Granite Guardian, and either send it or escalate to a human. That sequence is exactly what \emph{orchestration} means in watsonx.
 
 Designing such a workflow follows four habits. Break the task into atomic steps, each one taking a dictionary in and returning a dictionary out. Identify which steps are LLM calls, which are tool calls (a database query, a third-party API), and which are deterministic Python (a regex, a formatter, a checksum). Decide which steps can run in parallel --- entity extraction and intent classification can usually run together --- and which need strict ordering. And define the failure or fallback behaviour for each step before you write the happy path, because the unhappy paths are where production breaks.
 
@@ -89,7 +89,7 @@ Agentic RAG, covered in Chapter~\ref{ch:rag}, is one node inside a larger orches
 
 Given any business case, the design walks five questions in order. What are the input channels (web chat, mobile app, email, an internal back-office app)? What are the data sources (CRM, policy repository, billing database, ticketing system)? Where is the trust boundary --- where does data leave your network, and where can it not? Which watsonx components do you bring in (\texttt{watsonx.ai} for generation, \texttt{watsonx Discovery} for retrieval, \texttt{watsonx.data} for the corpus, \texttt{watsonx.governance} for audit)? And which external services need to participate (Watson Assistant as the front-end, IAM, secrets, monitoring, queues)? Answer those five questions and the architecture diagram draws itself.
 
-The reference architecture below is the shape the Acme Assistant landed on after the rollout, and it is the shape most enterprise watsonx deployments converge on. A web or mobile UI feeds into Watson Assistant, which routes generative replies through a Model Gateway into watsonx.ai. Behind watsonx.ai sits a LangGraph workflow that retrieves from watsonx Discovery (which itself draws structured data from watsonx.data when needed) and runs Granite Guardian on both sides of the model. Lineage and metrics flow into watsonx.governance for the audit trail.
+The reference architecture below is the shape most enterprise watsonx deployments converge on. A web or mobile UI feeds into Watson Assistant, which routes generative replies through a Model Gateway into watsonx.ai. Behind watsonx.ai sits a LangGraph workflow that retrieves from watsonx Discovery (which itself draws structured data from watsonx.data when needed) and runs Granite Guardian on both sides of the model. Lineage and metrics flow into watsonx.governance for the audit trail.
 
 \begin{figure}[h]
 \centering
@@ -134,7 +134,7 @@ Implementation runs in four progressive environments, the same pattern Chapter~\
 
 The \term{Model Context Protocol} (MCP) is an open protocol for connecting LLM applications to external tools and data sources in a standard way. An \emph{MCP server} exposes resources (data) and tools (functions); an \emph{MCP client} --- the LLM application, agent, or IDE --- discovers and uses them through a common JSON-RPC interface. The contrast with the older approach is the whole point: instead of writing a bespoke LangChain tool for every integration (one for Postgres, one for Slack, one for the internal CRM, one for the ticketing system), you stand up an MCP server per system once, and any MCP-capable agent can call any of them through the same protocol.
 
-Why the exam cares: MCP is the direction IBM is pushing for plugging external systems into agentic watsonx workflows. You point your agent at the MCP server and it can call any of the tools that server exposes, without per-integration Python code. The Acme Assistant's third release moved the CRM integration from a bespoke LangChain tool to an MCP server, and the diff was a removal of three hundred lines of glue code and the addition of one configuration block.
+Why the exam cares: MCP is the direction IBM is pushing for plugging external systems into agentic watsonx workflows. You point your agent at the MCP server and it can call any of the tools that server exposes, without per-integration Python code. A common refactor inside a maturing program is to move a CRM integration from a bespoke LangChain tool to an MCP server --- the diff is a removal of a few hundred lines of glue code and the addition of one configuration block.
 
 Three properties are worth remembering. MCP standardises tool discovery and invocation through a vendor-neutral JSON-RPC interface, which means the same agent code works against different servers. It separates the LLM application from each integration's specifics, which means the agent does not need to know whether it is talking to Postgres or Slack. And it plays well with native tool-calling chat models --- Granite 3.x, Llama-3.3, and Mistral all support tool calling, so an MCP-discovered tool can be called by any of them through the same code path.
 
@@ -176,7 +176,7 @@ The reasons LangChain has won by adoption are mundane. \emph{Modularity}: swap L
 \label{fig:langchain}
 \end{figure}
 
-The simplest useful LangChain pipeline is a deterministic chain --- prompt, LLM, parser, piped together with the \texttt{|} operator. That is what the Acme Assistant's intent classifier looked like in week one.
+The simplest useful LangChain pipeline is a deterministic chain --- prompt, LLM, parser, piped together with the \texttt{|} operator. That is what a typical intent classifier looks like in week one.
 
 \begin{examplebox}[title=\textbf{LLMChain --- prompt + watsonx LLM + parser}]
 \begin{lstlisting}[style=pythonstyle]
@@ -209,7 +209,7 @@ import requests
 @tool
 def lookup_account(account_id: str) -> dict:
     """Return account name, tier, status from the internal CRM."""
-    r = requests.get(f"https://crm.acme.com/api/accounts/{account_id}",
+    r = requests.get(f"https://crm.internal/api/accounts/{account_id}",
                      headers={"Authorization": f"Bearer {CRM_TOKEN}"})
     r.raise_for_status()
     return r.json()
@@ -245,9 +245,9 @@ executor.invoke({"input":
 
 Memory is the dimension that turns a stateless agent into a multi-turn assistant. \texttt{ConversationBufferMemory} holds the exact transcript and is cheap to implement but expensive in tokens at long horizons. \texttt{ConversationSummaryMemory} maintains a running summary in an LLM and is cheaper at long horizons but loses detail. \texttt{VectorStoreRetrieverMemory} gives semantic recall across past turns when the conversation is too long to fit in context. LangGraph checkpoints persist agent state across sessions, which is what production deployments use when conversations span days.
 
-\subsection{The end-to-end Acme picture}
+\subsection{The end-to-end picture}
 
-Most production builds, including the Acme Assistant, look like this end to end. Watson Assistant catches the user's intent and channel. For generative replies it calls a watsonx Deployment via webhook. Behind the deployment, a LangChain or LangGraph workflow does RAG over watsonx Discovery, possibly calls an MCP-exposed internal API, drafts the answer with Granite, and runs Granite Guardian over both input and output. Lineage and metrics land in watsonx.governance for the audit. Every chapter in this book has been a slice of this same architecture.
+Most production builds look like this end to end. Watson Assistant catches the user's intent and channel. For generative replies it calls a watsonx Deployment via webhook. Behind the deployment, a LangChain or LangGraph workflow does RAG over watsonx Discovery, possibly calls an MCP-exposed internal API, drafts the answer with Granite, and runs Granite Guardian over both input and output. Lineage and metrics land in watsonx.governance for the audit. Every chapter in this book has been a slice of this same architecture.
 
 \begin{takeawaybox}
 Integration on watsonx is the discipline of wiring a model into the rest of an organisation's systems without losing the audit trail. Calls go through the REST API or the SDKs, authenticated by per-application service IDs and scoped API keys. External calls always wrap in retries, backoff, and category-specific error handling. Workflows orchestrate with LangChain Chains for simple flows, LangGraph for state-machine reproducibility, and watsonx AI Pipelines for scheduled data-plus-AI jobs. LangChain's core blocks --- chains, tools, agents, memory, retrievers --- cover the agent layer; the Model Context Protocol covers the tools layer when the same integrations are reused across applications. Granite~3.x, Llama-3.3, and Mistral all support native tool calling, which is the modern way to build agents on watsonx. And the production architecture that all of this converges on is the one in Figure~\ref{fig:reference-architecture}.

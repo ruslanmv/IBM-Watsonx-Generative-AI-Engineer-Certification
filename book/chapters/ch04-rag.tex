@@ -3,9 +3,9 @@
 
 \epigraph{``If the facts change weekly, you need retrieval --- not retraining.''}{}
 
-Every Monday morning, Acme's compliance team pushed new versions of the bank's policy library --- cross-border transfer rules, mortgage thresholds, refund procedures. By lunchtime, anything the AI engineer at Acme had tuned the previous week was already partially wrong. The Assistant kept citing last-Tuesday's interest-rate table. That single observation, repeated every week for two months, is why this chapter exists.
+Enterprise knowledge changes faster than models can be retrained. Policies are revised, product terms expire, regulatory language shifts, and internal procedures move from one document system to another. A model that answered correctly last month can be wrong today, even with a perfect prompt. In a regulated business the compliance office typically pushes new policy versions weekly, sometimes faster --- by lunchtime on the day of an update, anything tuned against the previous version is already partially wrong, and a non-grounded assistant cheerfully cites yesterday's table as today's truth.
 
-Section~4 of the exam is retrieval-augmented generation, seventeen percent of the test. RAG is the architecture that lets you ground a model in your own documents without retraining it, and it is the right answer whenever the facts move. This chapter walks the pipeline end-to-end --- what an embedding is, how to pick one on watsonx, where to put the vectors, how to retrieve, how to re-rank, how to wire the whole thing in LangChain or LlamaIndex, and where to apply the few quality levers that actually move the needle. By the last page, you have everything the Acme Assistant's policy-Q\&A feature needs to ship.
+Retrieval-Augmented Generation exists for this reason. \emph{When the facts move, retrieve them at runtime.} That single rule is the spine of an entire architectural family, and it is the right answer whenever the knowledge in the system is more current than the knowledge inside the model. Section~4 of the exam is RAG, seventeen percent of the test. This chapter walks the pipeline end-to-end --- what an embedding is, how to pick one on watsonx, where to put the vectors, how to retrieve, how to re-rank, how to wire the whole thing in LangChain or LlamaIndex, and where to apply the few quality levers that actually move the needle. By the last page you will have everything a governed Q\&A feature needs to ship against a corpus that updates faster than the model.
 
 \section{Embeddings, in one paragraph (Objective 4.1)}
 
@@ -25,7 +25,7 @@ Section~4 of the exam is retrieval-augmented generation, seventeen percent of th
 
 An \term{embedding} is a vector of floats --- usually between 384 and 1024 dimensions --- that represents the \emph{meaning} of a piece of text. Texts with similar meaning end up near each other in that space, measured by cosine similarity or dot product. A retrieval system embeds every chunk of your corpus once, stores the vectors, and at query time embeds the user's question and returns the nearest chunks. The generator (the LLM) then answers using those chunks as its context. That single round-trip --- embed-query, find-nearest, generate-with-context --- is RAG.
 
-The reason embeddings work in practice is that they catch what keyword search misses. The Acme policy corpus describes \emph{loan defaults} in one section, \emph{delinquent borrowers} in another, and \emph{non-performing exposures} in a third. A keyword search for \emph{``loan default''} hits the first; an embedding search hits all three, because the meaning sits close in vector space. This is why a watsonx Discovery index using slate-v2 outperforms a pure BM25 search every time, and why the team did not waste a week trying to make Elasticsearch's keyword analyser smart enough.
+The reason embeddings work in practice is that they catch what keyword search misses. A typical enterprise policy corpus describes the same concept under several different headings --- \emph{loan defaults} in one section, \emph{delinquent borrowers} in another, \emph{non-performing exposures} in a third. A keyword search for \emph{``loan default''} hits only the first; an embedding search hits all three, because the meaning sits close in vector space regardless of vocabulary. That gap is why a watsonx Discovery index using slate-v2 consistently outperforms a pure BM25 search, and why the platform team usually does not waste effort tuning keyword analysers to compensate for missing semantic search.
 
 \subsection{The IBM embedding models worth knowing}
 
@@ -87,7 +87,7 @@ print(len(vectors), len(vectors[0]))   # 2 vectors, 768 dims each
 
 A vector store indexes embeddings so nearest-neighbour search runs in roughly logarithmic rather than linear time. The landscape splits into three camps. The first is \emph{purpose-built vector databases}: \term{FAISS} is the in-memory library you reach for on a laptop or for a single-node corpus; \term{Chroma} is the embedded, persistent option you ship for prototypes and notebooks; \term{Milvus}, \term{Weaviate}, \term{Pinecone}, and \term{Qdrant} are the production-grade distributed and managed stores. The second is \emph{vector extensions to existing databases}: PostgreSQL with \texttt{pgvector} adds a vector type and an HNSW index; Elasticsearch and OpenSearch add a \texttt{dense\_vector} field and support hybrid search in the same index as their classic BM25; Cassandra, SingleStore, and Redis all have first-class vector indexing now. The third is \emph{IBM-native}: \product{watsonx.data} runs managed Milvus collections under governance, and IBM Cloud Databases for Elasticsearch is the IBM-managed hybrid store for enterprise search.
 
-I tell teams to pick by where they are in the project. FAISS is the answer when you have to demo by Friday. Chroma is the answer when the demo turns into a small persistent app. Milvus or watsonx Discovery is the answer when the small app becomes a real product with a quarterly index refresh and a regulator who wants logs. The Acme Assistant ran on Chroma for the first six weeks, then moved to watsonx Discovery once compliance asked for audit trails on every retrieval.
+Teams typically pick by where they are in the project. FAISS is the answer when you have to demo by Friday. Chroma is the answer when the demo turns into a small persistent application. Milvus or watsonx Discovery is the answer when the small application becomes a real product with a quarterly index refresh and a regulator who wants every retrieval logged. A common trajectory inside a governed program is six weeks on Chroma for the prototype, then a migration to watsonx Discovery the moment the compliance office asks for audit trails on every retrieval.
 
 \section{Picking the right retriever (Objective 4.3)}
 
@@ -154,11 +154,11 @@ Sliding window     & Overlap by 10--20\% of chunk size               & Reduces b
 \label{tab:chunking}
 \end{table}
 
-The rule of thumb most teams converge on: chunks of 256 to 1024 tokens with 10 to 20 percent overlap. Smaller chunks give more precise retrieval but lose surrounding context; larger chunks give more context but make retrieval noisier. The Acme Assistant settled at 512 tokens with 64-token overlap on recursive splits, and only moved to semantic chunking for a single hard-to-retrieve sub-corpus of dense regulatory text.
+The rule of thumb most teams converge on: chunks of 256 to 1024 tokens with 10 to 20 percent overlap. Smaller chunks give more precise retrieval but lose surrounding context; larger chunks give more context but make retrieval noisier. A typical governed assistant settles at 512 tokens with 64-token overlap on recursive splits, and only moves to semantic chunking for a single hard-to-retrieve sub-corpus of dense regulatory text.
 
 \subsection{Pattern A --- LangChain plus watsonx LLM, the default}
 
-This is the pattern I reach for first. Load PDFs, chunk recursively, embed with slate-125, index in FAISS for development or in watsonx Discovery for production, retrieve with MMR for diversity, generate with Granite. The code below is the entire pipeline for the Acme policy-Q\&A feature in development.
+This is the pattern most teams reach for first. Load PDFs, chunk recursively, embed with slate-125, index in FAISS for development or in watsonx Discovery for production, retrieve with MMR for diversity, generate with Granite. The code below is the entire pipeline for a governed policy-Q\&A feature in development.
 
 \begin{examplebox}[title=\textbf{End-to-end RAG with LangChain and watsonx}]
 \begin{lstlisting}[style=pythonstyle]
@@ -269,7 +269,7 @@ A \term{cross-encoder re-ranker} takes the top $N$ candidates from the retriever
 \label{fig:agentic-rag}
 \end{figure}
 
-\term{Agentic RAG} treats retrieval as a tool that the agent decides whether to use, how to call, and whether to call again. Compared to plain RAG, the agent can rewrite the user's query into one or several refined searches, call multiple retrievers (policy DB, code repo, FAQ index), decide \emph{not} to retrieve when the answer is obvious, and verify with a second retrieval pass when the first answer looks weak. The trade-off is the obvious one: better accuracy on complex queries, higher latency and token cost on simple ones. The Acme Assistant uses agentic RAG only on the ticket-escalation path, where a single retrieval almost never carries the answer; for plain policy-Q\&A, one retrieval is fine.
+\term{Agentic RAG} treats retrieval as a tool that the agent decides whether to use, how to call, and whether to call again. Compared to plain RAG, the agent can rewrite the user's query into one or several refined searches, call multiple retrievers (policy DB, code repo, FAQ index), decide \emph{not} to retrieve when the answer is obvious, and verify with a second retrieval pass when the first answer looks weak. The trade-off is the obvious one: better accuracy on complex queries, higher latency and token cost on simple ones. A governed assistant typically uses agentic RAG only on its escalation path, where a single retrieval almost never carries the answer; for plain policy-Q\&A, one retrieval is enough.
 
 \subsection{AutoRAG --- hyperparameter optimisation for the pipeline}
 
