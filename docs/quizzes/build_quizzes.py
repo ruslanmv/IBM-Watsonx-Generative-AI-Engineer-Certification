@@ -116,7 +116,7 @@ def render_quiz_flat(key, footer_prefix, question_ids):
                 out.append(f'    <li>{html.escape(opt)}</li>')
         out.append(f'  </ul>')
         correct_str = ', '.join(sorted(correct_labels)) if correct_labels else '—'
-        out.append(f'  <p class="xsmall" style="margin-top:10px; text-align:left;"><span class="hl3">Answer: {correct_str}</span> &nbsp;·&nbsp; the correct option is highlighted in green. Real-style C1000-185 question.</p>')
+        out.append(f'  <p class="xsmall" style="margin-top:10px; text-align:left;"><span class="hl3">Answer: {correct_str}</span> &nbsp;·&nbsp; the correct option is highlighted in green. </p>')
         out.append(f'  <aside class="slide-footer">{footer} · Q{n}</aside>')
         out.append(f'</section>')
     return '\n'.join(out)
